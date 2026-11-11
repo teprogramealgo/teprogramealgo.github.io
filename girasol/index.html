@@ -55,6 +55,9 @@
   #repetir.visible { opacity: 1; }
 </style>
 
+<!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <!-- Vista previa para WhatsApp / redes (Te programé algo) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="@teprogramealgo">
