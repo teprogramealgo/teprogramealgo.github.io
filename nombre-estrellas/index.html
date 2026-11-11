@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 Te programé algo</title>
+<!-- AI Romantic Code · Pieza #003 · Tu nombre en las estrellas -->
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: #02030a; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+  .texto { position: fixed; left: 0; right: 0; top: 60vh; text-align: center; padding: 0 28px; color: #e8ecff; font-family: 'Quicksand', sans-serif; }
+  #msg { font-size: clamp(16px, 4.4vw, 21px); line-height: 1.6; min-height: 3.2em; text-shadow: 0 0 14px rgba(120,150,255,.6); }
+  #firma { font-family: 'Pacifico', cursive; font-size: clamp(20px, 5.6vw, 28px); color: #b9c6ff; margin-top: 14px; min-height: 1.4em; }
+  .typing::after { content: '|'; margin-left: 2px; color: #9fb0ff; animation: blink .8s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(150,170,255,.1); border: 1px solid rgba(150,170,255,.4);
+    color: #b9c6ff; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
+  #repetir.visible { opacity: 1; }
+</style>
+
+<!-- Vista previa para WhatsApp / redes (Te programé algo) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="@teprogramealgo">
+<meta property="og:title" content="💌 Te programé algo">
+<meta property="og:description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta property="og:url" content="https://teprogramealgo.github.io/nombre-estrellas/">
+<meta property="og:image" content="https://teprogramealgo.github.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta name="theme-color" content="#0D0F1A">
+<link rel="icon" href="../logo.svg">
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="texto"><div id="msg"></div><div id="firma"></div></div>
+<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+<script>
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
+const q = new URLSearchParams(location.search);
+const CONFIG = {
+  para:    q.get('para') || "Camila",
+  mensaje: q.get('msg')  || "Si pudiera, escribiría tu nombre en el cielo para que todos supieran lo que significas para mí… así que lo hice.",
+  firma:   q.get('de')   || "— Tu persona ✨"
+};
+
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const DPR = window.devicePixelRatio || 1, W = innerWidth, H = innerHeight;
+cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const clamp = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+
+// Muestra los píxeles del nombre en un canvas oculto
+function puntosDelNombre(texto) {
+  const oc = document.createElement('canvas'); oc.width = W; oc.height = H;
+  const o = oc.getContext('2d');
+  let fs = Math.min(W * 0.24, 130);
+  o.font = `${fs}px Pacifico, cursive`;
+  while (o.measureText(texto).width > W * 0.86 && fs > 20) { fs -= 2; o.font = `${fs}px Pacifico, cursive`; }
+  o.textAlign = 'center'; o.textBaseline = 'middle'; o.fillStyle = '#fff';
+  o.fillText(texto, W / 2, H * 0.33);
+  const d = o.getImageData(0, 0, W, H).data, pts = [];
+  const paso = Math.max(3, Math.round(fs / 22));
+  for (let y = 0; y < H; y += paso) for (let x = 0; x < W; x += paso) if (d[(y * W + x) * 4 + 3] > 128) pts.push({ x, y });
+  return pts;
+}
+
+let estrellas = [], fugaces = [];
+function preparar() {
+  const pts = puntosDelNombre(CONFIG.para);
+  // estrellas de fondo
+  for (let i = 0; i < 260; i++) estrellas.push({ x: Math.random() * W, y: Math.random() * H, s: Math.random() * 1.3 + 0.2, f: Math.random() * 6, tx: null });
+  // estrellas que formarán el nombre
+  pts.sort(() => Math.random() - 0.5).forEach((p, i) => estrellas.push({
+    x: Math.random() * W, y: Math.random() * H, s: Math.random() * 1.1 + 0.9, f: Math.random() * 6,
+    tx: p.x + (Math.random() - .5) * 1.5, ty: p.y + (Math.random() - .5) * 1.5, d: 1600 + (i % 60) * 18
+  }));
+}
+
+const vel = 40, T_MSG = 5200;
+const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400, T_FIN = T_FIRMA + CONFIG.firma.length * vel + 400;
+function escribir(el, txt, t0, t) {
+  const p = clamp((t - t0) / (txt.length * vel));
+  el.textContent = txt.slice(0, Math.round(p * txt.length));
+  el.classList.toggle('typing', p > 0 && p < 1);
+}
+
+let t0 = null;
+function frame(now) {
+  if (t0 === null) t0 = now;
+  const t = now - t0;
+  // cielo
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#02030a'); g.addColorStop(.6, '#0a0f2e'); g.addColorStop(1, '#1a1440');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // nebulosa suave detrás del nombre
+  const neb = clamp((t - 2500) / 2000);
+  if (neb > 0) {
+    const r = ctx.createRadialGradient(W / 2, H * .33, 0, W / 2, H * .33, W * .7);
+    r.addColorStop(0, `rgba(110,90,255,${.22 * neb})`); r.addColorStop(1, 'rgba(110,90,255,0)');
+    ctx.fillStyle = r; ctx.fillRect(0, 0, W, H);
+  }
+  for (const e of estrellas) {
+    let x = e.x, y = e.y;
+    if (e.tx !== null) {
+      const p = easeInOut(clamp((t - e.d) / 2200));
+      x = e.x + (e.tx - e.x) * p; y = e.y + (e.ty - e.y) * p;
+    }
+    const tw = 0.55 + 0.45 * Math.sin(t / 420 + e.f);
+    const formada = e.tx !== null && t > e.d + 2200;
+    ctx.fillStyle = formada ? `rgba(255,240,210,${0.75 + 0.25 * tw})` : `rgba(220,230,255,${0.3 + 0.6 * tw})`;
+    ctx.beginPath(); ctx.arc(x, y, e.s * (formada ? 1.15 : 1), 0, Math.PI * 2); ctx.fill();
+    if (formada && e.s > 1.6) { ctx.fillStyle = 'rgba(255,230,180,.15)'; ctx.beginPath(); ctx.arc(x, y, e.s * 4, 0, Math.PI * 2); ctx.fill(); }
+  }
+  // estrellas fugaces
+  if (Math.random() < 0.012 || (t > 300 && t < 340 && !fugaces.length)) fugaces.push({ x: Math.random() * W * .8 + W * .2, y: Math.random() * H * .3, n: t });
+  for (let i = fugaces.length - 1; i >= 0; i--) {
+    const f = fugaces[i], e = (t - f.n) / 900;
+    if (e > 1) { fugaces.splice(i, 1); continue; }
+    const x = f.x - e * W * .5, y = f.y + e * W * .3;
+    const lg = ctx.createLinearGradient(x, y, x + 90, y - 54);
+    lg.addColorStop(0, `rgba(255,255,255,${1 - e})`); lg.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.strokeStyle = lg; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 90, y - 54); ctx.stroke();
+  }
+  escribir(document.getElementById('msg'), CONFIG.mensaje, T_MSG, t);
+  escribir(document.getElementById('firma'), CONFIG.firma, T_FIRMA, t);
+  if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
+  requestAnimationFrame(frame);
+}
+document.fonts.load('100px Pacifico').catch(() => {}).then(() => { preparar(); requestAnimationFrame(frame); });
+</script>
+</body>
+</html>

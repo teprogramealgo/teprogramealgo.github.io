@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 Te programé algo</title>
+<!-- AI Romantic Code · Pieza #001 · Girasol -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: radial-gradient(ellipse at 50% 30%, #1d2657 0%, #0b1026 60%, #05070f 100%);
+    color: #fff8e1;
+    font-family: 'Quicksand', sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    overflow: hidden; min-height: 100vh; position: relative;
+  }
+  .star {
+    position: absolute; background: #fff; border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite; animation-delay: var(--delay);
+  }
+  @keyframes twinkle { 0%,100% { opacity: .15; } 50% { opacity: .9; } }
+
+  #scene { height: 60vh; max-width: 92vw; overflow: visible; z-index: 2; }
+
+  .mensaje { text-align: center; padding: 0 24px; max-width: 520px; z-index: 2; min-height: 30vh; }
+  #para {
+    font-family: 'Dancing Script', cursive; font-size: clamp(30px, 8vw, 46px);
+    color: #ffd54a; text-shadow: 0 0 18px rgba(255, 196, 0, .55); min-height: 1.2em;
+  }
+  #msg { font-size: clamp(16px, 4.3vw, 20px); line-height: 1.55; margin-top: 10px; min-height: 3em; }
+  #firma {
+    font-family: 'Dancing Script', cursive; font-size: clamp(20px, 5.5vw, 28px);
+    color: #ffe082; margin-top: 14px; min-height: 1.3em;
+  }
+  .typing::after { content: '|'; margin-left: 2px; animation: blink .8s steps(1) infinite; color: #ffd54a; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .petalo-cae {
+    position: absolute; top: -30px; width: 12px; height: 26px; z-index: 1;
+    background: linear-gradient(#ffd54a, #f5a300); border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+    opacity: .85; animation: caer var(--t) linear forwards;
+  }
+  @keyframes caer {
+    to { transform: translate(var(--x), 110vh) rotate(var(--r)); opacity: .2; }
+  }
+
+  #repetir {
+    position: fixed; bottom: 16px; right: 16px; z-index: 5;
+    background: rgba(255, 213, 74, .12); border: 1px solid rgba(255, 213, 74, .4);
+    color: #ffd54a; font-family: inherit; font-size: 14px; padding: 8px 14px;
+    border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s;
+  }
+  #repetir.visible { opacity: 1; }
+</style>
+
+<!-- Vista previa para WhatsApp / redes (Te programé algo) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="@teprogramealgo">
+<meta property="og:title" content="💌 Te programé algo">
+<meta property="og:description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta property="og:url" content="https://teprogramealgo.github.io/girasol/">
+<meta property="og:image" content="https://teprogramealgo.github.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta name="theme-color" content="#0D0F1A">
+<link rel="icon" href="../logo.svg">
+</head>
+<body>
+
+<svg id="scene" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg"></svg>
+
+<div class="mensaje">
+  <div id="para"></div>
+  <div id="msg"></div>
+  <div id="firma"></div>
+</div>
+
+<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+
+<script>
+/* =========================================================
+   ✏️  PERSONALIZA AQUÍ  (solo cambia el texto entre comillas)
+   ========================================================= */
+// También se puede personalizar por el link: index.html?para=Ana&msg=Te%20quiero&de=Luis
+const q = new URLSearchParams(location.search);
+const CONFIG = {
+  para:    q.get('para') || "María",
+  mensaje: q.get('msg')  || "Así como el girasol busca al sol cada mañana, yo te busco a ti en cada uno de mis días.",
+  firma:   q.get('de')   || "Con todo mi cariño 🌻",
+  velocidadTexto: 45   // milisegundos por letra (menor = más rápido)
+};
+/* ========================================================= */
+
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('scene');
+const el = (tag, attrs, parent = svg) => {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  parent.appendChild(e);
+  return e;
+};
+
+// ---- Easing ----
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const easeBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+const linear = t => t;
+
+// ---- Mini motor de animación (línea de tiempo) ----
+const tasks = [];
+function at(start, dur, fn, ease = easeOut) {
+  tasks.push({ start, dur, fn, ease, done: false });
+  fn(0);
+}
+
+// ---- Estrellas de fondo ----
+for (let i = 0; i < 90; i++) {
+  const s = document.createElement('div');
+  const size = Math.random() * 2 + 0.6;
+  s.className = 'star';
+  s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*3}s;--delay:${Math.random()*3}s`;
+  document.body.appendChild(s);
+}
+
+// ---- Degradados ----
+const defs = el('defs', {});
+const grad = (id, type, stops, extra = {}) => {
+  const g = el(type, { id, ...extra }, defs);
+  stops.forEach(([o, c]) => el('stop', { offset: o, 'stop-color': c }, g));
+};
+grad('gPetalo', 'linearGradient', [['0%', '#ffe259'], ['100%', '#f7a400']], { x1: 0, y1: 1, x2: 0, y2: 0 });
+grad('gPetalo2', 'linearGradient', [['0%', '#f2a000'], ['100%', '#e07b00']], { x1: 0, y1: 1, x2: 0, y2: 0 });
+grad('gDisco', 'radialGradient', [['0%', '#6b3d14'], ['70%', '#3a1f08'], ['100%', '#24130a']]);
+grad('gHoja', 'linearGradient', [['0%', '#2f7d32'], ['100%', '#66bb6a']]);
+const glow = el('filter', { id: 'brillo', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs);
+el('feGaussianBlur', { stdDeviation: 6, result: 'b' }, glow);
+const merge = el('feMerge', {}, glow);
+el('feMergeNode', { in: 'b' }, merge);
+el('feMergeNode', { in: 'SourceGraphic' }, merge);
+
+// ---- Tallo ----
+const tallo = el('path', {
+  d: 'M200 520 C 188 430, 214 330, 200 200',
+  stroke: '#3f8f3a', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round'
+});
+const L = tallo.getTotalLength();
+tallo.setAttribute('stroke-dasharray', L);
+at(0, 1500, p => tallo.setAttribute('stroke-dashoffset', L * (1 - p)));
+
+// ---- Hojas ----
+function hoja(x, y, rot, espejo, start) {
+  const g = el('g', {});
+  el('path', { d: 'M0 0 C 20 -26, 60 -26, 82 0 C 60 16, 20 16, 0 0 Z', fill: 'url(#gHoja)' }, g);
+  el('path', { d: 'M2 0 Q 40 -6 78 0', stroke: '#a5d6a7', 'stroke-width': 1.4, fill: 'none', opacity: .7 }, g);
+  const sx = espejo ? -1 : 1;
+  at(start, 700, p => g.setAttribute('transform', `translate(${x},${y}) scale(${sx * p},${p}) rotate(${rot})`), easeBack);
+}
+hoja(197, 425, -28, false, 1100);
+hoja(204, 345, -28, true, 1400);
+
+// ---- Cabeza del girasol ----
+const CX = 200, CY = 175;
+const cabeza = el('g', { transform: `translate(${CX},${CY})` });
+const halo = el('circle', { r: 70, fill: '#ffc400', opacity: 0, filter: 'url(#brillo)' }, cabeza);
+at(3400, 1200, p => halo.setAttribute('opacity', .18 * p));
+
+function capaPetalos(n, largo, ancho, offset, fill, start, paso) {
+  for (let i = 0; i < n; i++) {
+    const ang = (360 / n) * i + offset;
+    const g = el('g', {}, cabeza);
+    el('path', {
+      d: `M0 0 C ${ancho} -${largo * .25}, ${ancho} -${largo * .8}, 0 -${largo} C -${ancho} -${largo * .8}, -${ancho} -${largo * .25}, 0 0 Z`,
+      fill
+    }, g);
+    at(start + i * paso, 550, p => g.setAttribute('transform', `rotate(${ang}) scale(${Math.max(p, 0)})`), easeBack);
+  }
+}
+capaPetalos(24, 92, 15, 0, 'url(#gPetalo)', 1900, 55);
+capaPetalos(24, 76, 13, 7.5, 'url(#gPetalo2)', 2300, 55);
+
+// Disco central
+const disco = el('circle', { r: 50, fill: 'url(#gDisco)' }, cabeza);
+at(3500, 600, p => disco.setAttribute('r', 50 * p), easeBack);
+
+// Semillas en espiral de Fibonacci (ángulo áureo 137.5°)
+const N = 300, c = 2.6, semillas = [];
+for (let i = 0; i < N; i++) {
+  const a = i * 137.508 * Math.PI / 180, r = c * Math.sqrt(i);
+  semillas.push(el('circle', {
+    cx: (r * Math.cos(a)).toFixed(2), cy: (r * Math.sin(a)).toFixed(2), r: 1.75,
+    fill: i % 3 === 0 ? '#c98a2b' : '#8d5a1b', opacity: 0
+  }, cabeza));
+}
+at(3900, 2200, p => {
+  const k = Math.floor(p * N);
+  for (let i = 0; i < k; i++) semillas[i].setAttribute('opacity', 1);
+}, linear);
+
+// Balanceo suave al final
+let balanceo = false;
+at(6100, 1, p => { if (p === 1) balanceo = true; }, linear);
+
+// ---- Texto tipo máquina de escribir ----
+function escribir(id, texto, start) {
+  const nodo = document.getElementById(id);
+  const dur = texto.length * CONFIG.velocidadTexto;
+  at(start, dur, p => {
+    nodo.textContent = texto.slice(0, Math.round(p * texto.length));
+    nodo.classList.toggle('typing', p > 0 && p < 1);
+  }, linear);
+  return start + dur + 400;
+}
+let t = 5800;
+t = escribir('para', 'Para ti, ' + CONFIG.para, t);
+t = escribir('msg', CONFIG.mensaje, t);
+t = escribir('firma', CONFIG.firma, t);
+
+// ---- Pétalos que caen + botón repetir ----
+at(t, 1, p => {
+  if (p < 1) return;
+  document.getElementById('repetir').classList.add('visible');
+  let count = 0;
+  const lluvia = setInterval(() => {
+    const d = document.createElement('div');
+    d.className = 'petalo-cae';
+    d.style.cssText = `left:${Math.random()*100}vw;--t:${5+Math.random()*4}s;--x:${(Math.random()-.5)*200}px;--r:${Math.random()*720}deg`;
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 9500);
+    if (++count > 60) clearInterval(lluvia);
+  }, 350);
+}, linear);
+
+// ---- Bucle principal ----
+let t0 = null;
+function frame(now) {
+  if (t0 === null) t0 = now;
+  const e = now - t0;
+  for (const k of tasks) {
+    if (k.done || e < k.start) continue;
+    const p = Math.min((e - k.start) / k.dur, 1);
+    k.fn(k.ease(p));
+    if (p === 1) { k.fn(1); k.done = true; }
+  }
+  if (balanceo) cabeza.setAttribute('transform', `translate(${CX},${CY}) rotate(${Math.sin(e / 900) * 2.5})`);
+  requestAnimationFrame(frame);
+}
+setTimeout(() => requestAnimationFrame(frame), 500);
+</script>
+</body>
+</html>

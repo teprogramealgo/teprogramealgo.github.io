@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 Te programé algo</title>
+<!-- AI Romantic Code · Pieza #005 · Árbol de corazones con contador -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: #fff4f1; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+  .texto { position: fixed; left: 0; right: 0; top: 64vh; text-align: center; padding: 0 24px; color: #5b2333; font-family: 'Quicksand', sans-serif; }
+  #para { font-family: 'Dancing Script', cursive; font-size: clamp(30px, 8vw, 42px); color: #c2185b; min-height: 1.2em; }
+  .contador { margin-top: 6px; opacity: 0; transition: opacity 1s; }
+  .contador.visible { opacity: 1; }
+  .etiqueta { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: #a0526a; }
+  .nums { display: flex; justify-content: center; gap: 12px; margin-top: 6px; }
+  .nums div { min-width: 58px; }
+  .nums b { display: block; font-size: clamp(22px, 6vw, 30px); color: #c2185b; font-variant-numeric: tabular-nums; }
+  .nums span { font-size: 11px; color: #a0526a; text-transform: uppercase; letter-spacing: 1px; }
+  #msg { font-size: clamp(15px, 4.2vw, 19px); line-height: 1.5; margin-top: 14px; min-height: 3em; }
+  #firma { font-family: 'Dancing Script', cursive; font-size: clamp(22px, 6vw, 30px); color: #c2185b; margin-top: 4px; min-height: 1.3em; }
+  .typing::after { content: '|'; color: #c2185b; animation: blink .8s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(194,24,91,.08); border: 1px solid rgba(194,24,91,.35);
+    color: #c2185b; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
+  #repetir.visible { opacity: 1; }
+</style>
+
+<!-- Vista previa para WhatsApp / redes (Te programé algo) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="@teprogramealgo">
+<meta property="og:title" content="💌 Te programé algo">
+<meta property="og:description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta property="og:url" content="https://teprogramealgo.github.io/arbol-corazones/">
+<meta property="og:image" content="https://teprogramealgo.github.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta name="theme-color" content="#0D0F1A">
+<link rel="icon" href="../logo.svg">
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="texto">
+  <div id="para"></div>
+  <div class="contador" id="contador">
+    <div class="etiqueta">Llevamos juntos</div>
+    <div class="nums">
+      <div><b id="d">0</b><span>días</span></div>
+      <div><b id="h">0</b><span>horas</span></div>
+      <div><b id="m">0</b><span>min</span></div>
+      <div><b id="s">0</b><span>seg</span></div>
+    </div>
+  </div>
+  <div id="msg"></div>
+  <div id="firma"></div>
+</div>
+<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+<script>
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&desde=2024-02-14&msg=...&de=... */
+const q = new URLSearchParams(location.search);
+const CONFIG = {
+  para:    q.get('para')  || "Gabriela",
+  desde:   q.get('desde') || "2024-02-14",          // fecha en que empezó todo (AAAA-MM-DD)
+  mensaje: q.get('msg')   || "Cada día a tu lado es mi lugar favorito. Y pienso seguir contando.",
+  firma:   q.get('de')    || "Te amo, Andrés"
+};
+
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const DPR = window.devicePixelRatio || 1, W = innerWidth, H = innerHeight;
+cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+const clamp = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const easeBack = t => { const c = 2.2; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+
+// --- Ramas (recursivas) ---
+const ramas = [];
+function rama(x, y, ang, largo, grosor, prof, inicio) {
+  const x2 = x + Math.cos(ang) * largo, y2 = y + Math.sin(ang) * largo;
+  const dur = 260 + prof * 25;
+  ramas.push({ x, y, x2, y2, grosor, inicio, dur });
+  if (prof >= 7) return;
+  const fin = inicio + dur * 0.85;
+  const n = prof < 2 ? 2 : (Math.random() < 0.3 ? 3 : 2);
+  for (let i = 0; i < n; i++) {
+    const giro = (i - (n - 1) / 2) * (0.42 + Math.random() * 0.22) + (Math.random() - 0.5) * 0.2;
+    rama(x2, y2, ang + giro, largo * (0.7 + Math.random() * 0.1), grosor * 0.68, prof + 1, fin);
+  }
+}
+const baseY = H * 0.6, tronco = H * 0.15;
+rama(W / 2, baseY, -Math.PI / 2, tronco, Math.max(W * 0.035, 10), 0, 300);
+
+// --- Copa de corazones (dentro de una silueta de corazón) ---
+const COLORES = ['#e91e63', '#f06292', '#ff4d6d', '#c9184a', '#ff8fab', '#ffb3c6', '#d81b60'];
+const copa = [];
+const cx = W / 2, cy = H * 0.3, esc = Math.min(W * 0.4, H * 0.22);
+while (copa.length < 520) {
+  const x = Math.random() * 2.4 - 1.2, y = Math.random() * 2.4 - 1.2;
+  if (Math.pow(x * x + y * y - 1, 3) - x * x * Math.pow(y, 3) <= 0) {
+    copa.push({ x: cx + x * esc, y: cy - y * esc, s: 5 + Math.random() * 8, c: COLORES[(Math.random() * COLORES.length) | 0],
+      r: (Math.random() - 0.5) * 0.8, t: 2600 + Math.random() * 2000 });
+  }
+}
+const caen = [];
+
+function corazon(x, y, s, rot, color) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s / 16, s / 16);
+  ctx.fillStyle = color; ctx.beginPath();
+  ctx.moveTo(0, 5); ctx.bezierCurveTo(-8, -1, -8, -9, -3, -9); ctx.bezierCurveTo(-1, -9, 0, -7, 0, -6);
+  ctx.bezierCurveTo(0, -7, 1, -9, 3, -9); ctx.bezierCurveTo(8, -9, 8, -1, 0, 5); ctx.fill(); ctx.restore();
+}
+
+// --- Texto y contador ---
+const vel = 42, T_PARA = 4400, T_CONT = 5200, T_MSG = 5900;
+const tPara = 'Para ' + CONFIG.para;
+const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400, T_FIN = T_FIRMA + CONFIG.firma.length * vel + 400;
+function escribir(el, txt, t0, t) {
+  const p = clamp((t - t0) / (txt.length * vel));
+  el.textContent = txt.slice(0, Math.round(p * txt.length));
+  el.classList.toggle('typing', p > 0 && p < 1);
+}
+const desde = new Date(CONFIG.desde + 'T00:00:00').getTime();
+function contar() {
+  let s = Math.max(0, Math.floor((Date.now() - desde) / 1000));
+  const d = Math.floor(s / 86400); s -= d * 86400;
+  const h = Math.floor(s / 3600); s -= h * 3600;
+  const m = Math.floor(s / 60); s -= m * 60;
+  [['d', d], ['h', h], ['m', m], ['s', s]].forEach(([id, v]) => document.getElementById(id).textContent = v);
+}
+
+let t0 = null;
+function frame(now) {
+  if (t0 === null) t0 = now;
+  const t = now - t0;
+  ctx.clearRect(0, 0, W, H);
+  // suelo
+  const g = ctx.createRadialGradient(W / 2, baseY + 6, 0, W / 2, baseY + 6, W * 0.4);
+  g.addColorStop(0, 'rgba(160,82,106,.25)'); g.addColorStop(1, 'rgba(160,82,106,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, baseY - 20, W, 60);
+  // ramas
+  ctx.lineCap = 'round'; ctx.strokeStyle = '#6d3b2a';
+  for (const r of ramas) {
+    const p = easeOut(clamp((t - r.inicio) / r.dur));
+    if (p <= 0) continue;
+    ctx.lineWidth = r.grosor;
+    ctx.beginPath(); ctx.moveTo(r.x, r.y); ctx.lineTo(r.x + (r.x2 - r.x) * p, r.y + (r.y2 - r.y) * p); ctx.stroke();
+  }
+  // corazones de la copa
+  for (const h of copa) {
+    const p = clamp((t - h.t) / 450);
+    if (p <= 0) continue;
+    const lat = 1 + 0.06 * Math.sin(t / 300 + h.x);
+    corazon(h.x, h.y, h.s * easeBack(p) * lat, h.r, h.c);
+  }
+  // algunos caen
+  if (t > 5000 && Math.random() < 0.08) {
+    const h = copa[(Math.random() * copa.length) | 0];
+    caen.push({ x: h.x, y: h.y, s: h.s, c: h.c, n: t, f: Math.random() * 6 });
+  }
+  for (let i = caen.length - 1; i >= 0; i--) {
+    const c = caen[i], e = t - c.n, y = c.y + e * 0.09;
+    if (y > H + 20) { caen.splice(i, 1); continue; }
+    ctx.globalAlpha = clamp(1 - (y - baseY) / (H * 0.4), 0.15, 1);
+    corazon(c.x + Math.sin(e / 400 + c.f) * 18 + e * 0.02, y, c.s, Math.sin(e / 500) * 0.6, c.c);
+    ctx.globalAlpha = 1;
+  }
+  escribir(document.getElementById('para'), tPara, T_PARA, t);
+  if (t > T_CONT) { document.getElementById('contador').classList.add('visible'); contar(); }
+  escribir(document.getElementById('msg'), CONFIG.mensaje, T_MSG, t);
+  escribir(document.getElementById('firma'), CONFIG.firma, T_FIRMA, t);
+  if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
+  requestAnimationFrame(frame);
+}
+setTimeout(() => requestAnimationFrame(frame), 200);
+</script>
+</body>
+</html>

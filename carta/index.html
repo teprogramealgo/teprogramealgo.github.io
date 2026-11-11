@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 Te programé algo</title>
+<!-- AI Romantic Code · Pieza #004 · Carta que se abre -->
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body { background: radial-gradient(ellipse at 50% 35%, #4a2234 0%, #1c0b16 60%, #0c0509 100%); font-family: 'Quicksand', sans-serif; }
+  .bokeh { position: fixed; border-radius: 50%; background: radial-gradient(circle, rgba(255,190,200,.35), rgba(255,190,200,0) 70%);
+    animation: flotar var(--d) ease-in-out infinite alternate; }
+  @keyframes flotar { from { transform: translateY(0); opacity: .3; } to { transform: translateY(-40px); opacity: .8; } }
+
+  :root { --w: min(78vw, 380px); --h: calc(var(--w) * .64); }
+  .sobre { position: fixed; left: 50%; top: 46%; width: var(--w); height: var(--h); transform: translate(-50%, -50%); perspective: 900px; }
+  .fondo { position: absolute; inset: 0; background: #d98f9f; border-radius: 6px; box-shadow: 0 25px 50px rgba(0,0,0,.45); }
+  .carta-mini { position: absolute; left: 6%; right: 6%; bottom: 6%; height: 88%; background: #fffaf0; border-radius: 4px; z-index: 2;
+    background-image: repeating-linear-gradient(transparent 0 17px, #f1dcc8 17px 18px); }
+  .frente { position: absolute; inset: 0; z-index: 3; border-radius: 6px; background: #eaa4b2;
+    clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%); }
+  .frente::after { content: ''; position: absolute; inset: 0; background: #e396a6; clip-path: polygon(0 100%, 50% 48%, 100% 100%); }
+  .solapa { position: absolute; left: 0; right: 0; top: 0; height: 60%; z-index: 4; background: #f0b3c0; transform-origin: top center;
+    clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  .sello { position: absolute; left: 50%; top: 60%; width: 54px; height: 54px; margin: -27px 0 0 -27px; z-index: 5; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #e0344f, #8c0f24); box-shadow: 0 3px 6px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.3);
+    display: flex; align-items: center; justify-content: center; color: #ffd6dd; font-size: 24px; }
+
+  .hoja { position: fixed; left: 50%; top: 50%; width: min(86vw, 440px); min-height: 62vh; transform: translate(-50%, -50%); opacity: 0;
+    background: #fffaf0; border-radius: 6px; padding: 34px 28px 30px; box-shadow: 0 30px 70px rgba(0,0,0,.55);
+    background-image: repeating-linear-gradient(transparent 0 37px, #efd9c4 37px 38px); background-position: 0 30px;
+    font-family: 'Caveat', cursive; color: #4a2a33; }
+  .hoja::before { content: ''; position: absolute; top: 0; bottom: 0; left: 20px; width: 2px; background: rgba(230,120,140,.35); }
+  #saludo { font-size: clamp(30px, 8vw, 40px); font-weight: 700; color: #b0324e; min-height: 1.2em; line-height: 38px; }
+  #msg { font-size: clamp(24px, 6.4vw, 30px); line-height: 38px; margin-top: 10px; min-height: 4em; }
+  #firma { font-size: clamp(28px, 7vw, 36px); font-weight: 700; text-align: right; margin-top: 14px; color: #b0324e; min-height: 1.2em; }
+  .doodle { position: absolute; right: 22px; top: 22px; width: 54px; }
+  .doodle path { fill: none; stroke: #e0344f; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 200; stroke-dashoffset: 200; }
+  .typing::after { content: '|'; color: #b0324e; animation: blink .8s steps(1) infinite; font-family: 'Quicksand'; font-weight: 400; }
+  @keyframes blink { 50% { opacity: 0; } }
+  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(255,200,210,.12); border: 1px solid rgba(255,200,210,.4);
+    color: #ffd6dd; font-size: 14px; font-family: inherit; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
+  #repetir.visible { opacity: 1; }
+</style>
+
+<!-- Vista previa para WhatsApp / redes (Te programé algo) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="@teprogramealgo">
+<meta property="og:title" content="💌 Te programé algo">
+<meta property="og:description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta property="og:url" content="https://teprogramealgo.github.io/carta/">
+<meta property="og:image" content="https://teprogramealgo.github.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta name="theme-color" content="#0D0F1A">
+<link rel="icon" href="../logo.svg">
+</head>
+<body>
+<div class="sobre" id="sobre">
+  <div class="fondo"></div>
+  <div class="carta-mini" id="mini"></div>
+  <div class="frente"></div>
+  <div class="solapa" id="solapa"></div>
+  <div class="sello" id="sello">♥</div>
+</div>
+
+<div class="hoja" id="hoja">
+  <svg class="doodle" viewBox="0 0 60 56"><path id="doodle" d="M30 50 C 8 34, 2 22, 10 12 C 18 3, 28 8, 30 16 C 32 8, 42 3, 50 12 C 58 22, 52 34, 30 50 Z"/></svg>
+  <div id="saludo"></div>
+  <div id="msg"></div>
+  <div id="firma"></div>
+</div>
+<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+
+<script>
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
+const q = new URLSearchParams(location.search);
+const CONFIG = {
+  para:    q.get('para') || "Sofía",
+  mensaje: q.get('msg')  || "No sé escribir poemas, pero sé escribir código. Y en cada línea encontré una forma nueva de decirte que te quiero.",
+  firma:   q.get('de')   || "Con amor, Daniel",
+  saludo:  q.get('saludo') || "Querida"
+};
+
+// luces de fondo
+for (let i = 0; i < 14; i++) {
+  const b = document.createElement('div'); const s = 40 + Math.random() * 120;
+  b.className = 'bokeh';
+  b.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;--d:${3 + Math.random() * 4}s;animation-delay:-${Math.random() * 3}s`;
+  document.body.prepend(b);
+}
+
+const $ = id => document.getElementById(id);
+const E = { easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' };
+const anim = (id, kf, ms, delay) => $(id).animate(kf, { ...E, duration: ms, delay });
+
+// 1) llega el sobre
+anim('sobre', [{ transform: 'translate(-50%,-140%) rotate(-8deg)', opacity: 0 }, { transform: 'translate(-50%,-50%) rotate(0)', opacity: 1 }], 1000, 300);
+// 2) se rompe el sello
+anim('sello', [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(1.25)', opacity: 1, offset: .35 }, { transform: 'scale(0) rotate(40deg)', opacity: 0 }], 500, 1500);
+// 3) se abre la solapa
+anim('solapa', [{ transform: 'rotateX(0)', zIndex: 4 }, { zIndex: 4, offset: .49 }, { zIndex: 1, offset: .5 }, { transform: 'rotateX(180deg)', zIndex: 1 }], 800, 1900);
+// 4) sale la carta
+anim('mini', [{ transform: 'translateY(0)' }, { transform: 'translateY(-62%)' }], 900, 2700);
+// 5) la carta se hace grande y el sobre se va
+$('sobre').animate([{ transform: 'translate(-50%,-50%)', opacity: 1 }, { transform: 'translate(-50%,10%) scale(.85)', opacity: 0 }],
+  { ...E, fill: 'forwards', duration: 800, delay: 3600 });
+anim('hoja', [{ transform: 'translate(-50%,-62%) scale(.55)', opacity: 0 }, { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }], 900, 3600);
+
+// 6) escribe a mano
+const vel = 40;
+function escribir(id, txt, inicio) {
+  const el = $(id), dur = txt.length * vel;
+  setTimeout(() => {
+    const t0 = performance.now();
+    el.classList.add('typing');
+    (function paso(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = txt.slice(0, Math.round(p * txt.length));
+      if (p < 1) requestAnimationFrame(paso); else el.classList.remove('typing');
+    })(t0);
+  }, inicio);
+  return inicio + dur + 350;
+}
+let t = 4500;
+t = escribir('saludo', `${CONFIG.saludo} ${CONFIG.para}:`, t);
+t = escribir('msg', CONFIG.mensaje, t);
+t = escribir('firma', CONFIG.firma, t);
+$('doodle').animate([{ strokeDashoffset: 200 }, { strokeDashoffset: 0 }], { duration: 1200, delay: t, fill: 'both', easing: 'ease-in-out' });
+setTimeout(() => $('repetir').classList.add('visible'), t + 1200);
+</script>
+</body>
+</html>
