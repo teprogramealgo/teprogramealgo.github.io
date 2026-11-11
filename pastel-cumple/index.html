@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>💌 Te programé algo</title>
+<!-- AI Romantic Code · Pieza #010 · Pastel con velas que se soplan -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; background: #140a1f; }
+  body { font-family: 'Quicksand', sans-serif; color: #fff1f6; user-select: none; cursor: pointer; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+  #titulo { position: fixed; left: 0; right: 0; top: 7vh; text-align: center; padding: 0 20px; }
+  #feliz { font-size: clamp(18px, 5vw, 24px); font-weight: 700; letter-spacing: .08em; color: #ffd36b; opacity: 0; transition: opacity 1s; }
+  #para { font-family: 'Great Vibes', cursive; font-size: clamp(46px, 13vw, 66px); color: #fff; text-shadow: 0 0 18px rgba(255,120,180,.75);
+    opacity: 0; transform: scale(.8); transition: opacity 1s, transform 1s cubic-bezier(.2,1.5,.4,1); line-height: 1.15; }
+  .visible { opacity: 1 !important; transform: none !important; }
+  #pista { position: fixed; left: 0; right: 0; top: 66vh; text-align: center; font-size: clamp(15px, 4.2vw, 19px); color: #ffc2da; opacity: 0; transition: opacity .6s; }
+  #pista.visible { animation: respira 1.6s ease-in-out infinite; }
+  @keyframes respira { 50% { opacity: .45; } }
+  .texto { position: fixed; left: 0; right: 0; top: 66vh; text-align: center; padding: 0 26px; }
+  #msg { font-size: clamp(15px, 4.2vw, 20px); line-height: 1.55; min-height: 3.2em; }
+  #firma { font-family: 'Great Vibes', cursive; font-size: clamp(26px, 7vw, 34px); color: #ff8fb8; margin-top: 8px; min-height: 1.3em; }
+  .typing::after { content: '|'; margin-left: 2px; color: #ff8fb8; animation: blink .8s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  #onda { position: fixed; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; border: 3px solid #fff; pointer-events: none; opacity: 0; }
+  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(255,143,184,.12); border: 1px solid rgba(255,143,184,.45);
+    color: #ff8fb8; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
+  #repetir.visible { opacity: 1; }
+</style>
+
+<!-- Vista previa para WhatsApp / redes (Te programé algo) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="@teprogramealgo">
+<meta property="og:title" content="💌 Te programé algo">
+<meta property="og:description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta property="og:url" content="https://teprogramealgo.github.io/pastel-cumple/">
+<meta property="og:image" content="https://teprogramealgo.github.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Alguien preparó esto especialmente para ti. Ábrelo 💛">
+<meta name="theme-color" content="#0D0F1A">
+<link rel="icon" href="../logo.svg">
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="titulo"><div id="feliz">¡FELIZ CUMPLEAÑOS!</div><div id="para"></div></div>
+<div id="pista">Pide un deseo y toca la pantalla para soplar 🌬️</div>
+<div class="texto"><div id="msg"></div><div id="firma"></div></div>
+<div id="onda"></div>
+<button id="repetir" data-no-video onclick="event.stopPropagation(); location.reload()">↻ Ver de nuevo</button>
+<script>
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=...&velas=5 */
+const q = new URLSearchParams(location.search);
+const CONFIG = {
+  para:    q.get('para') || "Camila",
+  mensaje: q.get('msg')  || "Que este año te traiga todo lo que deseaste al soplar. Yo ya tengo mi deseo cumplido: tú.",
+  firma:   q.get('de')   || "Te quiere, Nico 🎂",
+  velas:   Math.min(9, Math.max(1, parseInt(q.get('velas')) || 5))
+};
+const VIDEO = q.has('video');
+const $ = id => document.getElementById(id);
+$('para').textContent = CONFIG.para;
+
+const cv = $('c'), ctx = cv.getContext('2d');
+let W, H;
+function medir() { const d = window.devicePixelRatio || 1; W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
+medir(); addEventListener('resize', medir);
+const clamp = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+const luces = Array.from({ length: 40 }, () => ({ x: Math.random(), y: Math.random(), r: 20 + Math.random() * 60, h: [330, 45, 280, 190][(Math.random() * 4) | 0], f: Math.random() * 6 }));
+const chispas = Array.from({ length: 60 }, () => ({ x: Math.random(), y: Math.random(), f: Math.random() * 6 }));
+const confeti = [], humo = [];
+const T_PASTEL = 300, T_VELAS = 1500, T_NOMBRE = 2300, T_PISTA = 3300, T_AUTO = 4800;
+let tSoplo = null, t0 = null, ahora = 0;
+
+function rect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+
+function dibujarPastel(t) {
+  const cx = W / 2, base = H * .6, ancho = Math.min(W * .62, 300);
+  const p = easeOut(clamp((t - T_PASTEL) / 900));
+  const sube = (1 - p) * 60;
+  ctx.save(); ctx.globalAlpha = p; ctx.translate(0, sube);
+  // plato
+  ctx.fillStyle = 'rgba(255,255,255,.85)';
+  ctx.beginPath(); ctx.ellipse(cx, base + 6, ancho * .62, 14, 0, 0, 7); ctx.fill();
+  // pisos
+  const pisos = [{ w: ancho, h: 70, c1: '#ff8fb8', c2: '#e85d92' }, { w: ancho * .74, h: 58, c1: '#ffd6e6', c2: '#f3a9c6' }];
+  let y = base;
+  pisos.forEach((pz, i) => {
+    y -= pz.h;
+    const g = ctx.createLinearGradient(cx - pz.w / 2, 0, cx + pz.w / 2, 0);
+    g.addColorStop(0, pz.c2); g.addColorStop(.5, pz.c1); g.addColorStop(1, pz.c2);
+    ctx.fillStyle = g; rect(cx - pz.w / 2, y, pz.w, pz.h, 10); ctx.fill();
+    // glaseado que gotea
+    ctx.fillStyle = i ? '#fff' : '#fff4f8';
+    ctx.beginPath(); ctx.moveTo(cx - pz.w / 2, y + 6);
+    const n = 9;
+    for (let k = 0; k <= n; k++) {
+      const x = cx - pz.w / 2 + pz.w * k / n, gota = 10 + ((k * 37) % 13);
+      ctx.quadraticCurveTo(x - pz.w / n / 2, y + gota + 6, x, y + 8);
+    }
+    ctx.lineTo(cx + pz.w / 2, y); ctx.lineTo(cx - pz.w / 2, y); ctx.fill();
+    // confites
+    for (let k = 0; k < 12; k++) {
+      ctx.fillStyle = ['#ffd36b', '#6ad1ff', '#9dff8a', '#c69cff'][k % 4];
+      const sx = cx - pz.w / 2 + 12 + ((k * 53) % (pz.w - 24)), sy = y + 26 + ((k * 29) % (pz.h - 32));
+      ctx.save(); ctx.translate(sx, sy); ctx.rotate(k); ctx.fillRect(-4, -1.5, 8, 3); ctx.restore();
+    }
+  });
+  ctx.restore();
+  return { cx, top: y + sube, ancho: pisos[1].w };
+}
+
+function dibujarVelas(t, pz) {
+  const pv = clamp((t - T_VELAS) / 600);
+  if (pv <= 0) return [];
+  const n = CONFIG.velas, sep = Math.min(30, (pz.ancho - 30) / n), llamas = [];
+  for (let i = 0; i < n; i++) {
+    const x = pz.cx + (i - (n - 1) / 2) * sep, h = 40 * easeOut(clamp(pv * n - i * .6));
+    const y = pz.top - h;
+    ctx.fillStyle = ['#6ad1ff', '#ffd36b', '#ff8fb8', '#9dff8a', '#c69cff'][i % 5];
+    ctx.fillRect(x - 4, y, 8, h);
+    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    for (let s = 6; s < h; s += 10) ctx.fillRect(x - 4, y + s, 8, 3);
+    llamas.push({ x, y: y - 2 });
+  }
+  return llamas;
+}
+
+function dibujarLlamas(t, llamas) {
+  const apagado = tSoplo === null ? 0 : clamp((t - tSoplo) / 350);
+  for (const [i, l] of llamas.entries()) {
+    const vacila = 1 + Math.sin(t / 90 + i * 1.7) * .08 + Math.sin(t / 37 + i) * .05;
+    const s = (1 - apagado) * vacila, inclina = tSoplo === null ? Math.sin(t / 200 + i) * 2 : apagado * 10;
+    if (s > .02) {
+      const halo = ctx.createRadialGradient(l.x, l.y - 10, 0, l.x, l.y - 10, 40 * s);
+      halo.addColorStop(0, 'rgba(255,200,90,.45)'); halo.addColorStop(1, 'rgba(255,200,90,0)');
+      ctx.fillStyle = halo; ctx.fillRect(l.x - 45, l.y - 55, 90, 90);
+      ctx.save(); ctx.translate(l.x, l.y); ctx.scale(s, s);
+      const g = ctx.createRadialGradient(0, -6, 1, 0, -8, 14);
+      g.addColorStop(0, '#fff8d0'); g.addColorStop(.5, '#ffc93c'); g.addColorStop(1, 'rgba(255,110,40,.0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.moveTo(0, 2);
+      ctx.bezierCurveTo(-8, -4, -5 + inclina, -14, inclina, -24);
+      ctx.bezierCurveTo(5 + inclina, -14, 8, -4, 0, 2); ctx.fill();
+      ctx.restore();
+    }
+  }
+}
+
+function soplar(t) {
+  if (tSoplo !== null || t < T_VELAS + 600) return;
+  tSoplo = t;
+  $('pista').classList.remove('visible'); $('pista').style.opacity = 0;
+  for (let i = 0; i < 40; i++) humo.push({ k: i % CONFIG.velas, n: t + Math.random() * 300, vx: Math.random() * .6 + .2, f: Math.random() * 6 });
+  for (let i = 0; i < 180; i++) {
+    const a = -Math.PI / 2 + (Math.random() - .5) * 2.6, v = 4 + Math.random() * 8;
+    confeti.push({ x: W / 2, y: H * .42, vx: Math.cos(a) * v, vy: Math.sin(a) * v, c: ['#ffd36b', '#6ad1ff', '#ff8fb8', '#9dff8a', '#c69cff'][i % 5], r: Math.random() * 6, n: t, vida: 2600 + Math.random() * 1400 });
+  }
+}
+document.body.addEventListener('pointerdown', e => {
+  if (VIDEO) return;
+  const o = $('onda'); o.style.left = e.clientX + 'px'; o.style.top = e.clientY + 'px';
+  o.animate([{ opacity: .9, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(2.6)' }], { duration: 500, easing: 'ease-out' });
+  soplar(ahora);
+});
+
+const vel = 45;
+function escribir(el, txt, ini, now) {
+  const p = clamp((now - ini) / (txt.length * vel));
+  el.textContent = txt.slice(0, Math.round(p * txt.length));
+  el.classList.toggle('typing', p > 0 && p < 1);
+}
+
+let llamasPrev = [];
+function frame(now) {
+  if (t0 === null) t0 = now;
+  const t = ahora = now - t0;
+  const oscuro = tSoplo === null ? 1 : 1 - .35 * clamp((t - tSoplo) / 600);
+
+  ctx.fillStyle = '#140a1f'; ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'lighter';
+  for (const l of luces) {     // luces desenfocadas (bokeh)
+    const a = (.05 + .04 * Math.sin(t / 900 + l.f)) * (tSoplo === null ? .7 : 1.2);
+    const g = ctx.createRadialGradient(l.x * W, l.y * H, 0, l.x * W, l.y * H, l.r);
+    g.addColorStop(0, `hsla(${l.h},90%,65%,${a})`); g.addColorStop(1, `hsla(${l.h},90%,65%,0)`);
+    ctx.fillStyle = g; ctx.fillRect(l.x * W - l.r, l.y * H - l.r, l.r * 2, l.r * 2);
+  }
+  ctx.globalCompositeOperation = 'source-over';
+
+  const pz = dibujarPastel(t);
+  const llamas = dibujarVelas(t, pz);
+  if (llamas.length) llamasPrev = llamas;
+  dibujarLlamas(t, llamas);
+
+  // humito tras soplar
+  for (const h of humo) {
+    const e = t - h.n; if (e < 0 || e > 1600 || !llamasPrev[h.k]) continue;
+    const l = llamasPrev[h.k], p = e / 1600;
+    ctx.fillStyle = `rgba(220,220,235,${.35 * (1 - p)})`;
+    ctx.beginPath(); ctx.arc(l.x + Math.sin(e / 200 + h.f) * 8 + e * h.vx * .03, l.y - 10 - e * .06, 3 + p * 9, 0, 7); ctx.fill();
+  }
+  // confeti
+  for (const c of confeti) {
+    const e = t - c.n; if (e > c.vida) continue;
+    const k = e / 16.67;
+    const x = c.x + c.vx * k * 1.2 + Math.sin(e / 250 + c.r) * 12, y = c.y + c.vy * k * 1.2 + .5 * .12 * k * k;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(e / 160 + c.r); ctx.globalAlpha = 1 - e / c.vida;
+    ctx.fillStyle = c.c; ctx.fillRect(-5, -2.5, 10, 5); ctx.restore();
+  }
+  // chispitas de fondo después del soplo
+  if (tSoplo !== null) for (const s of chispas) {
+    const a = clamp((t - tSoplo - 400) / 800) * (.5 + .5 * Math.sin(t / 220 + s.f));
+    ctx.fillStyle = `rgba(255,230,160,${a * .8})`; ctx.beginPath(); ctx.arc(s.x * W, s.y * H * .55, 1.4, 0, 7); ctx.fill();
+  }
+
+  if (t > T_NOMBRE) { $('feliz').classList.add('visible'); $('para').classList.add('visible'); }
+  if (tSoplo === null && t > T_PISTA) $('pista').classList.add('visible');
+  if (VIDEO && tSoplo === null && t > T_AUTO) {   // en el video, un "toque" sopla las velas
+    const o = $('onda'); o.style.left = W / 2 + 'px'; o.style.top = H * .5 + 'px';
+    o.animate([{ opacity: .9, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(2.6)' }], { duration: 500, easing: 'ease-out' });
+    soplar(t);
+  }
+  if (tSoplo !== null) {
+    const T_MSG = tSoplo + 1200, T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400;
+    escribir($('msg'), CONFIG.mensaje, T_MSG, t);
+    escribir($('firma'), CONFIG.firma, T_FIRMA, t);
+    if (t > T_FIRMA + CONFIG.firma.length * vel + 400) $('repetir').classList.add('visible');
+  }
+  requestAnimationFrame(frame);
+}
+setTimeout(() => requestAnimationFrame(frame), 250);
+</script>
+</body>
+</html>

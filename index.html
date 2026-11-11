@@ -4,140 +4,690 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>@teprogramealgo 💌 Detalles programados con su nombre</title>
+<meta name="description" content="Detalles románticos hechos con código: flores, cartas, corazones, fuegos artificiales y más, con el nombre de esa persona especial. Se abren en su celular desde un link.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="@teprogramealgo 💌">
-<meta property="og:description" content="Detalles programados con el nombre de esa persona especial: flores, cartas, corazones y más.">
+<meta property="og:description" content="Detalles programados con el nombre de esa persona especial. Se abren en su celular desde un link.">
 <meta property="og:url" content="https://teprogramealgo.github.io/">
 <meta property="og:image" content="https://teprogramealgo.github.io/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D0F1A">
+<meta name="theme-color" content="#0B0D18">
 <link rel="icon" href="logo.svg">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Quicksand:wght@500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#0D0F1A;color:#F5F0FF;font-family:'Quicksand',sans-serif;line-height:1.5}
-  a{color:inherit}
-  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-  header{padding:56px 0 36px;text-align:center}
-  .logo{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:64px;color:#FF4D8D;letter-spacing:-3px;line-height:1}
-  .logo span{display:inline-block;width:10px;height:54px;background:#FFD54A;border-radius:2px;margin-left:8px;vertical-align:-6px;animation:b 1s steps(1) infinite}
-  @keyframes b{50%{opacity:0}}
-  h1{font-family:'JetBrains Mono',monospace;font-size:clamp(28px,6vw,44px);margin-top:18px}
-  h1 em{font-style:normal;color:#FF4D8D}
-  .sub{color:#C9C3DD;font-size:18px;max-width:560px;margin:10px auto 0}
-  .cta{display:inline-flex;gap:10px;margin-top:26px;flex-wrap:wrap;justify-content:center}
-  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:10px;background:#FF4D8D;color:#0D0F1A;font-weight:700;text-decoration:none}
-  .btn:hover{background:#FF6FA3}
-  .btn.sec{background:#151A2E;color:#F5F0FF;border:1px solid #2D3550}
-  .btn.sec:hover{border-color:#FF4D8D}
-  .pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0 44px}
-  .paso{background:#151A2E;border:1px solid #232A45;border-radius:14px;padding:18px}
-  .paso b{font-family:'JetBrains Mono',monospace;color:#FFD54A;font-size:14px}
-  .paso p{color:#C9C3DD;font-size:15px;margin-top:6px}
-  h2{font-family:'JetBrains Mono',monospace;font-size:24px;margin-bottom:16px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
-  .card{background:#151A2E;border:1px solid #232A45;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-  .thumb{display:block;aspect-ratio:9/12;background:#0A0D1C;overflow:hidden}
-  .thumb img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .3s}
-  .card:hover .thumb img{transform:scale(1.03)}
-  .ph{display:flex;height:100%;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:48px;color:#FF4D8D}
-  .info{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}
-  .serie{font-size:12px;color:#C9C3DD}
-  h3{font-size:17px}
-  .acciones{display:flex;gap:8px;margin-top:auto;padding-top:8px}
-  .acciones .btn{flex:1;padding:0 10px;font-size:14px}
-  footer{text-align:center;color:#8E88A8;font-size:14px;padding:48px 0 36px}
+  :root {
+    --bg: #0B0D18; --bg2: #10142A; --surface: #151A2E; --surface2: #1B2140; --line: #262E4D;
+    --text: #F5F0FF; --muted: #B9B3CF; --dim: #847E9E;
+    --rosa: #FF4D8D; --rosa2: #FF7AAA; --oro: #FFD54A; --violeta: #8B7CFF;
+    --radio: 18px; --sombra: 0 20px 60px rgba(0,0,0,.45);
+    --mono: 'JetBrains Mono', ui-monospace, monospace; --sans: 'Quicksand', system-ui, sans-serif; --script: 'Great Vibes', cursive;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.55; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
+  .mono { font-family: var(--mono); }
+  em.r { font-style: normal; color: var(--rosa); }
+  .seccion { padding: 88px 0; position: relative; }
+  .kicker { display: inline-flex; align-items: center; gap: 8px; font: 700 13px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--oro); }
+  .kicker::before { content: ''; width: 18px; height: 2px; background: currentColor; border-radius: 2px; }
+  h2.titulo { font: 800 clamp(28px, 4.6vw, 44px)/1.12 var(--mono); letter-spacing: -.02em; margin-top: 12px; }
+  .lead { color: var(--muted); font-size: clamp(16px, 2vw, 18px); max-width: 620px; margin-top: 12px; }
+  .centro { text-align: center; } .centro .lead { margin-left: auto; margin-right: auto; }
+
+  /* Botones */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; border-radius: 999px;
+    font-weight: 700; font-size: 16px; transition: transform .2s, box-shadow .2s, background .2s, border-color .2s; white-space: nowrap; }
+  .btn:active { transform: scale(.97); }
+  .btn-p { background: linear-gradient(135deg, var(--rosa), #FF6A9E); color: #1A0610; box-shadow: 0 10px 30px rgba(255,77,141,.35); }
+  .btn-p:hover { box-shadow: 0 14px 40px rgba(255,77,141,.55); transform: translateY(-2px); }
+  .btn-s { background: rgba(255,255,255,.04); border: 1px solid var(--line); }
+  .btn-s:hover { border-color: var(--rosa); background: rgba(255,77,141,.08); }
+  .btn-sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
+  .wa-ico { width: 18px; height: 18px; }
+
+  /* Navegación */
+  nav.top { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    background: rgba(11,13,24,.72); border-bottom: 1px solid rgba(38,46,77,.6); }
+  nav.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 16px; }
+  .marca { display: flex; align-items: center; gap: 10px; font: 800 18px var(--mono); }
+  .marca .ico { font: 800 22px var(--mono); color: var(--rosa); letter-spacing: -2px; display: flex; align-items: center; }
+  .marca .ico i { display: inline-block; width: 4px; height: 20px; background: var(--oro); border-radius: 1px; margin-left: 4px; animation: parpadeo 1s steps(1) infinite; }
+  @keyframes parpadeo { 50% { opacity: 0; } }
+  .marca b { color: var(--rosa); font-weight: 800; }
+  .links { display: flex; gap: 26px; font-weight: 600; color: var(--muted); font-size: 15px; }
+  .links a:hover { color: var(--text); }
+  @media (max-width: 860px) { .links { display: none; } }
+
+  /* Hero */
+  .hero { position: relative; padding: 56px 0 72px; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: -20% -10% auto; height: 120%; pointer-events: none;
+    background: radial-gradient(40% 50% at 78% 40%, rgba(255,77,141,.22), transparent 70%), radial-gradient(35% 45% at 15% 20%, rgba(139,124,255,.18), transparent 70%); }
+  #particulas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .7; }
+  .hero .wrap { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; }
+  .hero .wrap > *, .temporada .grid2 > * { min-width: 0; }   /* sin esto la grilla se ensancha con el contenido y se corta en el celular */
+  @media (max-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; } }
+  @media (max-width: 420px) { .campo { padding-left: 16px; } .campo span { display: none; } .campo .btn { padding: 0 14px; font-size: 14px; } }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: rgba(255,213,74,.1); border: 1px solid rgba(255,213,74,.3);
+    color: var(--oro); font-weight: 700; font-size: 14px; }
+  .hero h1 { font: 800 clamp(38px, 6.6vw, 68px)/1.04 var(--mono); letter-spacing: -.035em; margin-top: 18px; }
+  .hero h1 .script { font-family: var(--script); font-weight: 400; letter-spacing: 0; color: var(--rosa); font-size: 1.18em; display: inline-block; transform: translateY(.06em); }
+  .hero .sub { color: var(--muted); font-size: clamp(17px, 2.2vw, 20px); margin-top: 18px; max-width: 540px; }
+  .probar { margin-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; max-width: 540px; }
+  .campo { flex: 1 1 220px; min-width: 0; display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 0 8px 0 20px; min-height: 56px; transition: border-color .2s, box-shadow .2s; }
+  .campo:focus-within { border-color: var(--rosa); box-shadow: 0 0 0 4px rgba(255,77,141,.15); }
+  .campo span { font: 600 14px var(--mono); color: var(--dim); white-space: nowrap; }
+  .campo input { flex: 1; min-width: 0; width: 100%; background: none; border: 0; outline: 0; color: var(--text); font: 600 17px var(--sans); }
+  .campo .btn { min-height: 42px; padding: 0 18px; }
+  .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+  .confianza { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 26px; color: var(--muted); font-size: 14px; font-weight: 600; }
+  .confianza span::before { content: '✓'; color: #4ADE9B; font-weight: 800; margin-right: 6px; }
+
+  /* Celular */
+  .escena { position: relative; display: flex; flex-direction: column; align-items: center; }
+  .cel { --w: min(300px, 74vw); position: relative; width: var(--w); aspect-ratio: 9 / 19.2; border-radius: 46px; padding: 12px;
+    background: linear-gradient(145deg, #2a2f4a, #0e1120); box-shadow: var(--sombra), 0 0 0 1px #3a4166 inset, 0 0 80px rgba(255,77,141,.18); }
+  .cel::before { content: ''; position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 34%; height: 22px; background: #05060c; border-radius: 20px; z-index: 3; }
+  .pantalla { position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background: #000; }
+  .pantalla iframe { position: absolute; left: 0; top: 0; width: 360px; height: 768px; border: 0; transform-origin: 0 0; pointer-events: auto; transition: opacity .5s; }
+  .pantalla .cargando { position: absolute; inset: 0; display: grid; place-items: center; font: 800 42px var(--mono); color: var(--rosa); background: #0B0D18; transition: opacity .4s; }
+  .flota { position: absolute; padding: 10px 14px; border-radius: 14px; background: rgba(21,26,46,.92); border: 1px solid var(--line); box-shadow: var(--sombra); font-size: 13px; font-weight: 700; backdrop-filter: blur(8px); animation: flotar 5s ease-in-out infinite; white-space: nowrap; }
+  .flota.a { left: -6%; top: 16%; } .flota.b { right: -8%; bottom: 22%; animation-delay: -2.5s; }
+  .flota small { display: block; color: var(--dim); font-weight: 600; font-size: 11px; }
+  @keyframes flotar { 50% { transform: translateY(-10px); } }
+  @media (max-width: 520px) { .flota { display: none; } }
+  .puntos { display: flex; gap: 8px; margin-top: 22px; flex-wrap: wrap; justify-content: center; }
+  .puntos button { height: 10px; width: 10px; border-radius: 10px; background: var(--line); transition: width .3s, background .3s; }
+  .puntos button.on { width: 28px; background: var(--rosa); }
+  .titulo-demo { margin-top: 12px; font-weight: 700; color: var(--muted); font-size: 14px; min-height: 1.5em; text-align: center; }
+
+  /* Cinta de ocasiones */
+  .cinta { border-block: 1px solid var(--line); background: linear-gradient(90deg, rgba(255,77,141,.08), rgba(139,124,255,.08)); overflow: hidden; padding: 16px 0; }
+  .cinta .pista { display: flex; gap: 42px; width: max-content; animation: deslizar 38s linear infinite; font: 700 15px var(--mono); color: var(--muted); }
+  .cinta .pista span { display: inline-flex; gap: 10px; align-items: center; }
+  @keyframes deslizar { to { transform: translateX(-50%); } }
+
+  /* Temporada */
+  .temporada { border-radius: 28px; padding: clamp(26px, 5vw, 48px); position: relative; overflow: hidden; border: 1px solid var(--line);
+    background: radial-gradient(60% 90% at 100% 0%, color-mix(in srgb, var(--c) 30%, transparent), transparent 70%), var(--surface); }
+  .temporada .grid2 { display: grid; grid-template-columns: 1fr 1.2fr; gap: 36px; align-items: center; }
+  @media (max-width: 860px) { .temporada .grid2 { grid-template-columns: minmax(0, 1fr); } }
+  .cuenta { display: flex; gap: 10px; margin-top: 22px; }
+  .cuenta div { background: rgba(0,0,0,.28); border: 1px solid var(--line); border-radius: 14px; padding: 12px 6px; min-width: 70px; text-align: center; }
+  .cuenta b { display: block; font: 800 clamp(26px, 4vw, 34px) var(--mono); color: var(--c); line-height: 1.1; }
+  .cuenta small { color: var(--dim); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+
+  /* Carrusel */
+  .carrusel { position: relative; }
+  .carril { display: grid; grid-auto-flow: column; grid-auto-columns: min(240px, 70%); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 6px 2px 14px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .carril::-webkit-scrollbar { display: none; }
+  .carril > * { scroll-snap-align: start; }
+  .flechas { display: flex; gap: 8px; }
+  .flechas button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); font-size: 18px; transition: border-color .2s; }
+  .flechas button:hover { border-color: var(--rosa); }
+  .cabecera { display: flex; align-items: end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 26px; }
+
+  /* Tarjetas */
+  .card { --c: var(--rosa); position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radio); overflow: hidden;
+    transition: transform .35s cubic-bezier(.2,.9,.3,1.2), border-color .3s, box-shadow .3s; }
+  .card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--c) 60%, transparent); box-shadow: 0 18px 50px color-mix(in srgb, var(--c) 22%, transparent); }
+  .card .thumb { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #0A0D1C; cursor: pointer; }
+  .card .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .6s; }
+  .card:hover .thumb img { transform: scale(1.06); }
+  .card .thumb::after { content: '▶  Probar con su nombre'; position: absolute; inset: auto 12px 12px; padding: 10px; border-radius: 12px; text-align: center;
+    background: rgba(11,13,24,.82); backdrop-filter: blur(6px); font-weight: 700; font-size: 14px; opacity: 0; transform: translateY(8px); transition: .3s; }
+  .card:hover .thumb::after { opacity: 1; transform: none; }
+  @media (hover: none) { .card .thumb::after { opacity: 1; transform: none; } }
+  .badge { position: absolute; top: 12px; left: 12px; z-index: 2; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+    background: color-mix(in srgb, var(--c) 22%, rgba(11,13,24,.85)); color: color-mix(in srgb, var(--c) 70%, white); border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); backdrop-filter: blur(6px); }
+  .nuevo { position: absolute; top: 12px; right: 12px; z-index: 2; padding: 5px 10px; border-radius: 999px; font: 800 11px var(--mono); background: var(--oro); color: #1a1405; letter-spacing: .05em; }
+  .card .info { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .card h3 { font-size: 18px; line-height: 1.25; }
+  .card p { color: var(--muted); font-size: 14px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags span { font-size: 12px; font-weight: 700; color: var(--dim); background: rgba(255,255,255,.04); border: 1px solid var(--line); padding: 3px 9px; border-radius: 999px; }
+  .card .acciones { display: flex; gap: 8px; margin-top: auto; padding-top: 6px; }
+  .card .acciones .btn { flex: 1; min-height: 42px; padding: 0 10px; font-size: 14px; }
+
+  /* Filtros + grilla */
+  .filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .filtros button { padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; font-size: 14px; color: var(--muted); transition: .2s; }
+  .filtros button:hover { color: var(--text); border-color: #3a4470; }
+  .filtros button.on { background: var(--rosa); border-color: var(--rosa); color: #1A0610; }
+  .grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+  .grilla .card { animation: entrar .45s both; }
+  @keyframes entrar { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+
+  /* Pasos */
+  .pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 42px; counter-reset: paso; }
+  @media (max-width: 820px) { .pasos { grid-template-columns: 1fr; } }
+  .paso { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radio); padding: 26px; }
+  .paso .num { font: 800 44px var(--mono); line-height: 1; background: linear-gradient(135deg, var(--rosa), var(--oro)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .paso h3 { font-size: 20px; margin-top: 12px; }
+  .paso p { color: var(--muted); margin-top: 6px; }
+
+  /* WhatsApp mockup */
+  .recibe { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  @media (max-width: 860px) { .recibe { grid-template-columns: 1fr; } }
+  .chat { max-width: 380px; margin: 0 auto; width: 100%; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--sombra); background: #0B141A; }
+  .chat .barra { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #1F2C34; }
+  .chat .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--rosa), var(--violeta)); display: grid; place-items: center; font-weight: 800; }
+  .chat .barra small { display: block; color: #8696A0; font-size: 12px; }
+  .chat .fondo { padding: 18px 14px 22px; display: flex; flex-direction: column; gap: 8px; min-height: 330px;
+    background-color: #0B141A; background-image: radial-gradient(rgba(255,255,255,.035) 1px, transparent 1px); background-size: 18px 18px; }
+  .burbuja { align-self: flex-end; max-width: 86%; background: #005C4B; border-radius: 12px 4px 12px 12px; padding: 6px; font-size: 14.5px; opacity: 0; transform: translateY(10px) scale(.96); transition: .5s; }
+  .burbuja.ver { opacity: 1; transform: none; }
+  .burbuja .og { background: rgba(0,0,0,.22); border-radius: 8px; overflow: hidden; }
+  .burbuja .og img { width: 100%; aspect-ratio: 1200 / 630; object-fit: cover; }
+  .burbuja .og div { padding: 8px 10px; }
+  .burbuja .og b { display: block; font-size: 14px; }
+  .burbuja .og small { color: #B6C3C9; font-size: 12px; }
+  .burbuja p { padding: 6px 6px 2px; }
+  .burbuja .hora { display: block; text-align: right; font-size: 11px; color: #9FC9BF; padding: 0 4px; }
+  .respuesta { align-self: flex-start; background: #1F2C34; border-radius: 4px 12px 12px 12px; padding: 8px 12px; font-size: 14.5px; opacity: 0; transform: translateY(10px); transition: .5s; }
+  .respuesta.ver { opacity: 1; transform: none; }
+  .escribiendo { align-self: flex-start; background: #1F2C34; border-radius: 12px; padding: 10px 14px; display: none; gap: 4px; }
+  .escribiendo.ver { display: flex; }
+  .escribiendo i { width: 7px; height: 7px; border-radius: 50%; background: #8696A0; animation: punto 1.2s infinite; }
+  .escribiendo i:nth-child(2) { animation-delay: .2s; } .escribiendo i:nth-child(3) { animation-delay: .4s; }
+  @keyframes punto { 30% { transform: translateY(-4px); opacity: .5; } }
+  .lista { margin-top: 22px; display: grid; gap: 14px; }
+  .lista div { display: flex; gap: 14px; align-items: flex-start; }
+  .lista b.ico { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--surface2); border: 1px solid var(--line); font-size: 18px; }
+  .lista p { color: var(--muted); } .lista strong { color: var(--text); display: block; }
+
+  /* Precios */
+  .planes { display: grid; grid-template-columns: repeat(2, minmax(0, 380px)); justify-content: center; gap: 22px; margin-top: 42px; }
+  @media (max-width: 760px) { .planes { grid-template-columns: 1fr; } }
+  .plan { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 30px; display: flex; flex-direction: column; gap: 14px; }
+  .plan.dest { border-color: var(--rosa); background: linear-gradient(180deg, rgba(255,77,141,.12), var(--surface) 45%); box-shadow: 0 20px 60px rgba(255,77,141,.18); }
+  .plan .etiqueta { position: absolute; top: -13px; left: 30px; background: var(--rosa); color: #1A0610; font: 800 12px var(--mono); padding: 5px 12px; border-radius: 999px; letter-spacing: .04em; }
+  .plan h3 { font-size: 20px; }
+  .precio { font: 800 52px/1 var(--mono); letter-spacing: -.03em; }
+  .precio small { font: 600 16px var(--sans); color: var(--dim); letter-spacing: 0; }
+  .plan ul { list-style: none; display: grid; gap: 10px; color: var(--muted); }
+  .plan li::before { content: '♥'; color: var(--rosa); margin-right: 10px; }
+  .plan .btn { margin-top: auto; }
+  .pagos { text-align: center; color: var(--dim); margin-top: 24px; font-size: 14px; }
+
+  /* FAQ */
+  .faq { max-width: 780px; margin: 40px auto 0; display: grid; gap: 12px; }
+  .faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 0 22px; transition: border-color .2s; }
+  .faq details[open] { border-color: #3a4470; }
+  .faq summary { list-style: none; cursor: pointer; padding: 20px 0; font-weight: 700; font-size: 17px; display: flex; justify-content: space-between; gap: 16px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; font: 800 22px var(--mono); color: var(--rosa); transition: transform .3s; line-height: 1; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { color: var(--muted); padding: 0 0 20px; }
+
+  /* CTA final */
+  .final { border-radius: 32px; padding: clamp(36px, 6vw, 64px); text-align: center; position: relative; overflow: hidden;
+    background: radial-gradient(70% 120% at 50% 0%, rgba(255,77,141,.35), transparent 70%), linear-gradient(135deg, #24123B, #141A36); border: 1px solid #3a2a5a; }
+  .final h2 { font: 800 clamp(28px, 5vw, 46px)/1.1 var(--mono); letter-spacing: -.02em; }
+  .final p { color: #D6CDEB; margin: 14px auto 0; max-width: 520px; font-size: 18px; }
+  .final .btn { margin-top: 28px; }
+
+  footer { padding: 48px 0 110px; color: var(--dim); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; align-items: center; }
+  footer .redes { display: flex; gap: 18px; font-weight: 700; } footer .redes a:hover { color: var(--text); }
+
+  /* WhatsApp flotante */
+  .wa-flota { position: fixed; right: 18px; bottom: 18px; z-index: 60; display: flex; align-items: center; gap: 10px; padding: 0 20px 0 16px; height: 56px; border-radius: 999px;
+    background: #25D366; color: #06200F; font-weight: 800; box-shadow: 0 12px 34px rgba(37,211,102,.4); transform: translateY(120px); transition: transform .45s cubic-bezier(.2,1.4,.4,1); }
+  .wa-flota.ver { transform: none; }
+  .wa-flota svg { width: 24px; height: 24px; }
+  @media (max-width: 520px) { .wa-flota span { display: none; } .wa-flota { padding: 0; width: 56px; justify-content: center; } }
+
+  /* Modal de prueba */
+  .modal { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(5,6,14,.78); backdrop-filter: blur(10px); }
+  .modal.abierto { display: flex; animation: aparecer .3s; }
+  @keyframes aparecer { from { opacity: 0; } }
+  .modal .caja { position: relative; width: min(940px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: var(--bg2); border: 1px solid var(--line); border-radius: 28px;
+    display: grid; grid-template-columns: auto 1fr; gap: 32px; padding: 28px; box-shadow: var(--sombra); animation: subir .4s cubic-bezier(.2,1.2,.4,1); }
+  @keyframes subir { from { transform: translateY(30px) scale(.97); } }
+  @media (max-width: 760px) { .modal .caja { grid-template-columns: 1fr; padding: 22px 18px; gap: 22px; } .modal .cel { --w: min(250px, 66vw); margin: 0 auto; } }
+  .modal .cerrar { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); font-size: 20px; z-index: 5; }
+  .modal .cel { --w: 270px; }
+  .form { display: flex; flex-direction: column; gap: 14px; }
+  .form h3 { font: 800 26px/1.15 var(--mono); }
+  .form label { display: grid; gap: 6px; font-weight: 700; font-size: 14px; color: var(--muted); }
+  .form input, .form textarea { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; color: var(--text); font: 600 16px var(--sans); outline: 0; transition: border-color .2s, box-shadow .2s; resize: vertical; }
+  .form input:focus, .form textarea:focus { border-color: var(--rosa); box-shadow: 0 0 0 4px rgba(255,77,141,.15); }
+  .form .nota { font-size: 13px; color: var(--dim); }
+  .form .botones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+  /* Animación al hacer scroll */
+  .aparece { opacity: 0; transform: translateY(28px); transition: opacity .8s, transform .8s cubic-bezier(.2,.8,.2,1); }
+  .aparece.visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    .aparece { opacity: 1; transform: none; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="logo" aria-hidden="true">&lt;3<span></span></div>
-    <h1>te programé <em>algo</em></h1>
-    <p class="sub">Detalles hechos con código, con el nombre de esa persona especial. Se abren en su celular desde un link de WhatsApp.</p>
-    <div class="cta">
-      <a class="btn" href="https://wa.me/593963196028?text=Hola%20%F0%9F%92%9B%20Quiero%20%C2%ABun%20detalle%C2%BB%20personalizado.%20Es%20para%3A%20" target="_blank" rel="noopener">Pide el tuyo</a>
-      <a class="btn sec" href="https://www.tiktok.com/@te.programealgo" target="_blank" rel="noopener">Míralos en TikTok</a>
-    </div>
-  </header>
-  <section class="pasos" aria-label="Cómo funciona">
-    <div class="paso"><b>01 · Elige</b><p>Escoge el detalle que más te guste del catálogo.</p></div>
-    <div class="paso"><b>02 · Personaliza</b><p>Dinos su nombre, tu mensaje y cómo firmas.</p></div>
-    <div class="paso"><b>03 · Envía</b><p>Te mandamos el link listo para pasárselo por WhatsApp.</p></div>
-  </section>
-  <h2>Catálogo</h2>
-  <div class="grid">
-      <article class="card">
-        <a class="thumb" href="girasol/?para=Mar%C3%ADa&amp;msg=As%C3%AD+como+el+girasol+busca+al+sol+cada+ma%C3%B1ana%2C+yo+te+busco+a+ti+en+cada+uno+de+mis+d%C3%ADas.&amp;de=Con+todo+mi+cari%C3%B1o+%F0%9F%8C%BB" target="_blank" rel="noopener">
-          <img src="girasol/portada.jpg" alt="Vista de Un girasol para ti" loading="lazy">
-        </a>
-        <div class="info">
-          <span class="serie">🌻 Flores para ti</span>
-          <h3>Un girasol para ti</h3>
-          <div class="acciones">
-            <a class="btn sec" href="girasol/?para=Mar%C3%ADa&amp;msg=As%C3%AD+como+el+girasol+busca+al+sol+cada+ma%C3%B1ana%2C+yo+te+busco+a+ti+en+cada+uno+de+mis+d%C3%ADas.&amp;de=Con+todo+mi+cari%C3%B1o+%F0%9F%8C%BB" target="_blank" rel="noopener">Ver demo</a>
-            <a class="btn" href="https://wa.me/593963196028?text=Hola%20%F0%9F%92%9B%20Quiero%20%C2%ABUn%20girasol%20para%20ti%C2%BB%20personalizado.%20Es%20para%3A%20" target="_blank" rel="noopener">Pide el tuyo</a>
-          </div>
-        </div>
-      </article>
 
-      <article class="card">
-        <a class="thumb" href="corazon-particulas/?para=Valeria&amp;msg=Cada+latido+de+este+coraz%C3%B3n+lleva+tu+nombre.+Gracias+por+existir.&amp;de=Tuyo+siempre+%E2%9D%A4%EF%B8%8F" target="_blank" rel="noopener">
-          <img src="corazon-particulas/portada.jpg" alt="Vista de Mi corazón es tuyo" loading="lazy">
-        </a>
-        <div class="info">
-          <span class="serie">❤️ Latidos en código</span>
-          <h3>Mi corazón es tuyo</h3>
-          <div class="acciones">
-            <a class="btn sec" href="corazon-particulas/?para=Valeria&amp;msg=Cada+latido+de+este+coraz%C3%B3n+lleva+tu+nombre.+Gracias+por+existir.&amp;de=Tuyo+siempre+%E2%9D%A4%EF%B8%8F" target="_blank" rel="noopener">Ver demo</a>
-            <a class="btn" href="https://wa.me/593963196028?text=Hola%20%F0%9F%92%9B%20Quiero%20%C2%ABMi%20coraz%C3%B3n%20es%20tuyo%C2%BB%20personalizado.%20Es%20para%3A%20" target="_blank" rel="noopener">Pide el tuyo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="card">
-        <a class="thumb" href="nombre-estrellas/?para=Camila&amp;msg=Si+pudiera%2C+escribir%C3%ADa+tu+nombre+en+el+cielo+para+que+todos+supieran+lo+que+significas+para+m%C3%AD%E2%80%A6+as%C3%AD+que+lo+hice.&amp;de=%E2%80%94+Tu+persona+%E2%9C%A8" target="_blank" rel="noopener">
-          <img src="nombre-estrellas/portada.jpg" alt="Vista de Tu nombre en las estrellas" loading="lazy">
-        </a>
-        <div class="info">
-          <span class="serie">🌌 Galaxias de amor</span>
-          <h3>Tu nombre en las estrellas</h3>
-          <div class="acciones">
-            <a class="btn sec" href="nombre-estrellas/?para=Camila&amp;msg=Si+pudiera%2C+escribir%C3%ADa+tu+nombre+en+el+cielo+para+que+todos+supieran+lo+que+significas+para+m%C3%AD%E2%80%A6+as%C3%AD+que+lo+hice.&amp;de=%E2%80%94+Tu+persona+%E2%9C%A8" target="_blank" rel="noopener">Ver demo</a>
-            <a class="btn" href="https://wa.me/593963196028?text=Hola%20%F0%9F%92%9B%20Quiero%20%C2%ABTu%20nombre%20en%20las%20estrellas%C2%BB%20personalizado.%20Es%20para%3A%20" target="_blank" rel="noopener">Pide el tuyo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="card">
-        <a class="thumb" href="carta/?para=Sof%C3%ADa&amp;msg=No+s%C3%A9+escribir+poemas%2C+pero+s%C3%A9+escribir+c%C3%B3digo.+Y+en+cada+l%C3%ADnea+encontr%C3%A9+una+forma+nueva+de+decirte+que+te+quiero.&amp;de=Con+amor%2C+Daniel" target="_blank" rel="noopener">
-          <img src="carta/portada.jpg" alt="Vista de Tienes una carta" loading="lazy">
-        </a>
-        <div class="info">
-          <span class="serie">💌 Cartas en código</span>
-          <h3>Tienes una carta</h3>
-          <div class="acciones">
-            <a class="btn sec" href="carta/?para=Sof%C3%ADa&amp;msg=No+s%C3%A9+escribir+poemas%2C+pero+s%C3%A9+escribir+c%C3%B3digo.+Y+en+cada+l%C3%ADnea+encontr%C3%A9+una+forma+nueva+de+decirte+que+te+quiero.&amp;de=Con+amor%2C+Daniel" target="_blank" rel="noopener">Ver demo</a>
-            <a class="btn" href="https://wa.me/593963196028?text=Hola%20%F0%9F%92%9B%20Quiero%20%C2%ABTienes%20una%20carta%C2%BB%20personalizado.%20Es%20para%3A%20" target="_blank" rel="noopener">Pide el tuyo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="card">
-        <a class="thumb" href="arbol-corazones/?para=Gabriela&amp;desde=2024-02-14&amp;msg=Cada+d%C3%ADa+a+tu+lado+es+mi+lugar+favorito.+Y+pienso+seguir+contando.&amp;de=Te+amo%2C+Andr%C3%A9s" target="_blank" rel="noopener">
-          <img src="arbol-corazones/portada.jpg" alt="Vista de El árbol de nuestro amor" loading="lazy">
-        </a>
-        <div class="info">
-          <span class="serie">🌳 Aniversarios</span>
-          <h3>El árbol de nuestro amor</h3>
-          <div class="acciones">
-            <a class="btn sec" href="arbol-corazones/?para=Gabriela&amp;desde=2024-02-14&amp;msg=Cada+d%C3%ADa+a+tu+lado+es+mi+lugar+favorito.+Y+pienso+seguir+contando.&amp;de=Te+amo%2C+Andr%C3%A9s" target="_blank" rel="noopener">Ver demo</a>
-            <a class="btn" href="https://wa.me/593963196028?text=Hola%20%F0%9F%92%9B%20Quiero%20%C2%ABEl%20%C3%A1rbol%20de%20nuestro%20amor%C2%BB%20personalizado.%20Es%20para%3A%20" target="_blank" rel="noopener">Pide el tuyo</a>
-          </div>
-        </div>
-      </article>
+<nav class="top">
+  <div class="wrap">
+    <a class="marca" href="#inicio" aria-label="Inicio"><span class="ico">&lt;3<i></i></span><span>te programé <b>algo</b></span></a>
+    <div class="links"><a href="#catalogo">Catálogo</a><a href="#como">Cómo funciona</a><a href="#precios">Precios</a><a href="#preguntas">Preguntas</a></div>
+    <a class="btn btn-p btn-sm js-pedir" href="#" target="_blank" rel="noopener">Pide el tuyo</a>
   </div>
-  <footer>@teprogramealgo · hecho con &lt;3 y código · 2026</footer>
+</nav>
+
+<header class="hero" id="inicio">
+  <canvas id="particulas"></canvas>
+  <div class="wrap">
+    <div>
+      <span class="chip">💌 Detalles hechos con código</span>
+      <h1>Dile lo que sientes… <span class="script">en código</span></h1>
+      <p class="sub">Flores, cartas, corazones y fuegos artificiales que se animan con <strong>su nombre</strong> y <strong>tu mensaje</strong>. Le llega como un link y se abre en su celular.</p>
+      <form class="probar" id="formHero" autocomplete="off">
+        <label class="campo">
+          <span>para:</span>
+          <input id="nombreHero" maxlength="24" placeholder="Escribe su nombre" aria-label="Nombre de la persona">
+          <button class="btn btn-p" type="submit">Ver cómo queda</button>
+        </label>
+      </form>
+      <div class="ctas">
+        <a class="btn btn-s" href="#catalogo">Ver los 10 detalles</a>
+        <a class="btn btn-s js-tiktok" href="#" target="_blank" rel="noopener">Míralos en TikTok</a>
+      </div>
+      <div class="confianza"><span>Se abre en cualquier celular</span><span>Sin descargar apps</span><span>Listo el mismo día</span></div>
+    </div>
+    <div class="escena">
+      <div class="cel" id="celHero"><div class="pantalla"><div class="cargando">&lt;3</div></div></div>
+      <div class="flota a">💌 Te programé algo<small>toca para abrirlo</small></div>
+      <div class="flota b">❤️ Hecho con su nombre<small>y tu mensaje</small></div>
+      <div class="puntos" id="puntos" aria-label="Elegir detalle"></div>
+      <div class="titulo-demo" id="tituloDemo"></div>
+    </div>
+  </div>
+</header>
+
+<div class="cinta" aria-hidden="true"><div class="pista" id="cinta"></div></div>
+
+<section class="seccion" id="temporada-sec">
+  <div class="wrap">
+    <div class="temporada aparece" id="temporada"></div>
+  </div>
+</section>
+
+<section class="seccion" id="catalogo" style="padding-top:20px">
+  <div class="wrap">
+    <div class="cabecera aparece">
+      <div>
+        <span class="kicker">Catálogo</span>
+        <h2 class="titulo">Elige su <em class="r">detalle</em></h2>
+        <p class="lead">Toca cualquiera para probarlo con su nombre antes de pedirlo.</p>
+      </div>
+    </div>
+    <div class="filtros aparece" id="filtros" role="tablist"></div>
+    <div class="grilla" id="grilla"></div>
+  </div>
+</section>
+
+<section class="seccion" id="como">
+  <div class="wrap centro">
+    <div class="aparece">
+      <span class="kicker">Cómo funciona</span>
+      <h2 class="titulo">Tres pasos, <em class="r">cero complicaciones</em></h2>
+      <p class="lead">No necesitas saber nada de programación. Nosotros escribimos el código; tú te llevas el crédito.</p>
+    </div>
+    <div class="pasos" style="text-align:left">
+      <div class="paso aparece"><div class="num">01</div><h3>Elige el detalle</h3><p>Pruébalo aquí mismo con su nombre y mira cómo queda.</p></div>
+      <div class="paso aparece"><div class="num">02</div><h3>Escríbenos por WhatsApp</h3><p>Dinos su nombre, tu mensaje y cómo quieres firmar.</p></div>
+      <div class="paso aparece"><div class="num">03</div><h3>Recibe tu link</h3><p>Te lo mandamos listo. Se lo envías y lo abre en su celular.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" style="background:linear-gradient(180deg,transparent,rgba(139,124,255,.06),transparent)">
+  <div class="wrap recibe">
+    <div class="aparece">
+      <span class="kicker">La sorpresa</span>
+      <h2 class="titulo">Así le <em class="r">llega</em></h2>
+      <p class="lead">Un mensaje normal de WhatsApp… hasta que lo abre.</p>
+      <div class="lista">
+        <div><b class="ico">🔒</b><p><strong>La vista previa no revela nada</strong>Solo dice que alguien le programó algo. El nombre aparece al abrirlo.</p></div>
+        <div><b class="ico">📱</b><p><strong>Funciona en cualquier celular</strong>Android o iPhone, sin instalar nada.</p></div>
+        <div><b class="ico">♾️</b><p><strong>Es suyo para siempre</strong>Puede volver a abrirlo y verlo cuantas veces quiera.</p></div>
+      </div>
+    </div>
+    <div class="chat aparece" id="chat">
+      <div class="barra"><div class="avatar">♥</div><div><b>Mi amor</b><small>en línea</small></div></div>
+      <div class="fondo">
+        <div class="burbuja" id="b1">
+          <div class="og"><img src="og.jpg" alt="" loading="lazy"><div><b>💌 Te programé algo</b><small>Alguien preparó esto especialmente para ti. Ábrelo 💛</small></div></div>
+          <p>Te hice algo especial, ábrelo 💌</p><span class="hora">21:14 ✓✓</span>
+        </div>
+        <div class="escribiendo" id="esc"><i></i><i></i><i></i></div>
+        <div class="respuesta" id="r1">¿¿Tú hiciste esto?? 😭💖</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="precios">
+  <div class="wrap">
+    <div class="centro aparece">
+      <span class="kicker">Precios</span>
+      <h2 class="titulo">Un detalle que <em class="r">no se olvida</em></h2>
+      <p class="lead">Menos que un ramo de flores, y este no se marchita.</p>
+    </div>
+    <div class="planes">
+      <div class="plan aparece">
+        <h3>Link personalizado</h3>
+        <div class="precio">$3 <small>USD</small></div>
+        <ul><li>El detalle que elijas, con su nombre</li><li>Tu mensaje y tu firma</li><li>Link listo para enviar por WhatsApp</li><li>Lo recibes el mismo día</li></ul>
+        <a class="btn btn-s js-pedir" data-plan="Link personalizado" href="#" target="_blank" rel="noopener">Lo quiero</a>
+      </div>
+      <div class="plan dest aparece">
+        <span class="etiqueta">MÁS COMPLETO</span>
+        <h3>Link + video</h3>
+        <div class="precio">$4 <small>USD</small></div>
+        <ul><li>Todo lo del link personalizado</li><li>Video vertical en MP4, sin marca de agua</li><li>Ideal para su estado, historia o TikTok</li><li>Lo recibes el mismo día</li></ul>
+        <a class="btn btn-p js-pedir" data-plan="Link + video" href="#" target="_blank" rel="noopener">Lo quiero</a>
+      </div>
+    </div>
+    <p class="pagos aparece">Pagas por transferencia o Deuna (Ecuador) y PayPal (otros países).</p>
+  </div>
+</section>
+
+<section class="seccion" id="preguntas" style="padding-top:20px">
+  <div class="wrap">
+    <div class="centro aparece">
+      <span class="kicker">Preguntas</span>
+      <h2 class="titulo">Lo que todos <em class="r">preguntan</em></h2>
+    </div>
+    <div class="faq">
+      <details class="aparece"><summary>¿Cómo lo recibe la otra persona?</summary><p>Le llega un link (por WhatsApp, Instagram o donde quieras). Al tocarlo se abre en el navegador de su celular y empieza la animación con su nombre.</p></details>
+      <details class="aparece"><summary>¿Tengo que saber programar?</summary><p>No. Nosotros hacemos todo. Tú solo eliges el detalle y nos das los datos.</p></details>
+      <details class="aparece"><summary>¿Cuánto tarda?</summary><p>Normalmente lo tienes el mismo día. En fechas como San Valentín o Navidad, pide con tiempo.</p></details>
+      <details class="aparece"><summary>¿Puedo poner el mensaje que yo quiera?</summary><p>Sí. Escribe tu mensaje y tu firma. Algunos detalles tienen campos extra, como la fecha en que se conocieron o el número de velas.</p></details>
+      <details class="aparece"><summary>¿El link deja de funcionar?</summary><p>No. Puede abrirlo y volver a verlo cuando quiera.</p></details>
+      <details class="aparece"><summary>¿Cómo pago?</summary><p>Por transferencia o Deuna si estás en Ecuador, y por PayPal desde otros países. Te damos los datos por WhatsApp.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" style="padding-top:10px">
+  <div class="wrap">
+    <div class="final aparece">
+      <h2>Hay palabras que se dicen mejor <em class="r">en código</em></h2>
+      <p>Escríbenos su nombre y tu mensaje. Nosotros hacemos el resto.</p>
+      <a class="btn btn-p js-pedir" href="#" target="_blank" rel="noopener">Pide el tuyo por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="marca"><span class="ico">&lt;3<i></i></span><span>te programé <b>algo</b></span></div>
+    <div class="redes"><a class="js-tiktok" href="#" target="_blank" rel="noopener">TikTok</a><a class="js-pedir" href="#" target="_blank" rel="noopener">WhatsApp</a></div>
+    <div>Hecho con &lt;3 y código · 2026</div>
+  </div>
+</footer>
+
+<a class="wa-flota js-pedir" id="waFlota" href="#" target="_blank" rel="noopener" aria-label="Pedir por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg>
+  <span>Pide el tuyo</span>
+</a>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitulo">
+  <div class="caja">
+    <button class="cerrar" id="cerrar" aria-label="Cerrar">×</button>
+    <div class="cel" id="celModal"><div class="pantalla"><div class="cargando">&lt;3</div></div></div>
+    <form class="form" id="formModal" autocomplete="off">
+      <span class="badge" id="mSerie" style="position:static;align-self:flex-start"></span>
+      <h3 id="mTitulo"></h3>
+      <p class="nota" id="mDesc"></p>
+      <div id="mCampos" style="display:grid;gap:12px"></div>
+      <p class="nota">La vista previa se actualiza mientras escribes.</p>
+      <div class="botones">
+        <a class="btn btn-p" id="mPedir" href="#" target="_blank" rel="noopener">Lo quiero así</a>
+        <button class="btn btn-s" type="button" id="mRepetir">↻ Ver de nuevo</button>
+      </div>
+    </form>
+  </div>
 </div>
+
+<script>
+const DATOS = {"piezas": [{"slug": "navidad", "titulo": "Una Navidad para ti", "serie": "💌 Cartas en código", "serieClave": "cartas", "serieEmoji": "💌", "color": "#FF8A65", "descripcion": "Un árbol de luces que se enciende bajo la nieve con tu mensaje de Navidad.", "ocasiones": ["Navidad"], "portada": "navidad/portada.jpg", "demo": {"para": "Valentina", "msg": "Mi regalo favorito no cabe debajo del árbol: eres tú. Gracias por llenar de luz este año.", "de": "Con amor, Mateo 🎄"}, "campos": ["para", "msg", "de"], "nuevo": true, "destacada": true}, {"slug": "fuegos-artificiales", "titulo": "Fuegos artificiales con tu nombre", "serie": "🌌 Galaxias de amor", "serieClave": "galaxias", "serieEmoji": "🌌", "color": "#8B7CFF", "descripcion": "Un cielo de fuegos artificiales que estallan y escriben su nombre.", "ocasiones": ["Año Nuevo", "Cumpleaños"], "portada": "fuegos-artificiales/portada.jpg", "demo": {"para": "Daniela", "msg": "Que este año nuevo tenga tantos momentos contigo como luces en este cielo.", "de": "Feliz año, mi amor ✨"}, "campos": ["para", "msg", "de"], "nuevo": true, "destacada": true}, {"slug": "propuesta", "titulo": "¿Quieres ser mi novia?", "serie": "💍 Propuestas", "serieClave": "propuestas", "serieEmoji": "💍", "color": "#E879F9", "descripcion": "La pregunta más importante… y un botón NO que se escapa cada vez que lo intenta.", "ocasiones": ["Declaración", "Propuesta"], "portada": "propuesta/portada.jpg", "demo": {"para": "Andrea", "pregunta": "¿quieres ser mi novia?", "msg": "Prometo hacerte reír todos los días y quererte más cada uno de ellos.", "de": "Tu ahora novio, Sebastián"}, "campos": ["para", "pregunta", "msg", "de"], "nuevo": true, "destacada": true}, {"slug": "corazon-particulas", "titulo": "Mi corazón es tuyo", "serie": "❤️ Latidos en código", "serieClave": "latidos", "serieEmoji": "❤️", "color": "#FF4D8D", "descripcion": "900 partículas vuelan hasta formar un corazón que late con su nombre adentro.", "ocasiones": ["San Valentín", "Aniversario"], "portada": "corazon-particulas/portada.jpg", "demo": {"para": "Valeria", "msg": "Cada latido de este corazón lleva tu nombre. Gracias por existir.", "de": "Tuyo siempre ❤️"}, "campos": ["para", "msg", "de"], "nuevo": false, "destacada": true}, {"slug": "girasol", "titulo": "Un girasol para ti", "serie": "🌻 Flores para ti", "serieClave": "flores", "serieEmoji": "🌻", "color": "#FFD54A", "descripcion": "Un girasol que se dibuja solo, pétalo a pétalo, con su nombre y tu mensaje.", "ocasiones": ["Flores amarillas", "Sin motivo"], "portada": "girasol/portada.jpg", "demo": {"para": "María", "msg": "Así como el girasol busca al sol cada mañana, yo te busco a ti en cada uno de mis días.", "de": "Con todo mi cariño 🌻"}, "campos": ["para", "msg", "de"], "nuevo": false, "destacada": true}, {"slug": "pastel-cumple", "titulo": "Sopla las velas", "serie": "🎂 Cumpleaños", "serieClave": "cumple", "serieEmoji": "🎂", "color": "#FFA94D", "descripcion": "Un pastel con velas que sopla tocando la pantalla. Luego, confeti y tu mensaje.", "ocasiones": ["Cumpleaños"], "portada": "pastel-cumple/portada.jpg", "demo": {"para": "Camila", "velas": "5", "msg": "Que este año te traiga todo lo que deseaste al soplar. Yo ya tengo mi deseo cumplido: tú.", "de": "Te quiere, Nico 🎂"}, "campos": ["para", "velas", "msg", "de"], "nuevo": true, "destacada": true}, {"slug": "nombre-estrellas", "titulo": "Tu nombre en las estrellas", "serie": "🌌 Galaxias de amor", "serieClave": "galaxias", "serieEmoji": "🌌", "color": "#8B7CFF", "descripcion": "Su nombre aparece escrito con estrellas en un cielo nocturno.", "ocasiones": ["Sin motivo", "Aniversario"], "portada": "nombre-estrellas/portada.jpg", "demo": {"para": "Camila", "msg": "Si pudiera, escribiría tu nombre en el cielo para que todos supieran lo que significas para mí… así que lo hice.", "de": "— Tu persona ✨"}, "campos": ["para", "msg", "de"], "nuevo": false, "destacada": false}, {"slug": "carta", "titulo": "Tienes una carta", "serie": "💌 Cartas en código", "serieClave": "cartas", "serieEmoji": "💌", "color": "#FF8A65", "descripcion": "Una carta que se abre y se escribe a mano frente a sus ojos.", "ocasiones": ["San Valentín", "Perdón", "Sin motivo"], "portada": "carta/portada.jpg", "demo": {"para": "Sofía", "msg": "No sé escribir poemas, pero sé escribir código. Y en cada línea encontré una forma nueva de decirte que te quiero.", "de": "Con amor, Daniel"}, "campos": ["para", "msg", "de"], "nuevo": false, "destacada": false}, {"slug": "arbol-corazones", "titulo": "El árbol de nuestro amor", "serie": "🌳 Aniversarios", "serieClave": "aniversarios", "serieEmoji": "🌳", "color": "#4ADE9B", "descripcion": "Un árbol que florece en corazones y cuenta cada segundo que llevan juntos.", "ocasiones": ["Aniversario", "Mesversario"], "portada": "arbol-corazones/portada.jpg", "demo": {"para": "Gabriela", "desde": "2024-02-14", "msg": "Cada día a tu lado es mi lugar favorito. Y pienso seguir contando.", "de": "Te amo, Andrés"}, "campos": ["para", "desde", "msg", "de"], "nuevo": false, "destacada": false}, {"slug": "terminal-hacker", "titulo": "Mensaje cifrado para ti", "serie": "❤️ Latidos en código", "serieClave": "latidos", "serieEmoji": "❤️", "color": "#FF4D8D", "descripcion": "Una terminal que «hackea» su corazón y descifra tu declaración letra por letra.", "ocasiones": ["Declaración", "San Valentín"], "portada": "terminal-hacker/portada.jpg", "demo": {"para": "Lucía", "msg": "Intenté cifrar lo que siento por ti, pero no existe algoritmo capaz de esconderlo. Me encantas.", "de": "— root, que te quiere"}, "campos": ["para", "msg", "de"], "nuevo": true, "destacada": false}], "fechas": [{"fecha": "12-24", "nombre": "Navidad", "series": ["cartas", "galaxias"]}, {"fecha": "12-31", "nombre": "Año Nuevo", "series": ["galaxias", "propuestas"]}, {"fecha": "02-14", "nombre": "San Valentín", "series": ["latidos", "flores", "propuestas", "cartas"]}, {"fecha": "03-08", "nombre": "Día de la Mujer", "series": ["flores", "familia"]}, {"fecha": "03-21", "nombre": "Flores amarillas", "series": ["flores"]}, {"fecha": "05-2do-domingo", "nombre": "Día de la Madre", "series": ["familia", "flores", "cartas"]}], "whatsapp": "593963196028", "tiktok": "te.programealgo"};
+
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* ---------- Pedidos (WhatsApp, sin emojis: wa.me los rompe en WhatsApp Web) ---------- */
+function linkPedido(texto) {
+  if (!DATOS.whatsapp) return `https://www.tiktok.com/@${DATOS.tiktok}`;
+  return `https://wa.me/${DATOS.whatsapp}?text=${encodeURIComponent(texto)}`;
+}
+$$('.js-pedir').forEach(a => {
+  const plan = a.dataset.plan;
+  a.href = linkPedido(plan ? `¡Hola! Quiero el plan «${plan}». ¿Qué detalles tienen?` : '¡Hola! Quiero un detalle personalizado. ¿Me ayudas?');
+});
+$$('.js-tiktok').forEach(a => a.href = `https://www.tiktok.com/@${DATOS.tiktok}`);
+
+/* ---------- Celular con la pieza en vivo ---------- */
+function montarCel(cel) {
+  const pant = cel.querySelector('.pantalla');
+  const ifr = document.createElement('iframe');
+  ifr.title = 'Vista previa'; ifr.style.opacity = 0;
+  pant.appendChild(ifr);
+  // La pieza se dibuja a 360 px de ancho y se escala al tamaño de la pantalla del celular.
+  // ResizeObserver: el modal se crea oculto (ancho 0) y se reajusta al abrirse.
+  const ajustar = () => { const w = pant.clientWidth; if (!w) return; ifr.style.transform = `scale(${w / 360})`; ifr.style.height = (pant.clientHeight * 360 / w) + 'px'; };
+  new ResizeObserver(ajustar).observe(pant);
+  ifr.addEventListener('load', () => { ifr.style.opacity = 1; pant.querySelector('.cargando').style.opacity = 0; });
+  return {
+    abrir(url) {
+      pant.querySelector('.cargando').style.opacity = 1; ifr.style.opacity = 0;
+      setTimeout(() => ifr.src = url, 180);
+    }
+  };
+}
+const urlDemo = (p, extra = {}) => {
+  const datos = { ...p.demo, ...Object.fromEntries(Object.entries(extra).filter(([, v]) => v)) };
+  return `${p.slug}/?${new URLSearchParams(datos)}`;
+};
+
+/* ---------- Hero: carrusel de piezas en el celular ---------- */
+const hero = montarCel($('#celHero'));
+const destacados = DATOS.piezas.filter(p => p.destacada).concat(DATOS.piezas.filter(p => !p.destacada)).slice(0, 6);
+let iHero = 0, timerHero = null, nombreHero = '';
+function mostrarHero(i, manual = false) {
+  iHero = (i + destacados.length) % destacados.length;
+  const p = destacados[iHero];
+  hero.abrir(urlDemo(p, { para: nombreHero }));
+  $$('#puntos button').forEach((b, k) => b.classList.toggle('on', k === iHero));
+  $('#tituloDemo').textContent = `${p.serieEmoji} ${p.titulo}`;
+  clearTimeout(timerHero);
+  timerHero = setTimeout(() => mostrarHero(iHero + 1), manual ? 16000 : 11000);
+}
+$('#puntos').innerHTML = destacados.map((p, k) => `<button aria-label="${esc(p.titulo)}"></button>`).join('');
+$$('#puntos button').forEach((b, k) => b.addEventListener('click', () => mostrarHero(k, true)));
+$('#formHero').addEventListener('submit', e => {
+  e.preventDefault();
+  nombreHero = $('#nombreHero').value.trim();
+  mostrarHero(iHero, true);
+  if (innerWidth < 900) $('#celHero').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+// arranca cuando el celular se ve (ahorra datos en el celular del visitante)
+new IntersectionObserver((ent, obs) => { if (ent[0].isIntersecting) { mostrarHero(0); obs.disconnect(); } }).observe($('#celHero'));
+
+/* ---------- Cinta de ocasiones ---------- */
+const ocasiones = [...new Set(DATOS.piezas.flatMap(p => p.ocasiones))];
+const itemsCinta = ['💛 San Valentín', '🎂 Cumpleaños', '🎄 Navidad', '🎆 Año Nuevo', '🌳 Aniversario', '💍 Propuesta', '🌻 Flores amarillas', '💌 Sin motivo', '🔐 Declaración'];
+$('#cinta').innerHTML = [...itemsCinta, ...itemsCinta].map(t => `<span>${t}<b style="color:var(--rosa)">✦</b></span>`).join('');
+
+/* ---------- Tarjetas ---------- */
+function tarjeta(p) {
+  return `<article class="card" style="--c:${p.color}" data-slug="${esc(p.slug)}">
+    <div class="thumb" data-probar="${esc(p.slug)}" role="button" tabindex="0" aria-label="Probar ${esc(p.titulo)}">
+      <span class="badge">${esc(p.serie)}</span>${p.nuevo ? '<span class="nuevo">NUEVO</span>' : ''}
+      ${p.portada ? `<img src="${esc(p.portada)}" alt="${esc(p.titulo)}" loading="lazy">` : '<div style="display:grid;place-items:center;height:100%;font:800 48px var(--mono);color:var(--rosa)">&lt;3</div>'}
+    </div>
+    <div class="info">
+      <h3>${esc(p.titulo)}</h3>
+      <p>${esc(p.descripcion)}</p>
+      <div class="tags">${p.ocasiones.map(o => `<span>${esc(o)}</span>`).join('')}</div>
+      <div class="acciones">
+        <button class="btn btn-s" data-probar="${esc(p.slug)}">Probar</button>
+        <a class="btn btn-p" href="${esc(linkPedido(`¡Hola! Quiero «${p.titulo}» personalizado. Es para: `))}" target="_blank" rel="noopener">Lo quiero</a>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ---------- Temporada: cuenta regresiva a la próxima fecha fuerte ---------- */
+function proximaFecha() {
+  const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+  const cand = [];
+  for (const f of DATOS.fechas) {
+    for (const anio of [hoy.getFullYear(), hoy.getFullYear() + 1]) {
+      let d;
+      const m = f.fecha.match(/^(\d\d)-(\d\d)$/), dom = f.fecha.match(/^(\d\d)-2do-domingo$/);
+      if (m) d = new Date(anio, +m[1] - 1, +m[2]);
+      else if (dom) { d = new Date(anio, +dom[1] - 1, 1); while (d.getDay() !== 0) d.setDate(d.getDate() + 1); d.setDate(d.getDate() + 7); }
+      if (d && d >= hoy) { cand.push({ ...f, d }); break; }
+    }
+  }
+  return cand.sort((a, b) => a.d - b.d)[0];
+}
+const EMOJI_FECHA = { 'Navidad': '🎄', 'Año Nuevo': '🎆', 'San Valentín': '💘', 'Día de la Mujer': '💐', 'Flores amarillas': '🌻', 'Día de la Madre': '👩‍👦' };
+const COLOR_FECHA = { 'Navidad': '#4ADE9B', 'Año Nuevo': '#FFD54A', 'San Valentín': '#FF4D8D', 'Día de la Mujer': '#E879F9', 'Flores amarillas': '#FFD54A', 'Día de la Madre': '#7DD3FC' };
+(function temporada() {
+  const f = proximaFecha(); if (!f) { $('#temporada-sec').remove(); return; }
+  const recomendadas = DATOS.piezas.filter(p => f.series.includes(p.serieClave) || p.ocasiones.includes(f.nombre))
+    .sort((a, b) => (b.ocasiones.includes(f.nombre)) - (a.ocasiones.includes(f.nombre))).slice(0, 6);
+  const caja = $('#temporada');
+  caja.style.setProperty('--c', COLOR_FECHA[f.nombre] || '#FF4D8D');
+  caja.innerHTML = `<div class="grid2">
+    <div>
+      <span class="kicker" style="color:var(--c)">Se viene ${esc(f.nombre)}</span>
+      <h2 class="titulo">${EMOJI_FECHA[f.nombre] || '💌'} Que este ${esc(f.nombre)} <em class="r">no le regales lo de siempre</em></h2>
+      <p class="lead">Pide con tiempo: en las fechas fuertes los pedidos se acumulan.</p>
+      <div class="cuenta" id="cuenta"></div>
+    </div>
+    <div class="carrusel">
+      <div class="cabecera" style="margin-bottom:12px"><b style="color:var(--muted)">Recomendados para ${esc(f.nombre)}</b>
+        <div class="flechas"><button aria-label="Anterior" data-dir="-1">←</button><button aria-label="Siguiente" data-dir="1">→</button></div></div>
+      <div class="carril" id="carril">${recomendadas.map(tarjeta).join('')}</div>
+    </div></div>`;
+  const pintar = () => {
+    const ms = Math.max(0, f.d - new Date());
+    const u = [[Math.floor(ms / 864e5), 'días'], [Math.floor(ms / 36e5) % 24, 'horas'], [Math.floor(ms / 6e4) % 60, 'min'], [Math.floor(ms / 1e3) % 60, 'seg']];
+    $('#cuenta').innerHTML = u.map(([n, l]) => `<div><b>${String(n).padStart(2, '0')}</b><small>${l}</small></div>`).join('');
+  };
+  pintar(); setInterval(pintar, 1000);
+  const carril = $('#carril');
+  caja.querySelectorAll('.flechas button').forEach(b => b.addEventListener('click', () => carril.scrollBy({ left: +b.dataset.dir * (carril.clientWidth * .8), behavior: 'smooth' })));
+  // auto-desplazamiento suave hasta que la persona toque el carrusel
+  let auto = setInterval(() => {
+    const fin = carril.scrollLeft + carril.clientWidth >= carril.scrollWidth - 4;
+    carril.scrollTo({ left: fin ? 0 : carril.scrollLeft + 256, behavior: 'smooth' });
+  }, 3800);
+  ['pointerdown', 'wheel', 'touchstart'].forEach(ev => carril.addEventListener(ev, () => clearInterval(auto), { passive: true }));
+})();
+
+/* ---------- Catálogo con filtros por ocasión ---------- */
+const filtros = ['Todos', ...ocasiones];
+let filtro = 'Todos';
+$('#filtros').innerHTML = filtros.map(f => `<button role="tab" data-f="${esc(f)}" class="${f === filtro ? 'on' : ''}">${esc(f)}</button>`).join('');
+function pintarGrilla() {
+  const lista = DATOS.piezas.filter(p => filtro === 'Todos' || p.ocasiones.includes(filtro));
+  $('#grilla').innerHTML = lista.map(tarjeta).join('');
+  $$('#grilla .card').forEach((c, i) => c.style.animationDelay = (i * 45) + 'ms');
+}
+$('#filtros').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  filtro = b.dataset.f; $$('#filtros button').forEach(x => x.classList.toggle('on', x === b)); pintarGrilla();
+});
+pintarGrilla();
+
+/* ---------- Modal: probar con su nombre ---------- */
+const ETIQUETAS = { para: ['Para', 'Su nombre'], msg: ['Tu mensaje', 'Lo que quieres decirle'], de: ['Firma', 'Cómo firmas'],
+  saludo: ['Saludo', 'Ej.: Feliz Navidad'], desde: ['Juntos desde', ''], pregunta: ['La pregunta', '¿quieres ser mi novia?'], velas: ['Velas (1 a 9)', '5'] };
+const modal = $('#modal');
+let celModal = null, piezaModal = null, deb = null;
+function abrirModal(slug) {
+  const p = DATOS.piezas.find(x => x.slug === slug); if (!p) return;
+  piezaModal = p;
+  if (!celModal) celModal = montarCel($('#celModal'));
+  const s = $('#mSerie'); s.textContent = p.serie; s.style.setProperty('--c', p.color);
+  $('#mTitulo').textContent = p.titulo; $('#mDesc').textContent = p.descripcion;
+  $('#mCampos').innerHTML = p.campos.map(k => {
+    const [lab, ph] = ETIQUETAS[k] || [k, ''];
+    const val = k === 'para' && nombreHero ? nombreHero : '';
+    if (k === 'msg') return `<label>${lab}<textarea data-k="${k}" rows="3" maxlength="220" placeholder="${esc(p.demo[k] || ph)}">${esc(val)}</textarea></label>`;
+    const tipo = k === 'desde' ? 'date' : (k === 'velas' ? 'number' : 'text');
+    return `<label>${lab}<input data-k="${k}" type="${tipo}" ${k === 'velas' ? 'min="1" max="9"' : 'maxlength="60"'} placeholder="${esc(p.demo[k] || ph)}" value="${esc(val)}"></label>`;
+  }).join('');
+  modal.classList.add('abierto'); document.body.style.overflow = 'hidden';
+  actualizarModal();
+  setTimeout(() => { const i = $('#mCampos [data-k]'); if (i) { i.focus(); i.select?.(); } }, 350);
+}
+function datosModal() { return Object.fromEntries($$('#mCampos [data-k]').map(i => [i.dataset.k, i.value.trim()])); }
+function actualizarModal() {
+  const d = datosModal(), p = piezaModal;
+  celModal.abrir(urlDemo(p, d));
+  const para = d.para || '(su nombre)';
+  let txt = `¡Hola! Quiero «${p.titulo}» personalizado.\nPara: ${para}`;
+  if (d.msg) txt += `\nMensaje: ${d.msg}`;
+  if (d.de) txt += `\nFirma: ${d.de}`;
+  for (const k of ['saludo', 'desde', 'pregunta', 'velas']) if (d[k]) txt += `\n${ETIQUETAS[k][0]}: ${d[k]}`;
+  $('#mPedir').href = linkPedido(txt);
+}
+$('#mCampos').addEventListener('input', () => { clearTimeout(deb); deb = setTimeout(actualizarModal, 650); });
+$('#formModal').addEventListener('submit', e => e.preventDefault());
+$('#mRepetir').addEventListener('click', actualizarModal);
+function cerrarModal() { modal.classList.remove('abierto'); document.body.style.overflow = ''; }
+$('#cerrar').addEventListener('click', cerrarModal);
+modal.addEventListener('click', e => { if (e.target === modal) cerrarModal(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+document.addEventListener('click', e => { const t = e.target.closest('[data-probar]'); if (t) abrirModal(t.dataset.probar); });
+document.addEventListener('keydown', e => { const t = e.target.closest?.('[data-probar]'); if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrirModal(t.dataset.probar); } });
+
+/* ---------- Aparecer al hacer scroll ---------- */
+const io = new IntersectionObserver(ent => ent.forEach(x => { if (x.isIntersecting) { x.target.classList.add('visible'); io.unobserve(x.target); } }), { threshold: .12 });
+$$('.aparece').forEach((el, i) => { el.style.transitionDelay = ((i % 3) * 90) + 'ms'; io.observe(el); });
+
+/* ---------- Chat de WhatsApp que se "escribe" solo ---------- */
+new IntersectionObserver((ent, obs) => {
+  if (!ent[0].isIntersecting) return; obs.disconnect();
+  setTimeout(() => $('#b1').classList.add('ver'), 300);
+  setTimeout(() => $('#esc').classList.add('ver'), 1500);
+  setTimeout(() => { $('#esc').classList.remove('ver'); $('#r1').classList.add('ver'); }, 3300);
+}, { threshold: .4 }).observe($('#chat'));
+
+/* ---------- Botón flotante de WhatsApp ---------- */
+addEventListener('scroll', () => $('#waFlota').classList.toggle('ver', scrollY > innerHeight * .6), { passive: true });
+
+/* ---------- Partículas de corazones en el hero ---------- */
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = $('#particulas'), ctx = cv.getContext('2d');
+  let W, H; const P = [];
+  const medir = () => { const d = devicePixelRatio || 1; W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  medir(); addEventListener('resize', medir);
+  for (let i = 0; i < 26; i++) P.push({ x: Math.random(), y: Math.random(), s: 6 + Math.random() * 12, v: .15 + Math.random() * .35, f: Math.random() * 6, c: Math.random() > .5 ? '255,77,141' : '255,213,74' });
+  const corazon = (x, y, s) => { ctx.beginPath(); ctx.moveTo(x, y + s * .3); ctx.bezierCurveTo(x, y, x - s * .5, y, x - s * .5, y + s * .3); ctx.bezierCurveTo(x - s * .5, y + s * .6, x, y + s * .8, x, y + s); ctx.bezierCurveTo(x, y + s * .8, x + s * .5, y + s * .6, x + s * .5, y + s * .3); ctx.bezierCurveTo(x + s * .5, y, x, y, x, y + s * .3); ctx.fill(); };
+  (function f(t) {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of P) {
+      p.y -= p.v / H * 2; if (p.y < -.05) { p.y = 1.05; p.x = Math.random(); }
+      ctx.fillStyle = `rgba(${p.c},${.10 + .08 * Math.sin(t / 900 + p.f)})`;
+      corazon(p.x * W + Math.sin(t / 1400 + p.f) * 16, p.y * H, p.s);
+    }
+    requestAnimationFrame(f);
+  })(0);
+})();
+</script>
 </body>
 </html>
