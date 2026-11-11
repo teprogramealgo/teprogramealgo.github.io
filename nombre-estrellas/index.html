@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💌 Te programé algo</title>
 <!-- AI Romantic Code · Pieza #003 · Tu nombre en las estrellas -->
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; overflow: hidden; background: #02030a; }
   canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
   .texto { position: fixed; left: 0; right: 0; top: 60vh; text-align: center; padding: 0 28px; color: #e8ecff; font-family: 'Quicksand', sans-serif; }
   #msg { font-size: clamp(16px, 4.4vw, 21px); line-height: 1.6; min-height: 3.2em; text-shadow: 0 0 14px rgba(120,150,255,.6); }
-  #firma { font-family: 'Pacifico', cursive; font-size: clamp(20px, 5.6vw, 28px); color: #b9c6ff; margin-top: 14px; min-height: 1.4em; }
+  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(20px, 5.6vw, 28px); color: #b9c6ff; margin-top: 14px; min-height: 1.4em; }
   .typing::after { content: '|'; margin-left: 2px; color: #9fb0ff; animation: blink .8s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
   #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(150,170,255,.1); border: 1px solid rgba(150,170,255,.4);
@@ -61,8 +61,8 @@ function puntosDelNombre(texto) {
   const oc = document.createElement('canvas'); oc.width = W; oc.height = H;
   const o = oc.getContext('2d');
   let fs = Math.min(W * 0.24, 130);
-  o.font = `${fs}px Pacifico, cursive`;
-  while (o.measureText(texto).width > W * 0.86 && fs > 20) { fs -= 2; o.font = `${fs}px Pacifico, cursive`; }
+  o.font = `700 ${fs}px 'Dancing Script', cursive`;
+  while (o.measureText(texto).width > W * 0.86 && fs > 20) { fs -= 2; o.font = `700 ${fs}px 'Dancing Script', cursive`; }
   o.textAlign = 'center'; o.textBaseline = 'middle'; o.fillStyle = '#fff';
   o.fillText(texto, W / 2, H * 0.33);
   const d = o.getImageData(0, 0, W, H).data, pts = [];
@@ -133,7 +133,7 @@ function frame(now) {
   if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
   requestAnimationFrame(frame);
 }
-document.fonts.load('100px Pacifico').catch(() => {}).then(() => { preparar(); requestAnimationFrame(frame); });
+document.fonts.load("700 100px 'Dancing Script'").catch(() => {}).then(() => { preparar(); requestAnimationFrame(frame); });
 </script>
 </body>
 </html>
