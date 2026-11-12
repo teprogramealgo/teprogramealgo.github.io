@@ -54,10 +54,7 @@ jobs:
           dur() { local m=$(( ($(date +%s) - $1) / 60 )); if [ "$m" -lt 90 ]; then echo "$m min"; else echo "$((m / 60)) h $((m % 60)) min"; fi; }
           if [ "$PRUEBA" = true ]; then
             if [ -n "$P" ]; then EST="🔴 ahora mismo está caída"; else EST="🟢 ahora mismo está funcionando"; fi
-            avisar "$(printf '👀 Vigía de la web activado
-Reviso %s/ cada 15 min y te aviso aquí si se cae y cuando vuelva.
-
-%s' "$BASE" "$EST")"
+            avisar "$(printf '👀 Vigía de la web activado\nReviso %s/ cada 15 min y te aviso aquí si se cae y cuando vuelva.\n\n%s' "$BASE" "$EST")"
           fi
           ANT=$(cat vigia-estado/estado 2>/dev/null || echo arriba)
           DESDE=$(cat vigia-estado/desde 2>/dev/null || date +%s)
