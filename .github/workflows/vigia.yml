@@ -5,7 +5,12 @@ name: Vigia de la web
 on:
   schedule:
     - cron: "*/15 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      prueba:
+        description: "Mandar un mensaje de prueba a Telegram"
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -27,6 +32,7 @@ jobs:
           TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           CHAT: ${{ secrets.TELEGRAM_CHAT }}
           BASE: https://teprogramealgo.github.io
+          PRUEBA: ${{ inputs.prueba || false }}
         run: |
           set -u
           if [ -z "$TOKEN" ] || [ -z "$CHAT" ]; then echo "::error::Faltan los secretos TELEGRAM_TOKEN y/o TELEGRAM_CHAT"; exit 1; fi
@@ -46,6 +52,13 @@ jobs:
               --data-urlencode "chat_id=${CHAT}" --data-urlencode "text=$1" -d disable_web_page_preview=true
           }
           dur() { local m=$(( ($(date +%s) - $1) / 60 )); if [ "$m" -lt 90 ]; then echo "$m min"; else echo "$((m / 60)) h $((m % 60)) min"; fi; }
+          if [ "$PRUEBA" = true ]; then
+            if [ -n "$P" ]; then EST="🔴 ahora mismo está caída"; else EST="🟢 ahora mismo está funcionando"; fi
+            avisar "$(printf '👀 Vigía de la web activado
+Reviso %s/ cada 15 min y te aviso aquí si se cae y cuando vuelva.
+
+%s' "$BASE" "$EST")"
+          fi
           ANT=$(cat vigia-estado/estado 2>/dev/null || echo arriba)
           DESDE=$(cat vigia-estado/desde 2>/dev/null || date +%s)
           ULT=$(cat vigia-estado/ultimo 2>/dev/null || echo 0)
