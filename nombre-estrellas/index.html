@@ -40,14 +40,15 @@
 <body>
 <canvas id="c"></canvas>
 <div class="texto"><div id="msg"></div><div id="firma"></div></div>
-<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+<button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
 const q = new URLSearchParams(location.search);
+const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:    q.get('para') || "Camila",
-  mensaje: q.get('msg')  || "Si pudiera, escribiría tu nombre en el cielo para que todos supieran lo que significas para mí… así que lo hice.",
-  firma:   q.get('de')   || "— Tu persona ✨"
+  para:    q.get('para') || (EN ? "Sophia" : "Camila"),
+  mensaje: q.get('msg')  || (EN ? "If I could, I would write your name across the sky so everyone knew what you mean to me… so I did." : "Si pudiera, escribiría tu nombre en el cielo para que todos supieran lo que significas para mí… así que lo hice."),
+  firma:   q.get('de')   || (EN ? "— Your person ✨" : "— Tu persona ✨")
 };
 
 const cv = document.getElementById('c'), ctx = cv.getContext('2d');
@@ -134,6 +135,7 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 document.fonts.load("700 100px 'Dancing Script'").catch(() => {}).then(() => { preparar(); requestAnimationFrame(frame); });
+if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>

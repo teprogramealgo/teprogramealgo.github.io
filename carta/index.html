@@ -77,16 +77,17 @@
   <div id="msg"></div>
   <div id="firma"></div>
 </div>
-<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+<button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
 const q = new URLSearchParams(location.search);
+const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:    q.get('para') || "Sofía",
-  mensaje: q.get('msg')  || "No sé escribir poemas, pero sé escribir código. Y en cada línea encontré una forma nueva de decirte que te quiero.",
-  firma:   q.get('de')   || "Con amor, Daniel",
-  saludo:  q.get('saludo') || "Querida"
+  para:    q.get('para') || (EN ? "Grace" : "Sofía"),
+  mensaje: q.get('msg')  || (EN ? "I can't write poems, but I can write code. And in every line I found a new way to tell you I love you." : "No sé escribir poemas, pero sé escribir código. Y en cada línea encontré una forma nueva de decirte que te quiero."),
+  firma:   q.get('de')   || (EN ? "Love, Daniel" : "Con amor, Daniel"),
+  saludo:  q.get('saludo') || (EN ? "Dear" : "Querida")
 };
 
 // luces de fondo
@@ -135,6 +136,7 @@ t = escribir('msg', CONFIG.mensaje, t);
 t = escribir('firma', CONFIG.firma, t);
 $('doodle').animate([{ strokeDashoffset: 200 }, { strokeDashoffset: 0 }], { duration: 1200, delay: t, fill: 'both', easing: 'ease-in-out' });
 setTimeout(() => $('repetir').classList.add('visible'), t + 1200);
+if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>

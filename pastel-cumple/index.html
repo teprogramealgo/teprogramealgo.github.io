@@ -53,19 +53,21 @@
 <div id="pista">Pide un deseo y toca la pantalla para soplar 🌬️</div>
 <div class="texto"><div id="msg"></div><div id="firma"></div></div>
 <div id="onda"></div>
-<button id="repetir" data-no-video onclick="event.stopPropagation(); location.reload()">↻ Ver de nuevo</button>
+<button id="repetir" data-no-video onclick="event.stopPropagation(); location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=...&velas=5 */
 const q = new URLSearchParams(location.search);
+const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:    q.get('para') || "Camila",
-  mensaje: q.get('msg')  || "Que este año te traiga todo lo que deseaste al soplar. Yo ya tengo mi deseo cumplido: tú.",
-  firma:   q.get('de')   || "Te quiere, Nico 🎂",
+  para:    q.get('para') || (EN ? "Zoe" : "Camila"),
+  mensaje: q.get('msg')  || (EN ? "May this year bring you everything you wished for. My wish already came true: you." : "Que este año te traiga todo lo que deseaste al soplar. Yo ya tengo mi deseo cumplido: tú."),
+  firma:   q.get('de')   || (EN ? "Love you, Nick 🎂" : "Te quiere, Nico 🎂"),
   velas:   Math.min(9, Math.max(1, parseInt(q.get('velas')) || 5))
 };
 const VIDEO = q.has('video');
 const $ = id => document.getElementById(id);
 $('para').textContent = CONFIG.para;
+if (EN) { $('feliz').textContent = 'HAPPY BIRTHDAY!'; $('pista').textContent = 'Make a wish and tap the screen to blow 🌬️'; }
 
 const cv = $('c'), ctx = cv.getContext('2d');
 let W, H;
@@ -237,6 +239,7 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 setTimeout(() => requestAnimationFrame(frame), 250);
+if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>

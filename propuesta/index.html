@@ -65,18 +65,21 @@
 <div id="final"><div id="sabia">¡Sabía que dirías que sí! 💖</div><div id="msg"></div><div id="firma"></div></div>
 <svg id="cursor" viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M5 2 L5 20 L9.5 15.5 L12.5 22 L15.5 20.7 L12.6 14.3 L19 14.3 Z"/></svg>
 <div id="onda"></div>
-<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+<button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&pregunta=...&msg=...&de=... */
 const q = new URLSearchParams(location.search);
+const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:     q.get('para')     || "Andrea",
-  pregunta: q.get('pregunta') || "¿quieres ser mi novia?",
-  mensaje:  q.get('msg')      || "Prometo hacerte reír todos los días y quererte más cada uno de ellos.",
-  firma:    q.get('de')       || "Tu ahora novio, Sebastián"
+  para:     q.get('para')     || (EN ? "Emily" : "Andrea"),
+  pregunta: q.get('pregunta') || (EN ? "will you be my girlfriend?" : "¿quieres ser mi novia?"),
+  mensaje:  q.get('msg')      || (EN ? "I promise to make you laugh every day and love you more with each one." : "Prometo hacerte reír todos los días y quererte más cada uno de ellos."),
+  firma:    q.get('de')       || (EN ? "Your boyfriend now, Sebastian" : "Tu ahora novio, Sebastián")
 };
 const VIDEO = q.has('video');          // en el video, un cursor simula a la persona
-const EXCUSAS = ["¿Segura? 🥺", "Piénsalo bien…", "Ese botón no funciona 😌", "Mejor el otro 💖", "No tienes opción 😇"];
+const EXCUSAS = EN ? ["Are you sure? 🥺", "Think again…", "That button doesn't work 😌", "Try the other one 💖", "You have no choice 😇"]
+                   : ["¿Segura? 🥺", "Piénsalo bien…", "Ese botón no funciona 😌", "Mejor el otro 💖", "No tienes opción 😇"];
+if (EN) { document.getElementById('si').textContent = 'Yes 💖'; document.getElementById('sabia').textContent = "I knew you'd say yes! 💖"; }
 
 const $ = id => document.getElementById(id);
 $('para').textContent = CONFIG.para + ',';
@@ -204,6 +207,7 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 setTimeout(() => requestAnimationFrame(frame), 250);
+if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>

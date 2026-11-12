@@ -41,14 +41,15 @@
 <canvas id="fondo"></canvas>
 <canvas id="fx"></canvas>
 <div class="texto"><div id="msg"></div><div id="firma"></div></div>
-<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+<button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
 const q = new URLSearchParams(location.search);
+const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:    q.get('para') || "Daniela",
-  mensaje: q.get('msg')  || "Que este año nuevo tenga tantos momentos contigo como luces en este cielo.",
-  firma:   q.get('de')   || "Feliz año, mi amor ✨"
+  para:    q.get('para') || (EN ? "Chloe" : "Daniela"),
+  mensaje: q.get('msg')  || (EN ? "May this new year hold as many moments with you as there are lights in this sky." : "Que este año nuevo tenga tantos momentos contigo como luces en este cielo."),
+  firma:   q.get('de')   || (EN ? "Happy New Year, my love ✨" : "Feliz año, mi amor ✨")
 };
 
 const fondo = document.getElementById('fondo'), bg = fondo.getContext('2d');
@@ -196,6 +197,7 @@ document.fonts.load(`700 80px 'Dancing Script'`).catch(() => {}).then(() => {
   PUNTOS = puntosNombre();
   setTimeout(() => requestAnimationFrame(frame), 200);
 });
+if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>

@@ -50,26 +50,27 @@
 <div class="texto">
   <div id="para"></div>
   <div class="contador" id="contador">
-    <div class="etiqueta">Llevamos juntos</div>
+    <div class="etiqueta" data-en="Together for">Llevamos juntos</div>
     <div class="nums">
-      <div><b id="d">0</b><span>días</span></div>
-      <div><b id="h">0</b><span>horas</span></div>
+      <div><b id="d">0</b><span data-en="days">días</span></div>
+      <div><b id="h">0</b><span data-en="hours">horas</span></div>
       <div><b id="m">0</b><span>min</span></div>
-      <div><b id="s">0</b><span>seg</span></div>
+      <div><b id="s">0</b><span data-en="sec">seg</span></div>
     </div>
   </div>
   <div id="msg"></div>
   <div id="firma"></div>
 </div>
-<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+<button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&desde=2024-02-14&msg=...&de=... */
 const q = new URLSearchParams(location.search);
+const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:    q.get('para')  || "Gabriela",
+  para:    q.get('para')  || (EN ? "Ava" : "Gabriela"),
   desde:   q.get('desde') || "2024-02-14",          // fecha en que empezó todo (AAAA-MM-DD)
-  mensaje: q.get('msg')   || "Cada día a tu lado es mi lugar favorito. Y pienso seguir contando.",
-  firma:   q.get('de')    || "Te amo, Andrés"
+  mensaje: q.get('msg')   || (EN ? "Every day next to you is my favorite place. And I plan to keep counting." : "Cada día a tu lado es mi lugar favorito. Y pienso seguir contando."),
+  firma:   q.get('de')    || (EN ? "I love you, Andrew" : "Te amo, Andrés")
 };
 
 const cv = document.getElementById('c'), ctx = cv.getContext('2d');
@@ -118,7 +119,8 @@ function corazon(x, y, s, rot, color) {
 
 // --- Texto y contador ---
 const vel = 42, T_PARA = 4400, T_CONT = 5200, T_MSG = 5900;
-const tPara = 'Para ' + CONFIG.para;
+const tPara = (EN ? 'For ' : 'Para ') + CONFIG.para;
+if (EN) document.querySelectorAll('[data-en]').forEach(e => e.textContent = e.dataset.en);
 const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400, T_FIN = T_FIRMA + CONFIG.firma.length * vel + 400;
 function escribir(el, txt, t0, t) {
   const p = clamp((t - t0) / (txt.length * vel));
@@ -178,6 +180,7 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 setTimeout(() => requestAnimationFrame(frame), 200);
+if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>

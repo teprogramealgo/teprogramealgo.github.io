@@ -82,7 +82,7 @@
   <div id="firma"></div>
 </div>
 
-<button id="repetir" data-no-video onclick="location.reload()">↻ Ver de nuevo</button>
+<button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 
 <script>
 /* =========================================================
@@ -90,10 +90,11 @@
    ========================================================= */
 // También se puede personalizar por el link: index.html?para=Ana&msg=Te%20quiero&de=Luis
 const q = new URLSearchParams(location.search);
+const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:    q.get('para') || "María",
-  mensaje: q.get('msg')  || "Así como el girasol busca al sol cada mañana, yo te busco a ti en cada uno de mis días.",
-  firma:   q.get('de')   || "Con todo mi cariño 🌻",
+  para:    q.get('para') || (EN ? "Emma" : "María"),
+  mensaje: q.get('msg')  || (EN ? "Just like a sunflower looks for the sun every morning, I look for you in every single one of my days." : "Así como el girasol busca al sol cada mañana, yo te busco a ti en cada uno de mis días."),
+  firma:   q.get('de')   || (EN ? "With all my love 🌻" : "Con todo mi cariño 🌻"),
   velocidadTexto: 45   // milisegundos por letra (menor = más rápido)
 };
 /* ========================================================= */
@@ -217,7 +218,7 @@ function escribir(id, texto, start) {
   return start + dur + 400;
 }
 let t = 5800;
-t = escribir('para', 'Para ti, ' + CONFIG.para, t);
+t = escribir('para', (EN ? 'For you, ' : 'Para ti, ') + CONFIG.para, t);
 t = escribir('msg', CONFIG.mensaje, t);
 t = escribir('firma', CONFIG.firma, t);
 
@@ -251,6 +252,7 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 setTimeout(() => requestAnimationFrame(frame), 500);
+if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>

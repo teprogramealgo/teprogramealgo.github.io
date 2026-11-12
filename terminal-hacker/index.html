@@ -67,14 +67,15 @@
   <div id="firma"></div>
 </div>
 <div class="crt"></div>
-<button id="repetir" data-no-video onclick="location.reload()">↻ ver de nuevo</button>
+<button id="repetir" data-no-video onclick="location.reload()" data-en="↻ watch again">↻ ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
 const q = new URLSearchParams(location.search);
+const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:    q.get('para') || "Lucía",
-  mensaje: q.get('msg')  || "Intenté cifrar lo que siento por ti, pero no existe algoritmo capaz de esconderlo. Me encantas.",
-  firma:   q.get('de')   || "— root, que te quiere"
+  para:    q.get('para') || (EN ? "Mia" : "Lucía"),
+  mensaje: q.get('msg')  || (EN ? "I tried to encrypt what I feel for you, but no algorithm can hide it. I'm crazy about you." : "Intenté cifrar lo que siento por ti, pero no existe algoritmo capaz de esconderlo. Me encantas."),
+  firma:   q.get('de')   || (EN ? "— root, who loves you" : "— root, que te quiere")
 };
 
 /* Lluvia de código de fondo */
@@ -93,11 +94,11 @@ const azar = s => s[(Math.random() * s.length) | 0];
 const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const nombre = esc(CONFIG.para);
 const LINEAS = [
-  { t: 300,  txt: `<span class="dim">root@amor:~$</span> ./descifrar --para "${nombre}"`, vel: 28 },
-  { t: 1900, txt: `<span class="ok">[ok]</span> conexión segura establecida` },
-  { t: 2200, txt: `<span class="dim">[..]</span> buscando el corazón de ${nombre}`, barra: [2300, 3500] },
-  { t: 3650, txt: `<span class="ok">[ok]</span> encontrado <span class="rosa">♥</span> (estaba latiendo fuerte)` },
-  { t: 3950, txt: `<span class="dim">[..]</span> descifrando mensaje`, barra: [4050, 5000] },
+  { t: 300,  txt: (EN ? `<span class="dim">root@love:~$</span> ./decrypt --for "${nombre}"` : `<span class="dim">root@amor:~$</span> ./descifrar --para "${nombre}"`), vel: 28 },
+  { t: 1900, txt: (EN ? `<span class="ok">[ok]</span> secure connection established` : `<span class="ok">[ok]</span> conexión segura establecida`) },
+  { t: 2200, txt: (EN ? `<span class="dim">[..]</span> looking for ${nombre}'s heart` : `<span class="dim">[..]</span> buscando el corazón de ${nombre}`), barra: [2300, 3500] },
+  { t: 3650, txt: (EN ? `<span class="ok">[ok]</span> found <span class="rosa">♥</span> (it was beating fast)` : `<span class="ok">[ok]</span> encontrado <span class="rosa">♥</span> (estaba latiendo fuerte)`) },
+  { t: 3950, txt: (EN ? `<span class="dim">[..]</span> decrypting message` : `<span class="dim">[..]</span> descifrando mensaje`), barra: [4050, 5000] },
 ];
 const T_PANEL = 5250, T_PARA = 5600, T_MSG = 6300, vel = 38;
 const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 350;
@@ -145,6 +146,7 @@ function descifrar(txt, t0, now, v) {
   return esc(s);
 }
 
+if (EN) document.getElementById('acceso').textContent = 'ACCESS GRANTED';
 const elTerm = document.getElementById('term'), panel = document.getElementById('panel');
 const elCor = document.getElementById('corazon'), elPara = document.getElementById('para');
 const elMsg = document.getElementById('msg'), elFirma = document.getElementById('firma');
@@ -200,6 +202,7 @@ function frame(now) {
 }
 ctx.fillStyle = '#030806'; ctx.fillRect(0, 0, W, H);
 setTimeout(() => requestAnimationFrame(frame), 250);
+if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>
