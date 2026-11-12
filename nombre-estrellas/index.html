@@ -4,21 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💌 Te programé algo</title>
-<!-- AI Romantic Code · Pieza #003 · Tu nombre en las estrellas -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+<!-- AI Romantic Code · Pieza #003 · Estrellas: une la constelación con el dedo y el cielo escribe su nombre -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; overflow: hidden; background: #02030a; }
+  html, body { height: 100%; background: #02030d; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+  body { font-family: 'Quicksand', sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; --acento: #9fb0ff; }
   canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
-  .texto { position: fixed; left: 0; right: 0; top: 60vh; text-align: center; padding: 0 28px; color: #e8ecff; font-family: 'Quicksand', sans-serif; }
-  #msg { font-size: clamp(16px, 4.4vw, 21px); line-height: 1.6; min-height: 3.2em; text-shadow: 0 0 14px rgba(120,150,255,.6); }
-  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(20px, 5.6vw, 28px); color: #b9c6ff; margin-top: 14px; min-height: 1.4em; }
-  .typing::after { content: '|'; margin-left: 2px; color: #9fb0ff; animation: blink .8s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(150,170,255,.1); border: 1px solid rgba(150,170,255,.4);
-    color: #b9c6ff; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
-  #repetir.visible { opacity: 1; }
+  .texto { position: fixed; left: 0; right: 0; bottom: 8vh; text-align: center; padding: 0 26px; color: #e8ecff; z-index: 2; }
+  #msg { font-size: clamp(15px, 4.2vw, 19px); line-height: 1.55; min-height: 3.2em; text-shadow: 0 0 12px rgba(120,140,255,.55); }
+  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(22px, 6vw, 29px); color: #c7d0ff; margin-top: 8px; min-height: 1.3em; }
+  #etiqueta { position: fixed; left: 0; right: 0; top: 52vh; text-align: center; font: 700 11px 'Quicksand', sans-serif; letter-spacing: .32em; color: #ffd98a;
+    opacity: 0; transition: opacity 1.2s; text-transform: uppercase; z-index: 2; }
+  #etiqueta.ver { opacity: .85; }
+  #deseo { position: fixed; left: 0; right: 0; top: 4vh; text-align: center; font: 700 clamp(18px, 5vw, 22px) 'Quicksand', sans-serif; color: #fff;
+    text-shadow: 0 0 16px rgba(255,220,140,.9); opacity: 0; transform: scale(.6); transition: opacity .6s, transform .8s cubic-bezier(.2,1.6,.4,1); z-index: 2; }
+  #deseo.ver { opacity: 1; transform: none; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -39,7 +43,10 @@
 </head>
 <body>
 <canvas id="c"></canvas>
+<div id="etiqueta"></div>
+<div id="deseo"></div>
 <div class="texto"><div id="msg"></div><div id="firma"></div></div>
+<div id="pista"></div>
 <button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
@@ -50,92 +57,144 @@ const CONFIG = {
   mensaje: q.get('msg')  || (EN ? "If I could, I would write your name across the sky so everyone knew what you mean to me… so I did." : "Si pudiera, escribiría tu nombre en el cielo para que todos supieran lo que significas para mí… así que lo hice."),
   firma:   q.get('de')   || (EN ? "— Your person ✨" : "— Tu persona ✨")
 };
+const TX = EN ? { pista: 'Connect the stars: tap the one that shines ✨', falta: n => `${n} more ✨`, etiqueta: n => `constellation · ${n}`,
+                  fugaz: '🌠 A shooting star! Tap it and make a wish', deseo: 'Wish made… and it already came true 💫' }
+              : { pista: 'Une las estrellas: toca la que brilla ✨', falta: n => n === 1 ? 'Falta una ✨' : `Faltan ${n} ✨`, etiqueta: n => `constelación · ${n}`,
+                  fugaz: '🌠 ¡Una estrella fugaz! Tócala y pide un deseo', deseo: 'Deseo pedido… y ya se cumplió 💫' };
+const { clamp, easeOut, easeInOut, rnd } = K;
+const L = K.lienzo('c'), ctx = L.ctx, chis = K.chispas(ctx);
+const $ = id => document.getElementById(id);
 
-const cv = document.getElementById('c'), ctx = cv.getContext('2d');
-const DPR = window.devicePixelRatio || 1, W = innerWidth, H = innerHeight;
-cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-const clamp = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+const geo = () => ({ cx: L.W / 2, cy: L.H * .27, k: Math.min(L.W, L.H * .55) / 40 });
+const puntoCorazon = (a, k) => ({ x: 16 * Math.pow(Math.sin(a), 3) * k, y: -(13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)) * k });
+const NC = 9;
+const constel = Array.from({ length: NC }, (_, i) => ({ a: i * Math.PI * 2 / NC, unida: false, t: 0 }));
+const posC = s => { const { cx, cy, k } = geo(), p = puntoCorazon(s.a, k); return { x: cx + p.x, y: cy + p.y }; };
+const fondo = Array.from({ length: 520 }, () => ({ x: Math.random(), y: Math.random() * .8, r: rnd(.3, 1.5), f: rnd(0, 6), tx: 0, ty: 0, vuela: false, d: rnd(0, 1600) }));
+const via = Array.from({ length: 260 }, () => { const u = Math.random(); return { u, o: rnd(-1, 1) * rnd(0, 1), r: rnd(.3, 1.1) }; });
 
-// Muestra los píxeles del nombre en un canvas oculto
-function puntosDelNombre(texto) {
-  const oc = document.createElement('canvas'); oc.width = W; oc.height = H;
-  const o = oc.getContext('2d');
-  let fs = Math.min(W * 0.24, 130);
-  o.font = `700 ${fs}px 'Dancing Script', cursive`;
-  while (o.measureText(texto).width > W * 0.86 && fs > 20) { fs -= 2; o.font = `700 ${fs}px 'Dancing Script', cursive`; }
-  o.textAlign = 'center'; o.textBaseline = 'middle'; o.fillStyle = '#fff';
-  o.fillText(texto, W / 2, H * 0.33);
-  const d = o.getImageData(0, 0, W, H).data, pts = [];
-  const paso = Math.max(3, Math.round(fs / 22));
-  for (let y = 0; y < H; y += paso) for (let x = 0; x < W; x += paso) if (d[(y * W + x) * 4 + 3] > 128) pts.push({ x, y });
-  return pts;
+let unidas = 0, tCompleta = -1, tNombre = -1, tFugaz = -1, tDeseo = -1, t = 0, ondas = [];
+function prepararNombre() {
+  const w = Math.min(L.W * .94, 520), h = 150;
+  const pts = K.puntosTexto(CONFIG.para, `700 ${Math.round(Math.min(L.W * .22, 100))}px 'Dancing Script'`, w, h, 4);
+  const yN = L.H * .62;
+  if (!pts.length) return;
+  const n = Math.min(fondo.length, pts.length);               // repartir las estrellas por TODAS las letras
+  for (let i = 0; i < n; i++) { const s = fondo[i], pt = pts[Math.floor(i * pts.length / n)]; s.tx = L.W / 2 + pt.x; s.ty = yN + pt.y; s.vuela = true; }
 }
-
-let estrellas = [], fugaces = [];
-function preparar() {
-  const pts = puntosDelNombre(CONFIG.para);
-  // estrellas de fondo
-  for (let i = 0; i < 260; i++) estrellas.push({ x: Math.random() * W, y: Math.random() * H, s: Math.random() * 1.3 + 0.2, f: Math.random() * 6, tx: null });
-  // estrellas que formarán el nombre
-  pts.sort(() => Math.random() - 0.5).forEach((p, i) => estrellas.push({
-    x: Math.random() * W, y: Math.random() * H, s: Math.random() * 1.1 + 0.9, f: Math.random() * 6,
-    tx: p.x + (Math.random() - .5) * 1.5, ty: p.y + (Math.random() - .5) * 1.5, d: 1600 + (i % 60) * 18
-  }));
+function tocar(x, y) {
+  if (tFugaz > 0 && tDeseo < 0) {             // pedir el deseo
+    const f = fugazPos(); if (!f) return;
+    tDeseo = t; chis.soltar(f.x, f.y, 50, ['#fff', '#ffe39a', '#9fd8ff'], 6); K.vibrar([30, 50, 90]);
+    $('deseo').textContent = TX.deseo; $('deseo').classList.add('ver'); K.pista($('pista'), ''); setTimeout(() => $('deseo').classList.remove('ver'), 3200); return;
+  }
+  if (unidas >= NC || t < 2200) return;
+  const s = constel[unidas], p = posC(s);
+  if (Math.hypot(x - p.x, y - p.y) > 95) { ondas.push({ x: p.x, y: p.y, t }); return; }   // no le atinó: la estrella le hace señas
+  s.unida = true; s.t = t; unidas++; K.vibrar(15);
+  chis.soltar(p.x, p.y, 14, ['#fff', '#cfd8ff'], 2.5);
+  K.pista($('pista'), unidas < NC ? TX.falta(NC - unidas) : '');
+  if (unidas === NC) {
+    tCompleta = t; K.vibrar([40, 60, 120]);
+    setTimeout(() => { $('etiqueta').textContent = TX.etiqueta(CONFIG.para); $('etiqueta').classList.add('ver'); }, 900);
+    setTimeout(() => { tNombre = t; }, 1600);
+  }
 }
+K.entrada({ abajo: tocar });
+function fugazPos() {
+  if (tFugaz < 0) return null;
+  const e = clamp((t - tFugaz) / 5200); if (e >= 1 && tDeseo < 0) { tFugaz = t; return fugazPos(); }   // si no la toca, vuelve a pasar
+  return { x: L.W * (1.1 - e * 1.25), y: L.H * (.08 + e * .32), e };
+}
+const pasos = constel.map((s, i) => ({ viaje: i ? 450 : 800, cuando: () => i === 0 ? 3000 : (unidas === i ? t + 150 : null), donde: () => posC(s) }));
+pasos.push({ viaje: 600, cuando: () => tFugaz > 0 ? tFugaz + 1500 : null, donde: () => fugazPos() || { x: L.W / 2, y: L.H * .2 } });
+const guion = K.guion(pasos, { abajo: tocar });
 
-const vel = 40, T_MSG = 5200;
-const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400, T_FIN = T_FIRMA + CONFIG.firma.length * vel + 400;
-function escribir(el, txt, t0, t) {
-  const p = clamp((t - t0) / (txt.length * vel));
-  el.textContent = txt.slice(0, Math.round(p * txt.length));
-  el.classList.toggle('typing', p > 0 && p < 1);
+function brillo(x, y, r, a, col = '255,255,255') {
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r * 5); g.addColorStop(0, `rgba(${col},${a})`); g.addColorStop(1, `rgba(${col},0)`);
+  ctx.fillStyle = g; ctx.fillRect(x - r * 5, y - r * 5, r * 10, r * 10);
+  ctx.fillStyle = `rgba(255,255,255,${Math.min(1, a * 1.3)})`; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
 }
 
 let t0 = null;
 function frame(now) {
   if (t0 === null) t0 = now;
-  const t = now - t0;
-  // cielo
+  t = now - t0;
+  const W = L.W, H = L.H, { cx, cy } = geo();
+  const comp = tCompleta < 0 ? 0 : clamp((t - tCompleta) / 1200);
+
   const g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, '#02030a'); g.addColorStop(.6, '#0a0f2e'); g.addColorStop(1, '#1a1440');
+  g.addColorStop(0, '#02030d'); g.addColorStop(.6, '#0a0f2e'); g.addColorStop(1, '#1b1446');
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  // nebulosa suave detrás del nombre
-  const neb = clamp((t - 2500) / 2000);
-  if (neb > 0) {
-    const r = ctx.createRadialGradient(W / 2, H * .33, 0, W / 2, H * .33, W * .7);
-    r.addColorStop(0, `rgba(110,90,255,${.22 * neb})`); r.addColorStop(1, 'rgba(110,90,255,0)');
-    ctx.fillStyle = r; ctx.fillRect(0, 0, W, H);
-  }
-  for (const e of estrellas) {
-    let x = e.x, y = e.y;
-    if (e.tx !== null) {
-      const p = easeInOut(clamp((t - e.d) / 2200));
-      x = e.x + (e.tx - e.x) * p; y = e.y + (e.ty - e.y) * p;
+  // vía láctea
+  ctx.save(); ctx.translate(W / 2, H * .42); ctx.rotate(-.55);
+  const vg = ctx.createLinearGradient(0, -90, 0, 90); vg.addColorStop(0, 'rgba(140,120,255,0)'); vg.addColorStop(.5, 'rgba(170,150,255,.13)'); vg.addColorStop(1, 'rgba(140,120,255,0)');
+  ctx.fillStyle = vg; ctx.fillRect(-H, -90, H * 2, 180);
+  for (const v of via) { ctx.fillStyle = 'rgba(220,215,255,.5)'; ctx.fillRect((v.u - .5) * H * 2, v.o * 70, v.r, v.r); }
+  ctx.restore();
+
+  // estrellas del fondo (luego vuelan a escribir su nombre)
+  for (const s of fondo) {
+    let x = s.x * W, y = s.y * H, a = .3 + .6 * (.5 + .5 * Math.sin(t / 600 + s.f)), r = s.r;
+    if (s.vuela && tNombre > 0) {
+      const e = easeInOut(clamp((t - tNombre - s.d) / 1800));
+      x += (s.tx - x) * e; y += (s.ty - y) * e; if (e > 0) { r = s.r * (1 - e) + 1.75 * e; a = Math.max(a, .5 + .5 * e); }
+      if (e >= 1) a = .75 + .25 * Math.sin(t / 300 + s.f);
     }
-    const tw = 0.55 + 0.45 * Math.sin(t / 420 + e.f);
-    const formada = e.tx !== null && t > e.d + 2200;
-    ctx.fillStyle = formada ? `rgba(255,240,210,${0.75 + 0.25 * tw})` : `rgba(220,230,255,${0.3 + 0.6 * tw})`;
-    ctx.beginPath(); ctx.arc(x, y, e.s * (formada ? 1.15 : 1), 0, Math.PI * 2); ctx.fill();
-    if (formada && e.s > 1.6) { ctx.fillStyle = 'rgba(255,230,180,.15)'; ctx.beginPath(); ctx.arc(x, y, e.s * 4, 0, Math.PI * 2); ctx.fill(); }
+    ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
   }
-  // estrellas fugaces
-  if (Math.random() < 0.012 || (t > 300 && t < 340 && !fugaces.length)) fugaces.push({ x: Math.random() * W * .8 + W * .2, y: Math.random() * H * .3, n: t });
-  for (let i = fugaces.length - 1; i >= 0; i--) {
-    const f = fugaces[i], e = (t - f.n) / 900;
-    if (e > 1) { fugaces.splice(i, 1); continue; }
-    const x = f.x - e * W * .5, y = f.y + e * W * .3;
-    const lg = ctx.createLinearGradient(x, y, x + 90, y - 54);
-    lg.addColorStop(0, `rgba(255,255,255,${1 - e})`); lg.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.strokeStyle = lg; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 90, y - 54); ctx.stroke();
+  // montañas
+  ctx.fillStyle = '#050616'; ctx.beginPath(); ctx.moveTo(0, H);
+  for (let x = 0; x <= W; x += 12) ctx.lineTo(x, H * .9 - Math.abs(Math.sin(x / W * 5.3)) * 40 - Math.sin(x / W * 2) * 20); ctx.lineTo(W, H); ctx.fill();
+
+  // constelación
+  ctx.lineCap = 'round';
+  for (let i = 0; i < unidas; i++) {
+    const a = posC(constel[i]), b = posC(constel[(i + 1) % NC]);
+    if (i === unidas - 1 && unidas < NC) break;
+    const s = i + 1 < NC ? constel[i + 1] : constel[0];
+    const e = easeOut(clamp((t - (i + 1 < NC ? s.t : tCompleta)) / 300));
+    ctx.strokeStyle = comp > 0 ? `rgba(255,217,138,${.55 + .35 * comp})` : 'rgba(190,205,255,.65)'; ctx.lineWidth = comp > 0 ? 2 + comp : 1.5;
+    ctx.shadowColor = comp > 0 ? '#ffd98a' : '#9fb0ff'; ctx.shadowBlur = 10;
+    // el trazo sigue la curva del corazón entre las dos estrellas
+    const { cx: hx, cy: hy, k } = geo(), a0 = constel[i].a, a1 = a0 + (Math.PI * 2 / NC) * e;
+    ctx.beginPath();
+    for (let u = 0; u <= 12; u++) { const pp = puntoCorazon(a0 + (a1 - a0) * u / 12, k); u ? ctx.lineTo(hx + pp.x, hy + pp.y) : ctx.moveTo(hx + pp.x, hy + pp.y); }
+    ctx.stroke(); ctx.shadowBlur = 0;
   }
-  escribir(document.getElementById('msg'), CONFIG.mensaje, T_MSG, t);
-  escribir(document.getElementById('firma'), CONFIG.firma, T_FIRMA, t);
-  if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
+  constel.forEach((s, i) => {
+    const p = posC(s), activa = i === unidas && t > 2200;
+    const pul = activa ? .6 + .4 * Math.sin(t / 220) : 0;
+    brillo(p.x, p.y, s.unida ? 2.6 + comp : 2, s.unida ? .95 : .55 + pul * .4, comp > 0 ? '255,225,150' : '200,210,255');
+    if (activa) { ctx.strokeStyle = `rgba(255,255,255,${.5 * pul})`; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(p.x, p.y, 14 + pul * 8, 0, 7); ctx.stroke(); }
+  });
+  if (comp > 0) { const hg = ctx.createRadialGradient(cx, cy + 20, 0, cx, cy + 20, 200); hg.addColorStop(0, `rgba(255,210,140,${.12 * comp})`); hg.addColorStop(1, 'rgba(255,210,140,0)'); ctx.fillStyle = hg; ctx.fillRect(0, 0, W, H); }
+  for (let i = ondas.length - 1; i >= 0; i--) {
+    const o = ondas[i], e = (t - o.t) / 700; if (e > 1) { ondas.splice(i, 1); continue; }
+    ctx.strokeStyle = `rgba(255,255,255,${1 - e})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, o.y, 10 + e * 40, 0, 7); ctx.stroke();
+  }
+  // estrella fugaz
+  const f = fugazPos();
+  if (f && tDeseo < 0) {
+    const gx = ctx.createLinearGradient(f.x, f.y, f.x + 120, f.y - 32); gx.addColorStop(0, 'rgba(255,255,255,.95)'); gx.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.strokeStyle = gx; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + 120, f.y - 32); ctx.stroke();
+    brillo(f.x, f.y, 3, 1, '255,240,200');
+  }
+  chis.pintar();
+
+  if (t > 2200 && unidas === 0) K.pista($('pista'), TX.pista);
+  if (tNombre > 0) {
+    const tm = tNombre + 3000, tf = tm + CONFIG.mensaje.length * 40 + 400, tfin = tf + CONFIG.firma.length * 45;
+    K.escribir($('msg'), CONFIG.mensaje, tm, t, 40);
+    K.escribir($('firma'), CONFIG.firma, tf, t, 45);
+    if (tFugaz < 0 && t > tfin + 600) { tFugaz = t; K.pista($('pista'), TX.fugaz); }
+    if (tDeseo > 0 && t > tDeseo + 3600) K.repetir();
+  }
+  guion(t);
   requestAnimationFrame(frame);
 }
-document.fonts.load("700 100px 'Dancing Script'").catch(() => {}).then(() => { preparar(); requestAnimationFrame(frame); });
-if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
+document.fonts.load("700 100px 'Dancing Script'").catch(() => {}).then(() => { prepararNombre(); requestAnimationFrame(frame); });
+K.traducirRepetir();
 </script>
 </body>
 </html>

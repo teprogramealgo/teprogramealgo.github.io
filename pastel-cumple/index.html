@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { --sp-fin-top: 20vh; }  /* capa sorpresa: botones finales entre el nombre y el pastel */
   html, body { height: 100%; overflow: hidden; background: #140a1f; }
   body { font-family: 'Quicksand', sans-serif; color: #fff1f6; user-select: none; cursor: pointer; }
   canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
@@ -28,7 +29,17 @@
   #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(255,143,184,.12); border: 1px solid rgba(255,143,184,.45);
     color: #ff8fb8; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
   #repetir.visible { opacity: 1; }
+  #mic { position: fixed; left: 50%; top: calc(66vh + 40px); transform: translateX(-50%); z-index: 3; border: 1px solid rgba(255,143,184,.55); background: rgba(255,143,184,.14);
+    color: #ffd1e3; font: 700 14px 'Quicksand', sans-serif; padding: 9px 16px; border-radius: 99px; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .6s; white-space: nowrap; }
+  #mic.ver { opacity: 1; pointer-events: auto; }
+  #mic.oye { background: #ff4d8d; color: #fff; border-color: #ff4d8d; animation: oye 1s ease-in-out infinite; }
+  @keyframes oye { 50% { box-shadow: 0 0 0 10px rgba(255,77,141,.0), 0 0 0 4px rgba(255,77,141,.35); } }
+  #nivel { position: fixed; left: 50%; top: calc(66vh + 86px); width: 160px; height: 6px; margin-left: -80px; border-radius: 6px; background: rgba(255,255,255,.12); overflow: hidden; opacity: 0; transition: opacity .4s; z-index: 3; }
+  #nivel i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ffd36b, #ff4d8d); }
+  #nivel.ver { opacity: 1; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -50,9 +61,12 @@
 <body>
 <canvas id="c"></canvas>
 <div id="titulo"><div id="feliz">¡FELIZ CUMPLEAÑOS!</div><div id="para"></div></div>
+<div id="pistaG" style="position:fixed;left:0;right:0;top:88vh;z-index:3;text-align:center;font:700 16px Quicksand,sans-serif;color:#fff;opacity:0;transition:opacity .5s;pointer-events:none"></div>
 <div id="pista">Pide un deseo y toca la pantalla para soplar 🌬️</div>
 <div class="texto"><div id="msg"></div><div id="firma"></div></div>
 <div id="onda"></div>
+<button id="mic" type="button" data-no-video>🎤 Soplar de verdad</button>
+<div id="nivel"><i></i></div>
 <button id="repetir" data-no-video onclick="event.stopPropagation(); location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=...&velas=5 */
@@ -67,7 +81,10 @@ const CONFIG = {
 const VIDEO = q.has('video');
 const $ = id => document.getElementById(id);
 $('para').textContent = CONFIG.para;
-if (EN) { $('feliz').textContent = 'HAPPY BIRTHDAY!'; $('pista').textContent = 'Make a wish and tap the screen to blow 🌬️'; }
+if (EN) { $('feliz').textContent = 'HAPPY BIRTHDAY!'; $('pista').textContent = 'Make a wish… and blow (or tap) 🌬️'; $('mic').textContent = '🎤 Blow for real'; }
+else $('pista').textContent = 'Pide un deseo… y sopla (o toca) 🌬️';
+const TXG = EN ? { globos: 'Pop the balloons! 🎈', oye: '🎤 Blow at your phone…', sinMic: 'No microphone: tap to blow 🌬️' }
+               : { globos: '¡Revienta los globos! 🎈', oye: '🎤 Sopla a tu celular…', sinMic: 'Sin micrófono: toca para soplar 🌬️' };
 
 const cv = $('c'), ctx = cv.getContext('2d');
 let W, H;
@@ -79,7 +96,72 @@ const easeOut = t => 1 - Math.pow(1 - t, 3);
 const luces = Array.from({ length: 40 }, () => ({ x: Math.random(), y: Math.random(), r: 20 + Math.random() * 60, h: [330, 45, 280, 190][(Math.random() * 4) | 0], f: Math.random() * 6 }));
 const chispas = Array.from({ length: 60 }, () => ({ x: Math.random(), y: Math.random(), f: Math.random() * 6 }));
 const confeti = [], humo = [];
-const T_PASTEL = 300, T_VELAS = 1500, T_NOMBRE = 2300, T_PISTA = 3300, T_AUTO = 4800;
+const T_PASTEL = 300, T_VELAS = 1500, T_NOMBRE = 2300, T_PISTA = 3300;
+/* ---------- soplar de verdad: el micrófono se escucha solo en el celular, no se graba ni se envía ---------- */
+let micActivo = false, micNegado = false, analizador = null, datosMic = null, flujo = null;
+async function pedirMic() {
+  try {
+    flujo = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false } });
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ac.createMediaStreamSource(flujo); analizador = ac.createAnalyser(); analizador.fftSize = 512;
+    src.connect(analizador); datosMic = new Uint8Array(analizador.fftSize);
+    micActivo = true; $('mic').classList.add('oye'); $('mic').textContent = TXG.oye; $('nivel').classList.add('ver');
+  } catch (e) { micNegado = true; $('mic').classList.remove('ver'); $('pista').textContent = TXG.sinMic; }
+}
+function pararMic() { if (flujo) flujo.getTracks().forEach(tr => tr.stop()); micActivo = false; }
+function escucharMic(t) {
+  if (!micActivo || tSoplo !== null) return;
+  analizador.getByteTimeDomainData(datosMic);
+  let suma = 0; for (const v of datosMic) { const x = (v - 128) / 128; suma += x * x; }
+  const nivel = Math.sqrt(suma / datosMic.length);            // soplar al micrófono da un ruido fuerte y parejo
+  $('nivel').firstElementChild.style.width = Math.min(100, nivel * 400) + '%';
+  if (nivel > .12) { viento = Math.max(viento, nivel * 5); energia += nivel; if (energia > 2.2) { energia = 0; apagarAlgunas(1, t); } }
+  else energia = Math.max(0, energia - .05);
+}
+$('mic').addEventListener('click', e => { e.stopPropagation(); if (!micActivo) pedirMic(); });
+
+/* ---------- globos para reventar ---------- */
+const globos = [];
+function soltarGlobos() {
+  const cols = ['#ff4d8d', '#ffd36b', '#6ad1ff', '#9dff8a', '#c69cff', '#ff8fb8', '#ffa36b'];
+  for (let i = 0; i < 7; i++) globos.push({ x: W * (.1 + i * .13) + (Math.random() - .5) * 20, y: H + 20 + Math.random() * 110, v: 1.3 + Math.random() * .6, r: 24 + Math.random() * 8, c: cols[i], f: Math.random() * 6, roto: null });
+}
+function globoXY(g, t) { return { x: g.x + Math.sin(t / 700 + g.f) * 12, y: g.y }; }
+function reventar(x, y) {
+  for (const g of globos) {
+    if (g.roto) continue;
+    const p = globoXY(g, ahora);
+    if (Math.hypot(x - p.x, y - p.y) < g.r * 1.4) {
+      g.roto = ahora; K.vibrar(30);
+      for (let i = 0; i < 40; i++) { const a = Math.random() * Math.PI * 2, v = 2 + Math.random() * 5;
+        confeti.push({ x: p.x, y: p.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, c: i % 2 ? g.c : '#fff', r: Math.random() * 6, n: ahora, vida: 1400 + Math.random() * 800 }); }
+      return;
+    }
+  }
+}
+function pintarGlobos(t) {
+  for (const g of globos) {
+    if (g.roto) continue;
+    g.y -= g.v; if (g.y < -80) { g.y = H + 60; }
+    const { x, y } = globoXY(g, t);
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y + g.r * 1.2);
+    ctx.quadraticCurveTo(x + Math.sin(t / 300 + g.f) * 8, y + g.r * 2, x, y + g.r * 3); ctx.stroke();
+    const gr = ctx.createRadialGradient(x - g.r * .35, y - g.r * .4, 2, x, y, g.r * 1.3);
+    gr.addColorStop(0, '#fff'); gr.addColorStop(.25, g.c); gr.addColorStop(1, g.c);
+    ctx.fillStyle = gr; ctx.beginPath(); ctx.ellipse(x, y, g.r, g.r * 1.2, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = g.c; ctx.beginPath(); ctx.moveTo(x - 4, y + g.r * 1.22); ctx.lineTo(x + 4, y + g.r * 1.22); ctx.lineTo(x, y + g.r * 1.12); ctx.fill();
+  }
+}
+/* ---------- video: 3 soplidos (toques) y luego revienta 2 globos ---------- */
+const enPastel = () => ({ x: W / 2 + 12, y: H * .47 });
+const globoVivo = k => () => { const vivos = globos.filter(g => !g.roto && g.y < H * .85 && g.y > H * .2); const g = vivos[k % Math.max(vivos.length, 1)]; return g ? globoXY(g, ahora) : { x: W / 2, y: H * .5 }; };
+const guion = K.guion([
+  { viaje: 800, cuando: () => T_PISTA + 1400, donde: enPastel },
+  { viaje: 300, cuando: () => apagadas.filter(v => v != null).length ? ahora + 700 : null, donde: enPastel },
+  { viaje: 300, cuando: () => tSoplo === null && apagadas.filter(v => v != null).length > CONFIG.velas / 2 ? ahora + 700 : null, donde: enPastel },
+  { viaje: 600, cuando: () => globos.some(g => g.y < H * .7) ? ahora + 300 : null, donde: globoVivo(0) },
+  { viaje: 500, cuando: () => globos.some(g => g.roto) ? ahora + 500 : null, donde: globoVivo(1) }
+], { abajo: (x, y) => { if (tSoplo === null) puff(ahora); else reventar(x, y); } });
 let tSoplo = null, t0 = null, ahora = 0;
 
 function rect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
@@ -137,10 +219,10 @@ function dibujarVelas(t, pz) {
 }
 
 function dibujarLlamas(t, llamas) {
-  const apagado = tSoplo === null ? 0 : clamp((t - tSoplo) / 350);
   for (const [i, l] of llamas.entries()) {
+    const apagado = apagadas[i] == null ? 0 : clamp((t - apagadas[i]) / 350);
     const vacila = 1 + Math.sin(t / 90 + i * 1.7) * .08 + Math.sin(t / 37 + i) * .05;
-    const s = (1 - apagado) * vacila, inclina = tSoplo === null ? Math.sin(t / 200 + i) * 2 : apagado * 10;
+    const s = (1 - apagado) * vacila * (1 - Math.min(viento, 1) * .25), inclina = Math.sin(t / 200 + i) * 2 + viento * 14 + apagado * 10;
     if (s > .02) {
       const halo = ctx.createRadialGradient(l.x, l.y - 10, 0, l.x, l.y - 10, 40 * s);
       halo.addColorStop(0, 'rgba(255,200,90,.45)'); halo.addColorStop(1, 'rgba(255,200,90,0)');
@@ -157,9 +239,25 @@ function dibujarLlamas(t, llamas) {
   }
 }
 
+const apagadas = [];
+let viento = 0, energia = 0, encendidas = () => CONFIG.velas - apagadas.filter(v => v != null).length;
+function apagarAlgunas(k, t) {
+  const libres = [...Array(CONFIG.velas).keys()].filter(i => apagadas[i] == null);
+  for (let j = 0; j < k && libres.length; j++) {
+    const i = libres.splice((Math.random() * libres.length) | 0, 1)[0]; apagadas[i] = t;
+    for (let h = 0; h < 8; h++) humo.push({ k: i, n: t + Math.random() * 300, vx: Math.random() * .6 + .2, f: Math.random() * 6 });
+  }
+  K.vibrar(20);
+  if (!encendidas()) soplar(t + 200);
+}
+function puff(t) {        // un toque = un soplido: inclina las llamas y apaga un tercio
+  if (tSoplo !== null || t < T_VELAS + 600) return;
+  viento = 1.2; apagarAlgunas(Math.ceil(CONFIG.velas / 3), t);
+}
 function soplar(t) {
   if (tSoplo !== null || t < T_VELAS + 600) return;
-  tSoplo = t;
+  tSoplo = t; $('mic').classList.remove('ver'); $('nivel').classList.remove('ver'); pararMic();
+  setTimeout(() => { soltarGlobos(); const g = $('pistaG'); g.textContent = TXG.globos; g.style.opacity = 1; setTimeout(() => g.style.opacity = 0, 4500); }, 2400);
   $('pista').classList.remove('visible'); $('pista').style.opacity = 0;
   for (let i = 0; i < 40; i++) humo.push({ k: i % CONFIG.velas, n: t + Math.random() * 300, vx: Math.random() * .6 + .2, f: Math.random() * 6 });
   for (let i = 0; i < 180; i++) {
@@ -168,10 +266,10 @@ function soplar(t) {
   }
 }
 document.body.addEventListener('pointerdown', e => {
-  if (VIDEO) return;
+  if (VIDEO || e.target.closest('button')) return;
   const o = $('onda'); o.style.left = e.clientX + 'px'; o.style.top = e.clientY + 'px';
   o.animate([{ opacity: .9, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(2.6)' }], { duration: 500, easing: 'ease-out' });
-  soplar(ahora);
+  if (tSoplo === null) puff(ahora); else reventar(e.clientX, e.clientY);
 });
 
 const vel = 45;
@@ -200,7 +298,8 @@ function frame(now) {
   const pz = dibujarPastel(t);
   const llamas = dibujarVelas(t, pz);
   if (llamas.length) llamasPrev = llamas;
-  dibujarLlamas(t, llamas);
+  viento *= .94; dibujarLlamas(t, llamas);
+  escucharMic(t);
 
   // humito tras soplar
   for (const h of humo) {
@@ -225,17 +324,15 @@ function frame(now) {
 
   if (t > T_NOMBRE) { $('feliz').classList.add('visible'); $('para').classList.add('visible'); }
   if (tSoplo === null && t > T_PISTA) $('pista').classList.add('visible');
-  if (VIDEO && tSoplo === null && t > T_AUTO) {   // en el video, un "toque" sopla las velas
-    const o = $('onda'); o.style.left = W / 2 + 'px'; o.style.top = H * .5 + 'px';
-    o.animate([{ opacity: .9, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(2.6)' }], { duration: 500, easing: 'ease-out' });
-    soplar(t);
-  }
+  pintarGlobos(t);
+  guion(t);
   if (tSoplo !== null) {
     const T_MSG = tSoplo + 1200, T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400;
     escribir($('msg'), CONFIG.mensaje, T_MSG, t);
     escribir($('firma'), CONFIG.firma, T_FIRMA, t);
     if (t > T_FIRMA + CONFIG.firma.length * vel + 400) $('repetir').classList.add('visible');
   }
+  if (tSoplo === null && t > T_PISTA && !VIDEO && !micActivo && !micNegado) $('mic').classList.add('ver');
   requestAnimationFrame(frame);
 }
 setTimeout(() => requestAnimationFrame(frame), 250);

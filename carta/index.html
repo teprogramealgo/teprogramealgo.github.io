@@ -4,46 +4,55 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💌 Te programé algo</title>
-<!-- AI Romantic Code · Pieza #004 · Carta que se abre -->
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+<!-- AI Romantic Code · Pieza #004 · Carta: se desdobla, se escribe sola y la posdata se raspa con el dedo -->
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; overflow: hidden; }
-  body { background: radial-gradient(ellipse at 50% 35%, #4a2234 0%, #1c0b16 60%, #0c0509 100%); font-family: 'Quicksand', sans-serif; }
-  .bokeh { position: fixed; border-radius: 50%; background: radial-gradient(circle, rgba(255,190,200,.35), rgba(255,190,200,0) 70%);
-    animation: flotar var(--d) ease-in-out infinite alternate; }
-  @keyframes flotar { from { transform: translateY(0); opacity: .3; } to { transform: translateY(-40px); opacity: .8; } }
+  html, body { height: 100%; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+  body { font-family: 'Quicksand', sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; --acento: #ffd6dd;
+    background: radial-gradient(ellipse at 30% 20%, rgba(255,170,90,.28), transparent 55%), linear-gradient(160deg, #5a3320 0%, #3a1f12 55%, #24130b 100%); }
+  /* vetas de la madera */
+  body::before { content: ''; position: fixed; inset: 0; opacity: .35;
+    background: repeating-linear-gradient(97deg, rgba(0,0,0,.0) 0 18px, rgba(0,0,0,.18) 19px 21px, rgba(255,220,180,.05) 22px 40px); }
+  #luz { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle at 16% 12%, rgba(255,190,100,.35), transparent 40%); animation: titila 2.6s ease-in-out infinite; }
+  @keyframes titila { 0%,100% { opacity: .85; } 30% { opacity: 1; } 55% { opacity: .75; } 80% { opacity: .95; } }
+  /* vela */
+  #vela { position: fixed; left: 9%; top: 3vh; width: 34px; height: 92px; z-index: 1; }
+  #vela .cera { position: absolute; bottom: 0; width: 34px; height: 70px; border-radius: 6px 6px 4px 4px; background: linear-gradient(90deg, #f6e7cf, #fff8ec 45%, #e6d2b2); }
+  #vela .mecha { position: absolute; left: 16px; bottom: 70px; width: 2px; height: 8px; background: #2a1a10; }
+  #vela .llama { position: absolute; left: 9px; bottom: 76px; width: 16px; height: 28px; border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%;
+    background: radial-gradient(ellipse at 50% 75%, #fff 0 20%, #ffe28a 35%, #ff9a2e 70%, rgba(255,120,20,0) 75%); transform-origin: 50% 90%;
+    animation: llama .18s ease-in-out infinite alternate; filter: drop-shadow(0 0 12px rgba(255,170,60,.9)); }
+  @keyframes llama { from { transform: rotate(-3deg) scaleY(1); } to { transform: rotate(3deg) scaleY(1.08); } }
+  .petalo { position: fixed; width: 22px; height: 16px; border-radius: 80% 20% 80% 20%; background: linear-gradient(135deg, #e0284f, #8a0f2c); opacity: .85; z-index: 1; }
 
-  :root { --w: min(78vw, 380px); --h: calc(var(--w) * .64); }
-  .sobre { position: fixed; left: 50%; top: 46%; width: var(--w); height: var(--h); transform: translate(-50%, -50%); perspective: 900px; }
-  .fondo { position: absolute; inset: 0; background: #d98f9f; border-radius: 6px; box-shadow: 0 25px 50px rgba(0,0,0,.45); }
-  .carta-mini { position: absolute; left: 6%; right: 6%; bottom: 6%; height: 88%; background: #fffaf0; border-radius: 4px; z-index: 2;
-    background-image: repeating-linear-gradient(transparent 0 17px, #f1dcc8 17px 18px); }
-  .frente { position: absolute; inset: 0; z-index: 3; border-radius: 6px; background: #eaa4b2;
-    clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%); }
-  .frente::after { content: ''; position: absolute; inset: 0; background: #e396a6; clip-path: polygon(0 100%, 50% 48%, 100% 100%); }
-  .solapa { position: absolute; left: 0; right: 0; top: 0; height: 60%; z-index: 4; background: #f0b3c0; transform-origin: top center;
-    clip-path: polygon(0 0, 100% 0, 50% 100%); }
-  .sello { position: absolute; left: 50%; top: 60%; width: 54px; height: 54px; margin: -27px 0 0 -27px; z-index: 5; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #e0344f, #8c0f24); box-shadow: 0 3px 6px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.3);
-    display: flex; align-items: center; justify-content: center; color: #ffd6dd; font-size: 24px; }
-
-  .hoja { position: fixed; left: 50%; top: 50%; width: min(86vw, 440px); min-height: 62vh; transform: translate(-50%, -50%); opacity: 0;
-    background: #fffaf0; border-radius: 6px; padding: 34px 28px 30px; box-shadow: 0 30px 70px rgba(0,0,0,.55);
-    background-image: repeating-linear-gradient(transparent 0 37px, #efd9c4 37px 38px); background-position: 0 30px;
-    font-family: 'Caveat', cursive; color: #4a2a33; }
-  .hoja::before { content: ''; position: absolute; top: 0; bottom: 0; left: 20px; width: 2px; background: rgba(230,120,140,.35); }
-  #saludo { font-size: clamp(30px, 8vw, 40px); font-weight: 700; color: #b0324e; min-height: 1.2em; line-height: 38px; }
-  #msg { font-size: clamp(24px, 6.4vw, 30px); line-height: 38px; margin-top: 10px; min-height: 4em; }
-  #firma { font-size: clamp(28px, 7vw, 36px); font-weight: 700; text-align: right; margin-top: 14px; color: #b0324e; min-height: 1.2em; }
-  .doodle { position: absolute; right: 22px; top: 22px; width: 54px; }
-  .doodle path { fill: none; stroke: #e0344f; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 200; stroke-dashoffset: 200; }
-  .typing::after { content: '|'; color: #b0324e; animation: blink .8s steps(1) infinite; font-family: 'Quicksand'; font-weight: 400; }
-  @keyframes blink { 50% { opacity: 0; } }
-  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(255,200,210,.12); border: 1px solid rgba(255,200,210,.4);
-    color: #ffd6dd; font-size: 14px; font-family: inherit; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
-  #repetir.visible { opacity: 1; }
+  /* la carta */
+  #carta { position: fixed; left: 50%; top: 50%; width: min(86vw, 380px); height: min(112vw, 68vh); transform: translate(-50%, -50%) rotate(-2deg) scale(.86);
+    z-index: 2; transition: transform 1.1s cubic-bezier(.2,.9,.3,1.1); }
+  #carta.abierta { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+  #papel { position: absolute; inset: 0; border-radius: 4px; padding: 30px 24px 22px 34px; color: #4a2a33;
+    background: linear-gradient(#fffaf1, #fbf1df); box-shadow: 0 20px 50px rgba(0,0,0,.5);
+    clip-path: inset(33.4% 0 33.4% 0); transition: clip-path 1.2s cubic-bezier(.6,0,.2,1); overflow: hidden; }
+  #carta.abierta #papel { clip-path: inset(0 0 0 0); }
+  #papel::before { content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(transparent 0 33px, rgba(120,140,200,.18) 33px 34px); background-position: 0 58px; }
+  #papel::after { content: ''; position: absolute; left: 22px; top: 0; bottom: 0; width: 1px; background: rgba(220,80,100,.35); }
+  .pliegue { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, rgba(0,0,0,.05), rgba(0,0,0,.14), rgba(0,0,0,.05)); z-index: 1; }
+  #sello { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; z-index: 3;
+    background: radial-gradient(circle at 35% 30%, #e04a5e, #8c1025 70%); box-shadow: 0 4px 12px rgba(60,0,10,.6), inset 0 0 0 5px rgba(255,255,255,.08);
+    display: grid; place-items: center; font: 700 20px 'Quicksand', sans-serif; color: #ffd1d8; transition: transform .5s, opacity .5s; }
+  #carta.abierta #sello { transform: scale(1.8) rotate(30deg); opacity: 0; }
+  #saludo { font: 700 clamp(26px, 7.4vw, 32px) 'Dancing Script', cursive; color: #a8213f; min-height: 1.3em; position: relative; }
+  #msg { font: 500 clamp(23px, 6.4vw, 28px) / 34px 'Caveat', cursive; margin-top: 10px; min-height: 3em; position: relative; white-space: pre-wrap; overflow-wrap: anywhere; }
+  #pd { position: relative; margin-top: 12px; font: 700 clamp(22px, 6vw, 26px) / 32px 'Caveat', cursive; color: #8c1d38; opacity: 0; transition: opacity .8s; }
+  #pd.ver { opacity: 1; }
+  #pd .oculto { position: relative; display: block; overflow-wrap: anywhere; }
+  #rasca { position: absolute; z-index: 2; border-radius: 8px; touch-action: none; }
+  #firma { font: 700 clamp(24px, 6.8vw, 30px) 'Dancing Script', cursive; color: #a8213f; text-align: right; margin-top: 14px; min-height: 1.3em; position: relative; }
+  .typing::after { color: #b0324e; font-family: 'Quicksand'; font-weight: 400; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -63,80 +72,137 @@
 <link rel="icon" href="../logo.svg">
 </head>
 <body>
-<div class="sobre" id="sobre">
-  <div class="fondo"></div>
-  <div class="carta-mini" id="mini"></div>
-  <div class="frente"></div>
-  <div class="solapa" id="solapa"></div>
-  <div class="sello" id="sello">♥</div>
+<div id="luz"></div>
+<div id="vela"><div class="cera"></div><div class="mecha"></div><div class="llama"></div></div>
+<div id="carta">
+  <div id="papel">
+    <div class="pliegue" style="top:33.3%"></div><div class="pliegue" style="top:66.6%"></div>
+    <div id="saludo"></div><div id="msg"></div>
+    <div id="pd"><span class="pdx"></span> <span class="oculto"></span></div>
+    <div id="firma"></div>
+  </div>
+  <div id="sello">&lt;3</div>
 </div>
-
-<div class="hoja" id="hoja">
-  <svg class="doodle" viewBox="0 0 60 56"><path id="doodle" d="M30 50 C 8 34, 2 22, 10 12 C 18 3, 28 8, 30 16 C 32 8, 42 3, 50 12 C 58 22, 52 34, 30 50 Z"/></svg>
-  <div id="saludo"></div>
-  <div id="msg"></div>
-  <div id="firma"></div>
-</div>
+<canvas id="rasca"></canvas>
+<div id="pista"></div>
 <button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
-
 <script>
-/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&rasca=...&de=...&saludo=... */
 const q = new URLSearchParams(location.search);
 const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
   para:    q.get('para') || (EN ? "Grace" : "Sofía"),
   mensaje: q.get('msg')  || (EN ? "I can't write poems, but I can write code. And in every line I found a new way to tell you I love you." : "No sé escribir poemas, pero sé escribir código. Y en cada línea encontré una forma nueva de decirte que te quiero."),
+  rasca:   q.get('rasca') || (EN ? "I love you more than any code could ever explain." : "Te quiero más de lo que cualquier código podría explicar."),
   firma:   q.get('de')   || (EN ? "Love, Daniel" : "Con amor, Daniel"),
   saludo:  q.get('saludo') || (EN ? "Dear" : "Querida")
 };
-
-// luces de fondo
-for (let i = 0; i < 14; i++) {
-  const b = document.createElement('div'); const s = 40 + Math.random() * 120;
-  b.className = 'bokeh';
-  b.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;--d:${3 + Math.random() * 4}s;animation-delay:-${Math.random() * 3}s`;
-  document.body.prepend(b);
-}
-
+const TX = EN ? { abrir: 'Tap the letter to unfold it 💌', rasca: 'Scratch the gold part with your finger 🪙', ps: 'P.S.', capa: 'SCRATCH HERE' }
+              : { abrir: 'Toca la carta para abrirla 💌', rasca: 'Raspa la parte dorada con el dedo 🪙', ps: 'P. D.:', capa: 'RASPA AQUÍ' };
+const { clamp, rnd } = K;
 const $ = id => document.getElementById(id);
-const E = { easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' };
-const anim = (id, kf, ms, delay) => $(id).animate(kf, { ...E, duration: ms, delay });
+const carta = $('carta'), rc = $('rasca'), rx = rc.getContext('2d');
+$('pd').querySelector('.pdx').textContent = TX.ps;
+const oculto = $('pd').querySelector('.oculto'); oculto.textContent = CONFIG.rasca;
 
-// 1) llega el sobre
-anim('sobre', [{ transform: 'translate(-50%,-140%) rotate(-8deg)', opacity: 0 }, { transform: 'translate(-50%,-50%) rotate(0)', opacity: 1 }], 1000, 300);
-// 2) se rompe el sello
-anim('sello', [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(1.25)', opacity: 1, offset: .35 }, { transform: 'scale(0) rotate(40deg)', opacity: 0 }], 500, 1500);
-// 3) se abre la solapa
-anim('solapa', [{ transform: 'rotateX(0)', zIndex: 4 }, { zIndex: 4, offset: .49 }, { zIndex: 1, offset: .5 }, { transform: 'rotateX(180deg)', zIndex: 1 }], 800, 1900);
-// 4) sale la carta
-anim('mini', [{ transform: 'translateY(0)' }, { transform: 'translateY(-62%)' }], 900, 2700);
-// 5) la carta se hace grande y el sobre se va
-$('sobre').animate([{ transform: 'translate(-50%,-50%)', opacity: 1 }, { transform: 'translate(-50%,10%) scale(.85)', opacity: 0 }],
-  { ...E, fill: 'forwards', duration: 800, delay: 3600 });
-anim('hoja', [{ transform: 'translate(-50%,-62%) scale(.55)', opacity: 0 }, { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }], 900, 3600);
-
-// 6) escribe a mano
-const vel = 40;
-function escribir(id, txt, inicio) {
-  const el = $(id), dur = txt.length * vel;
-  setTimeout(() => {
-    const t0 = performance.now();
-    el.classList.add('typing');
-    (function paso(now) {
-      const p = Math.min((now - t0) / dur, 1);
-      el.textContent = txt.slice(0, Math.round(p * txt.length));
-      if (p < 1) requestAnimationFrame(paso); else el.classList.remove('typing');
-    })(t0);
-  }, inicio);
-  return inicio + dur + 350;
+// pétalos de rosa sobre la mesa
+for (let i = 0; i < 7; i++) {
+  const p = document.createElement('div'); p.className = 'petalo';
+  const lado = i % 2 ? rnd(76, 94) : rnd(2, 22);
+  p.style.left = lado + 'vw'; p.style.top = rnd(55, 96) + 'vh'; p.style.transform = `rotate(${rnd(0, 360)}deg) scale(${rnd(.7, 1.2)})`;
+  document.body.appendChild(p);
 }
-let t = 4500;
-t = escribir('saludo', `${CONFIG.saludo} ${CONFIG.para}:`, t);
-t = escribir('msg', CONFIG.mensaje, t);
-t = escribir('firma', CONFIG.firma, t);
-$('doodle').animate([{ strokeDashoffset: 200 }, { strokeDashoffset: 0 }], { duration: 1200, delay: t, fill: 'both', easing: 'ease-in-out' });
-setTimeout(() => $('repetir').classList.add('visible'), t + 1200);
-if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
+
+let fase = 'cerrada', t = 0, tAbre = -1, tPD = -1, tRasca = -1, tFin = -1, rascando = false, ultimo = null, limpio = 0, cuenta = 0;
+const VEL = 42;
+function abrir() {
+  if (fase !== 'cerrada' || t < 900) return;
+  fase = 'abriendo'; tAbre = t; carta.classList.add('abierta'); K.pista($('pista'), ''); K.vibrar(30);
+}
+function prepararRasca() {
+  const r = oculto.getBoundingClientRect(), d = window.devicePixelRatio || 1, pad = 6;
+  const x = r.left - pad, y = r.top - pad, w = Math.max(r.width, 120) + pad * 2, h = r.height + pad * 2;
+  Object.assign(rc.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
+  rc.width = Math.round(w * d); rc.height = Math.round(h * d); rx.setTransform(d, 0, 0, d, 0, 0);
+  const g = rx.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, '#b8862b'); g.addColorStop(.3, '#f7d774'); g.addColorStop(.5, '#fff3b8'); g.addColorStop(.7, '#e8b84a'); g.addColorStop(1, '#a87a22');
+  rx.fillStyle = g; rx.fillRect(0, 0, w, h);
+  for (let i = 0; i < 90; i++) { rx.fillStyle = `rgba(255,255,255,${rnd(.1, .5)})`; rx.fillRect(rnd(0, w), rnd(0, h), 1.5, 1.5); }
+  rx.fillStyle = 'rgba(120,80,10,.55)'; rx.font = '700 13px Quicksand, sans-serif'; rx.textAlign = 'center'; rx.textBaseline = 'middle';
+  for (let yy = 16; yy < h; yy += 32) rx.fillText(`✦ ${TX.capa} ✦`, w / 2, Math.min(yy, h - 12));
+  rc.__w = w; rc.__h = h; rc.__x = x; rc.__y = y;
+  rx.globalCompositeOperation = 'destination-out';
+}
+function raspar(x, y) {
+  if (fase !== 'rasca') return;
+  const lx = x - rc.__x, ly = y - rc.__y;
+  const a = ultimo || { x: lx, y: ly };
+  rx.lineWidth = 34; rx.lineCap = 'round'; rx.beginPath(); rx.moveTo(a.x, a.y); rx.lineTo(lx, ly); rx.stroke();
+  rx.beginPath(); rx.arc(lx, ly, 17, 0, 7); rx.fill();
+  ultimo = { x: lx, y: ly };
+  if (++cuenta % 6 === 0) medirLimpio();
+  if (Math.random() < .3) K.vibrar(5);
+}
+function medirLimpio() {
+  const d = rx.getImageData(0, 0, rc.width, rc.height).data; let vacios = 0, n = 0;
+  for (let i = 3; i < d.length; i += 4 * 23) { n++; if (d[i] < 40) vacios++; }
+  limpio = vacios / n;
+  if (limpio > .55) descubrir();
+}
+function descubrir() {
+  fase = 'descubierto'; tFin = t; K.vibrar([30, 50, 30, 50, 120]); K.pista($('pista'), '');
+  rc.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, fill: 'forwards' });
+  oculto.animate([{ textShadow: '0 0 0 rgba(255,200,80,0)' }, { textShadow: '0 0 18px rgba(255,190,60,.9)' }, { textShadow: '0 0 0 rgba(255,200,80,0)' }], { duration: 1600 });
+  const r = oculto.getBoundingClientRect(); for (let i = 0; i < 26; i++) chispa(r.left + rnd(0, r.width), r.top + rnd(0, r.height));
+}
+function chispa(x, y) {
+  const s = document.createElement('div');
+  Object.assign(s.style, { position: 'fixed', left: x + 'px', top: y + 'px', width: '6px', height: '6px', borderRadius: '50%', zIndex: 5, pointerEvents: 'none',
+    background: Math.random() < .5 ? '#ffd76a' : '#fff', boxShadow: '0 0 8px #ffd76a' });
+  document.body.appendChild(s);
+  const a = rnd(0, Math.PI * 2), v = rnd(30, 90);
+  s.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${Math.cos(a) * v}px, ${Math.sin(a) * v - 30}px) scale(0)`, opacity: 0 }],
+    { duration: rnd(700, 1200), easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
+}
+K.entrada({
+  abajo: (x, y) => { if (fase === 'cerrada') return abrir(); if (fase === 'rasca') { rascando = true; ultimo = null; raspar(x, y); } },
+  mover: (x, y) => { if (rascando) raspar(x, y); },
+  arriba: () => { rascando = false; ultimo = null; if (fase === 'rasca') medirLimpio(); }
+});
+// video: toca la carta y luego raspa en zigzag
+const centroRasca = () => ({ x: rc.__x + 14, y: rc.__y + 12 });
+const guion = K.guion([
+  { cuando: () => 1500, donde: () => ({ x: innerWidth / 2 + 10, y: innerHeight / 2 + 6 }) },
+  { cuando: () => fase === 'rasca' ? tRasca + 900 : null, dur: 2600, donde: centroRasca,
+    trazo: e => { const filas = 3, f = e * filas, fila = Math.floor(Math.min(f, filas - .001)), u = f - fila, dir = fila % 2 ? 1 - u : u;
+      return { x: rc.__x + 10 + dir * (rc.__w - 20), y: rc.__y + 10 + (fila + .5) / filas * (rc.__h - 20) + Math.sin(e * 60) * 4 }; } }
+], {
+  abajo: (x, y) => { if (fase === 'cerrada') abrir(); else if (fase === 'rasca') { rascando = true; ultimo = null; raspar(x, y); } },
+  mover: (x, y) => { if (rascando) raspar(x, y); },
+  arriba: () => { rascando = false; ultimo = null; if (fase === 'rasca') { medirLimpio(); if (fase === 'rasca') descubrir(); } }
+});
+
+let t0 = null;
+function frame(now) {
+  if (t0 === null) t0 = now;
+  t = now - t0;
+  if (fase === 'cerrada' && t > 900) K.pista($('pista'), TX.abrir);
+  if (fase === 'abriendo') {
+    const ts = tAbre + 1400, tm = ts + (CONFIG.saludo.length + CONFIG.para.length + 2) * VEL + 300;
+    K.escribir($('saludo'), `${CONFIG.saludo} ${CONFIG.para}:`, ts, t, VEL);
+    if (K.escribir($('msg'), CONFIG.mensaje, tm, t, VEL) && tPD < 0) {
+      tPD = t; $('pd').classList.add('ver');
+      setTimeout(() => { prepararRasca(); fase = 'rasca'; tRasca = t; K.pista($('pista'), TX.rasca); }, 700);
+    }
+  }
+  if (fase === 'descubierto') {
+    if (K.escribir($('firma'), CONFIG.firma, tFin + 900, t, 50) && t > tFin + 900 + CONFIG.firma.length * 50 + 800) K.repetir();
+  }
+  guion(t);
+  requestAnimationFrame(frame);
+}
+document.fonts.ready.then(() => requestAnimationFrame(frame));
+K.traducirRepetir();
 </script>
 </body>
 </html>

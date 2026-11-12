@@ -20,8 +20,8 @@
   .btn { position: fixed; border: 0; border-radius: 999px; font: 700 20px 'Quicksand', sans-serif; padding: 14px 34px; cursor: pointer; }
   #si { background: linear-gradient(135deg, #ff4d8d, #ff7aa8); color: #fff; box-shadow: 0 8px 26px rgba(255,77,141,.45); transform-origin: center; }
   #no { background: #f2e9ee; color: #7a3a55; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
-  #final { position: fixed; left: 0; right: 0; top: 62vh; text-align: center; padding: 0 26px; opacity: 0; transition: opacity 1s; }
-  #final.visible { opacity: 1; }
+  #final { position: fixed; left: 0; right: 0; top: 62vh; text-align: center; padding: 0 26px; opacity: 0; transition: opacity 1s; pointer-events: none; }
+  #final.visible { opacity: 1; pointer-events: auto; }
   #sabia { font-size: clamp(22px, 6vw, 28px); font-weight: 700; color: #fff; }
   #msg { font-size: clamp(15px, 4.2vw, 19px); line-height: 1.55; margin-top: 12px; min-height: 3.2em; }
   #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(22px, 6.0vw, 29px); color: #ff8fb8; margin-top: 6px; min-height: 1.3em; }
@@ -33,7 +33,35 @@
   #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(255,77,141,.12); border: 1px solid rgba(255,77,141,.45);
     color: #ff8fb8; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
   #repetir.visible { opacity: 1; }
+  /* contrato de amor */
+  #contrato { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 18px; background: rgba(13,4,16,.6); backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity .5s; }
+  #contrato.ver { opacity: 1; pointer-events: auto; }
+  #contrato.fuera { opacity: 0; pointer-events: none; transition: opacity .8s .2s; }
+  .hoja { position: relative; width: min(90vw, 380px); background: linear-gradient(170deg, #fffaf2, #fbefe2); color: #4a1d33; border-radius: 10px; padding: 22px 20px 18px;
+    box-shadow: 0 24px 70px rgba(0,0,0,.55); border: 1px solid #e9cfc0; transform: translateY(40px) scale(.85) rotate(-2deg); transition: transform .7s cubic-bezier(.2,1.4,.4,1); }
+  #contrato.ver .hoja { transform: none; }
+  #contrato.fuera .hoja { transform: translateY(-60px) scale(.7) rotate(4deg); transition: transform .9s ease-in; }
+  .hoja::before { content: ''; position: absolute; inset: 7px; border: 1.5px dashed rgba(194,24,91,.35); border-radius: 6px; pointer-events: none; }
+  .hoja h3 { font: 800 15px 'Quicksand', sans-serif; letter-spacing: .22em; text-align: center; color: #c2185b; }
+  .hoja .yo { font: 700 clamp(20px, 5.8vw, 24px) 'Dancing Script', cursive; text-align: center; margin: 8px 0 6px; overflow-wrap: anywhere; }
+  .hoja ol { font-size: clamp(13px, 3.7vw, 15px); line-height: 1.45; padding-left: 22px; }
+  .hoja li { margin: 5px 0; opacity: 0; transform: translateX(-10px); transition: opacity .5s, transform .5s; overflow-wrap: anywhere; }
+  .hoja li.ver { opacity: 1; transform: none; }
+  .zona { position: relative; margin-top: 12px; height: 104px; border-radius: 8px; background: rgba(255,255,255,.6); }
+  #lienzoFirma { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; pointer-events: auto; }
+  .zona .linea { position: absolute; left: 14px; right: 14px; bottom: 26px; border-bottom: 1.5px solid #c9a99a; pointer-events: none; }
+  .zona small { position: absolute; left: 14px; bottom: 6px; font: 700 11px 'Quicksand', sans-serif; letter-spacing: .12em; color: #a0708a; pointer-events: none; }
+  .zona .x { position: absolute; left: 14px; bottom: 30px; font: 700 18px 'Quicksand', sans-serif; color: #c9a99a; pointer-events: none; }
+  #pidefirma { text-align: center; font-weight: 700; font-size: 14px; color: #c2185b; margin-top: 10px; animation: respira2 1.6s ease-in-out infinite; }
+  @keyframes respira2 { 50% { transform: scale(1.06); } }
+  #sello { position: absolute; right: 16px; bottom: 34px; padding: 6px 12px; border: 3px solid #e0284f; border-radius: 8px; color: #e0284f; font: 800 20px 'Quicksand', sans-serif;
+    letter-spacing: .1em; transform: rotate(-14deg) scale(3); opacity: 0; pointer-events: none; mix-blend-mode: multiply; }
+  #sello.ver { animation: sello .45s cubic-bezier(.3,1.6,.5,1) forwards; }
+  @keyframes sello { to { transform: rotate(-14deg) scale(1); opacity: .9; } }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -65,6 +93,9 @@
 <div id="final"><div id="sabia">¡Sabía que dirías que sí! 💖</div><div id="msg"></div><div id="firma"></div></div>
 <svg id="cursor" viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M5 2 L5 20 L9.5 15.5 L12.5 22 L15.5 20.7 L12.6 14.3 L19 14.3 Z"/></svg>
 <div id="onda"></div>
+<div id="contrato"><div class="hoja"><h3></h3><p class="yo"></p><ol id="clausulas"></ol>
+  <div class="zona"><canvas id="lienzoFirma"></canvas><span class="x">✕</span><span class="linea"></span><small></small></div>
+  <div id="pidefirma"></div><div id="sello"></div></div></div>
 <button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&pregunta=...&msg=...&de=... */
@@ -74,8 +105,13 @@ const CONFIG = {
   para:     q.get('para')     || (EN ? "Emily" : "Andrea"),
   pregunta: q.get('pregunta') || (EN ? "will you be my girlfriend?" : "¿quieres ser mi novia?"),
   mensaje:  q.get('msg')      || (EN ? "I promise to make you laugh every day and love you more with each one." : "Prometo hacerte reír todos los días y quererte más cada uno de ellos."),
-  firma:    q.get('de')       || (EN ? "Your boyfriend now, Sebastian" : "Tu ahora novio, Sebastián")
+  firma:    q.get('de')       || (EN ? "Your boyfriend now, Sebastian" : "Tu ahora novio, Sebastián"),
+  clausulas: (q.get('clausulas') || (EN ? "Unlimited hugs, no expiry date|The right to steal my food (just a little)|Choosing each other every day, even the hard ones"
+                                       : "Abrazos ilimitados, sin fecha de vencimiento|Derecho a robarme la comida (solo un poquito)|Elegirnos todos los días, incluso los difíciles"))
+              .split('|').map(s => s.trim().slice(0, 90)).filter(Boolean).slice(0, 4)
 };
+const TC = EN ? { titulo: 'LOVE CONTRACT 💍', yo: n => `I, ${n}, agree to:`, firma: 'SIGNATURE', pide: 'Sign here with your finger ✍️', sello: 'APPROVED' }
+              : { titulo: 'CONTRATO DE AMOR 💍', yo: n => `Yo, ${n}, acepto:`, firma: 'FIRMA', pide: 'Firma aquí con tu dedo ✍️', sello: 'APROBADO' };
 const VIDEO = q.has('video');          // en el video, un cursor simula a la persona
 const EXCUSAS = EN ? ["Are you sure? 🥺", "Think again…", "That button doesn't work 😌", "Try the other one 💖", "You have no choice 😇"]
                    : ["¿Segura? 🥺", "Piénsalo bien…", "Ese botón no funciona 😌", "Mejor el otro 💖", "No tienes opción 😇"];
@@ -135,8 +171,51 @@ function aceptar(t) {
   no.style.opacity = 0; no.style.pointerEvents = 'none';
   si.style.transition = 'opacity .6s'; si.style.opacity = 0;
   $('caja').style.transition = 'top 1s'; $('caja').style.top = '30%';
-  $('final').classList.add('visible');
+  setTimeout(mostrarContrato, 1300);
 }
+/* ---------- contrato de amor: lo firma con el dedo ---------- */
+const lf = $('lienzoFirma'), fx = lf.getContext('2d');
+let contrato = false, firmado = false, tFirmado = null, trazando = false, ultimoF = null, largo = 0;
+function mostrarContrato() {
+  contrato = true;
+  document.querySelector('.hoja h3').textContent = TC.titulo;
+  document.querySelector('.hoja .yo').textContent = TC.yo(CONFIG.para);
+  document.querySelector('.zona small').textContent = TC.firma;
+  $('pidefirma').textContent = TC.pide; $('sello').textContent = TC.sello;
+  const ol = $('clausulas'); ol.textContent = '';
+  CONFIG.clausulas.forEach((c, i) => { const li = document.createElement('li'); li.textContent = c; ol.appendChild(li); setTimeout(() => li.classList.add('ver'), 500 + i * 450); });
+  $('contrato').classList.add('ver');
+  setTimeout(() => { const r = lf.getBoundingClientRect(), d = window.devicePixelRatio || 1; lf.width = r.width * d; lf.height = r.height * d; fx.setTransform(d, 0, 0, d, 0, 0); }, 750);
+}
+function aLocal(x, y) { const r = lf.getBoundingClientRect(); return { x: x - r.left, y: y - r.top }; }
+function firmaAbajo(x, y) { if (!contrato || firmado) return; trazando = true; ultimoF = aLocal(x, y); }
+function firmaMover(x, y) {
+  if (!trazando) return;
+  const p = aLocal(x, y);
+  fx.strokeStyle = '#2b1640'; fx.lineWidth = 3; fx.lineCap = 'round'; fx.lineJoin = 'round';
+  fx.beginPath(); fx.moveTo(ultimoF.x, ultimoF.y); fx.lineTo(p.x, p.y); fx.stroke();
+  largo += Math.hypot(p.x - ultimoF.x, p.y - ultimoF.y); ultimoF = p;
+}
+function firmaArriba() { trazando = false; if (contrato && !firmado && largo > 180) firmar(); }
+function firmar() {
+  firmado = true; tFirmado = ahora; $('pidefirma').style.visibility = 'hidden';
+  $('sello').classList.add('ver'); K.vibrar([20, 40, 160]);
+  setTimeout(() => {
+    const r = document.querySelector('.hoja').getBoundingClientRect();
+    for (let i = 0; i < 120; i++) { const a = Math.random() * Math.PI * 2, v = 2 + Math.random() * 7;
+      confeti.push({ x: r.left + r.width / 2, y: r.top + r.height / 2, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, s: 7 + Math.random() * 12, r: Math.random() * 6, h: 320 + Math.random() * 40, vida: 2200 + Math.random() * 1600, t0: ahora }); }
+  }, 300);
+  setTimeout(() => { $('contrato').classList.add('fuera'); $('final').classList.add('visible'); }, 1900);
+}
+lf.addEventListener('pointerdown', e => { e.preventDefault(); lf.setPointerCapture(e.pointerId); firmaAbajo(e.clientX, e.clientY); });
+lf.addEventListener('pointermove', e => firmaMover(e.clientX, e.clientY));
+lf.addEventListener('pointerup', firmaArriba); lf.addEventListener('pointercancel', firmaArriba);
+// video: el cursor firma con una «letra» de garabatos
+const zonaFirma = () => lf.getBoundingClientRect();
+const guionFirma = K.guion([{ viaje: 700, cuando: () => contrato && !firmado ? ahora + 2200 : null, dur: 1900,
+  donde: () => { const r = zonaFirma(); return { x: r.left + 26, y: r.top + 58 }; },
+  trazo: e => { const r = zonaFirma(), u = e * 6 * Math.PI; return { x: r.left + 26 + e * (r.width * .7) + Math.cos(u) * 9, y: r.top + 56 - Math.sin(u) * 16 - Math.sin(e * Math.PI) * 6 }; } }],
+  { abajo: firmaAbajo, mover: firmaMover, arriba: firmaArriba });
 si.addEventListener('click', () => aceptar(ahora));
 
 function corazonPath(x, y, s) {
@@ -192,18 +271,21 @@ function frame(now) {
   ctx.clearRect(0, 0, innerWidth, innerHeight);
   if (aceptado) {
     for (const c of confeti) {
-      const e = t - tSi; if (e > c.vida) continue;
+      const e = t - (c.t0 ?? tSi); if (e < 0 || e > c.vida) continue;
       const k = e / 16.67;
       const x = c.x + c.vx * k * 1.6 + Math.sin(e / 300 + c.r) * 10;
       const y = c.y + c.vy * k * 1.6 + .5 * .09 * k * k;
       ctx.fillStyle = `hsla(${c.h},95%,68%,${1 - e / c.vida})`;
       corazonPath(x, y, c.s);
     }
-    const T_MSG = tSi + 1300, T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400;
-    escribir($('msg'), CONFIG.mensaje, T_MSG, t);
-    escribir($('firma'), CONFIG.firma, T_FIRMA, t);
-    if (t > T_FIRMA + CONFIG.firma.length * vel + 400) $('repetir').classList.add('visible');
+    if (firmado) {
+      const T_MSG = tFirmado + 2600, T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400;
+      escribir($('msg'), CONFIG.mensaje, T_MSG, t);
+      escribir($('firma'), CONFIG.firma, T_FIRMA, t);
+      if (t > T_FIRMA + CONFIG.firma.length * vel + 400) $('repetir').classList.add('visible');
+    }
   }
+  guionFirma(t);
   requestAnimationFrame(frame);
 }
 setTimeout(() => requestAnimationFrame(frame), 250);

@@ -4,29 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💌 Te programé algo</title>
-<!-- AI Romantic Code · Pieza #005 · Árbol de corazones con contador -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<!-- AI Romantic Code · Pieza #005 · Árbol: sacúdelo y caen los momentos de la pareja; luego el contador en vivo -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; overflow: hidden; background: #fff4f1; }
+  html, body { height: 100%; overflow: hidden; background: #ffe9ef; touch-action: none; user-select: none; -webkit-user-select: none; }
+  body { font-family: 'Quicksand', sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; --acento: #c2185b; --pista: #7a1840; }
   canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
-  .texto { position: fixed; left: 0; right: 0; top: 64vh; text-align: center; padding: 0 24px; color: #5b2333; font-family: 'Quicksand', sans-serif; }
-  #para { font-family: 'Dancing Script', cursive; font-size: clamp(30px, 8vw, 42px); color: #c2185b; min-height: 1.2em; }
-  .contador { margin-top: 6px; opacity: 0; transition: opacity 1s; }
-  .contador.visible { opacity: 1; }
-  .etiqueta { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: #a0526a; }
-  .nums { display: flex; justify-content: center; gap: 12px; margin-top: 6px; }
-  .nums div { min-width: 58px; }
-  .nums b { display: block; font-size: clamp(22px, 6vw, 30px); color: #c2185b; font-variant-numeric: tabular-nums; }
-  .nums span { font-size: 11px; color: #a0526a; text-transform: uppercase; letter-spacing: 1px; }
-  #msg { font-size: clamp(15px, 4.2vw, 19px); line-height: 1.5; margin-top: 14px; min-height: 3em; }
-  #firma { font-family: 'Dancing Script', cursive; font-size: clamp(22px, 6vw, 30px); color: #c2185b; margin-top: 4px; min-height: 1.3em; }
-  .typing::after { content: '|'; color: #c2185b; animation: blink .8s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(194,24,91,.08); border: 1px solid rgba(194,24,91,.35);
-    color: #c2185b; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
-  #repetir.visible { opacity: 1; }
+  #pista { text-shadow: 0 1px 0 rgba(255,255,255,.8); }
+  /* tarjeta de cada momento (tipo polaroid) */
+  .momento { position: fixed; left: 50%; top: 61vh; z-index: 3; width: min(78vw, 320px); padding: 14px 16px 16px; text-align: center; background: #fff;
+    border-radius: 6px; box-shadow: 0 14px 34px rgba(120,20,60,.25); color: #5a1830; transform: translate(-50%, 30px) rotate(var(--r)) scale(.6); opacity: 0;
+    transition: transform .7s cubic-bezier(.2,1.5,.4,1), opacity .5s; pointer-events: none; }
+  .momento.ver { transform: translate(-50%, 0) rotate(var(--r)) scale(1); opacity: 1; }
+  .momento.fuera { transform: translate(calc(-50% + var(--dx)), -120px) rotate(calc(var(--r) * 3)) scale(.5); opacity: 0; transition: transform 1s ease-in, opacity 1s; }
+  .momento small { display: block; font: 700 11px 'Quicksand', sans-serif; letter-spacing: .22em; color: #e0457b; margin-bottom: 6px; }
+  .momento p { font: 700 clamp(22px, 6.4vw, 27px) / 1.2 'Dancing Script', cursive; overflow-wrap: anywhere; }
+  .momento::before { content: ''; position: absolute; left: 50%; top: -9px; width: 70px; height: 18px; transform: translateX(-50%) rotate(-3deg);
+    background: rgba(255,182,206,.75); }
+  .texto { position: fixed; left: 0; right: 0; top: 60vh; text-align: center; padding: 0 22px; color: #5a1830; z-index: 2; }
+  #para { font: 700 clamp(30px, 8.6vw, 40px) 'Dancing Script', cursive; color: #c2185b; opacity: 0; transform: translateY(10px); transition: opacity 1s, transform 1s; overflow-wrap: anywhere; }
+  #para.ver { opacity: 1; transform: none; }
+  #contador { opacity: 0; transition: opacity 1s; margin-top: 4px; }
+  #contador.ver { opacity: 1; }
+  .etiqueta { font: 700 11px 'Quicksand', sans-serif; letter-spacing: .25em; color: #e0457b; text-transform: uppercase; }
+  .nums { display: flex; justify-content: center; gap: 12px; margin-top: 4px; }
+  .nums div { min-width: 54px; }
+  .nums b { display: block; font: 700 clamp(22px, 6.5vw, 28px) 'Quicksand', sans-serif; color: #7a1840; font-variant-numeric: tabular-nums; }
+  .nums span { font-size: 11px; color: #a04a6a; }
+  #msg { font-size: clamp(15px, 4.2vw, 18px); line-height: 1.5; margin-top: 10px; min-height: 3em; font-weight: 600; }
+  #firma { font: 700 clamp(22px, 6vw, 28px) 'Dancing Script', cursive; color: #c2185b; margin-top: 4px; min-height: 1.3em; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -49,7 +59,7 @@
 <canvas id="c"></canvas>
 <div class="texto">
   <div id="para"></div>
-  <div class="contador" id="contador">
+  <div id="contador">
     <div class="etiqueta" data-en="Together for">Llevamos juntos</div>
     <div class="nums">
       <div><b id="d">0</b><span data-en="days">días</span></div>
@@ -61,126 +71,142 @@
   <div id="msg"></div>
   <div id="firma"></div>
 </div>
+<div id="pista"></div>
 <button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
-/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&desde=2024-02-14&msg=...&de=... */
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&desde=2024-02-14&momentos=Uno|Dos|Tres&msg=...&de=... */
 const q = new URLSearchParams(location.search);
 const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
   para:    q.get('para')  || (EN ? "Ava" : "Gabriela"),
   desde:   q.get('desde') || "2024-02-14",          // fecha en que empezó todo (AAAA-MM-DD)
+  momentos: (q.get('momentos') || (EN ? "The day we met 💫|Our first date ☕|Every single day since then ❤️" : "El día que nos conocimos 💫|Nuestra primera cita ☕|Cada uno de los días desde entonces ❤️"))
+              .split('|').map(s => s.trim().slice(0, 70)).filter(Boolean).slice(0, 4),
   mensaje: q.get('msg')   || (EN ? "Every day next to you is my favorite place. And I plan to keep counting." : "Cada día a tu lado es mi lugar favorito. Y pienso seguir contando."),
   firma:   q.get('de')    || (EN ? "I love you, Andrew" : "Te amo, Andrés")
 };
+if (!CONFIG.momentos.length) CONFIG.momentos = ['❤️'];
+const TX = EN ? { pista: 'Shake the tree 🌳 (tap it)', otra: 'Shake it again 🍃', cap: n => `MEMORY ${n}`, para: 'For ' }
+              : { pista: 'Sacude el árbol 🌳 (tócalo)', otra: 'Sacúdelo otra vez 🍃', cap: n => `MOMENTO ${n}`, para: 'Para ' };
+if (EN) document.querySelectorAll('[data-en]').forEach(e => { if (e.id !== 'repetir') e.textContent = e.dataset.en; });
+const { clamp, easeOut, rnd } = K;
+const L = K.lienzo('c'), ctx = L.ctx;
+const $ = id => document.getElementById(id);
 
-const cv = document.getElementById('c'), ctx = cv.getContext('2d');
-const DPR = window.devicePixelRatio || 1, W = innerWidth, H = innerHeight;
-cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-const clamp = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
-const easeOut = t => 1 - Math.pow(1 - t, 3);
-const easeBack = t => { const c = 2.2; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
-
-// --- Ramas (recursivas) ---
-const ramas = [];
-function rama(x, y, ang, largo, grosor, prof, inicio) {
+/* ---------- árbol procedural (siempre el mismo dibujo: semilla fija) ---------- */
+let semilla = 7; const azar = () => (semilla = (semilla * 16807) % 2147483647) / 2147483647;
+const geo = () => { const H = L.H, W = L.W; return { bx: W / 2, by: H * .58, alto: H * .36, W, H }; };
+const ramas = [], hojas = [];
+(function crecer(x, y, ang, largo, prof, t0) {
   const x2 = x + Math.cos(ang) * largo, y2 = y + Math.sin(ang) * largo;
-  const dur = 260 + prof * 25;
-  ramas.push({ x, y, x2, y2, grosor, inicio, dur });
-  if (prof >= 7) return;
-  const fin = inicio + dur * 0.85;
-  const n = prof < 2 ? 2 : (Math.random() < 0.3 ? 3 : 2);
-  for (let i = 0; i < n; i++) {
-    const giro = (i - (n - 1) / 2) * (0.42 + Math.random() * 0.22) + (Math.random() - 0.5) * 0.2;
-    rama(x2, y2, ang + giro, largo * (0.7 + Math.random() * 0.1), grosor * 0.68, prof + 1, fin);
+  ramas.push({ x, y, x2, y2, prof, t0, grosor: Math.max(1.2, (7 - prof) * 2.2) });
+  if (prof >= 6) { for (let i = 0; i < 3; i++) hojas.push({ x: x2 + (azar() - .5) * .08, y: y2 + (azar() - .5) * .08, s: .028 + azar() * .02, col: ['#ff4d8d', '#ff8fb8', '#e0457b', '#ffb3c9', '#c2185b'][(azar() * 5) | 0], t0: t0 + 300 + azar() * 600, cae: false }); return; }
+  const n = prof < 2 ? 2 : 2 + (azar() < .4 ? 1 : 0);
+  for (let i = 0; i < n; i++) crecer(x2, y2, ang + (i - (n - 1) / 2) * (.5 + azar() * .3) + (azar() - .5) * .25, largo * (.7 + azar() * .12), prof + 1, t0 + 260);
+})(0, 0, -Math.PI / 2, .3, 0, 0);
+// coordenadas relativas: x en unidades de alto, origen en la base del tronco
+const caidas = [];
+let fase = 'crece', t = 0, sacudida = 0, tSac = -1, vistos = 0, tarjetaAct = null, tFinal = -1;
+
+function aPantalla(x, y, sway) {
+  const { bx, by, alto } = geo(), h = -y;   // h: altura relativa (0 = base)
+  return { x: bx + x * alto + sway * h * h * 60, y: by + y * alto };
+}
+function sacudir() {
+  if (fase !== 'sacude' || t - tSac < 600) return;
+  tSac = t; sacudida = 1; K.vibrar([20, 30, 20]);
+  // caen corazones
+  const libres = hojas.filter(h => !h.cae);
+  for (let i = 0; i < Math.min(14, libres.length); i++) {
+    const h = libres[(Math.random() * libres.length) | 0]; if (h.cae) continue;
+    h.cae = true; const p = aPantalla(h.x, h.y, 0);
+    caidas.push({ x: p.x, y: p.y, vx: rnd(-1, 1), vy: rnd(-.5, .5), s: h.s * geo().alto, col: h.col, f: rnd(0, 6), rot: rnd(-.5, .5) });
   }
+  if (vistos < CONFIG.momentos.length) mostrarMomento(vistos);
 }
-const baseY = H * 0.6, tronco = H * 0.15;
-rama(W / 2, baseY, -Math.PI / 2, tronco, Math.max(W * 0.035, 10), 0, 300);
+function mostrarMomento(i) {
+  if (tarjetaAct) { const v = tarjetaAct; v.classList.remove('ver'); v.classList.add('fuera'); setTimeout(() => v.remove(), 1100); }
+  const c = document.createElement('div'); c.className = 'momento';
+  c.style.setProperty('--r', (i % 2 ? 3 : -3) + 'deg'); c.style.setProperty('--dx', (i % 2 ? 120 : -120) + 'px');
+  const sm = document.createElement('small'); sm.textContent = TX.cap(i + 1);
+  const p = document.createElement('p'); p.textContent = CONFIG.momentos[i];
+  c.appendChild(sm); c.appendChild(p); document.body.appendChild(c);
+  setTimeout(() => c.classList.add('ver'), 350);
+  tarjetaAct = c; vistos++;
+  K.pista($('pista'), '');
+  if (vistos < CONFIG.momentos.length) setTimeout(() => { if (fase === 'sacude') K.pista($('pista'), TX.otra); }, 1500);
+  else setTimeout(final, 2600);
+}
+function final() {
+  fase = 'final'; tFinal = t;
+  if (tarjetaAct) { tarjetaAct.classList.remove('ver'); tarjetaAct.classList.add('fuera'); }
+  $('para').textContent = TX.para + CONFIG.para; $('para').classList.add('ver');
+  setTimeout(() => $('contador').classList.add('ver'), 700);
+  K.vibrar([30, 50, 30, 50, 100]);
+  // lluvia de corazones de celebración
+  for (let i = 0; i < 40; i++) caidas.push({ x: rnd(0, L.W), y: rnd(-L.H * .5, -10), vx: rnd(-.6, .6), vy: rnd(0, 1), s: rnd(8, 16), col: ['#ff4d8d', '#ff8fb8', '#ffb3c9'][i % 3], f: rnd(0, 6), rot: rnd(-.5, .5) });
+}
+K.entrada({ abajo: sacudir });
+const arbolPunto = () => { const { bx, by, alto } = geo(); return { x: bx + 10, y: by - alto * .55 }; };
+const guion = K.guion(CONFIG.momentos.map((_, i) => ({ viaje: i ? 600 : 800, cuando: () => i === 0 ? 3600 : (vistos === i && fase === 'sacude' ? tSac + 2300 : null), donde: arbolPunto })), { abajo: sacudir });
 
-// --- Copa de corazones (dentro de una silueta de corazón) ---
-const COLORES = ['#e91e63', '#f06292', '#ff4d6d', '#c9184a', '#ff8fab', '#ffb3c6', '#d81b60'];
-const copa = [];
-const cx = W / 2, cy = H * 0.3, esc = Math.min(W * 0.4, H * 0.22);
-while (copa.length < 520) {
-  const x = Math.random() * 2.4 - 1.2, y = Math.random() * 2.4 - 1.2;
-  if (Math.pow(x * x + y * y - 1, 3) - x * x * Math.pow(y, 3) <= 0) {
-    copa.push({ x: cx + x * esc, y: cy - y * esc, s: 5 + Math.random() * 8, c: COLORES[(Math.random() * COLORES.length) | 0],
-      r: (Math.random() - 0.5) * 0.8, t: 2600 + Math.random() * 2000 });
-  }
-}
-const caen = [];
-
-function corazon(x, y, s, rot, color) {
-  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s / 16, s / 16);
-  ctx.fillStyle = color; ctx.beginPath();
-  ctx.moveTo(0, 5); ctx.bezierCurveTo(-8, -1, -8, -9, -3, -9); ctx.bezierCurveTo(-1, -9, 0, -7, 0, -6);
-  ctx.bezierCurveTo(0, -7, 1, -9, 3, -9); ctx.bezierCurveTo(8, -9, 8, -1, 0, 5); ctx.fill(); ctx.restore();
-}
-
-// --- Texto y contador ---
-const vel = 42, T_PARA = 4400, T_CONT = 5200, T_MSG = 5900;
-const tPara = (EN ? 'For ' : 'Para ') + CONFIG.para;
-if (EN) document.querySelectorAll('[data-en]').forEach(e => e.textContent = e.dataset.en);
-const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400, T_FIN = T_FIRMA + CONFIG.firma.length * vel + 400;
-function escribir(el, txt, t0, t) {
-  const p = clamp((t - t0) / (txt.length * vel));
-  el.textContent = txt.slice(0, Math.round(p * txt.length));
-  el.classList.toggle('typing', p > 0 && p < 1);
-}
 const desde = new Date(CONFIG.desde + 'T00:00:00').getTime();
 function contar() {
-  let s = Math.max(0, Math.floor((Date.now() - desde) / 1000));
-  const d = Math.floor(s / 86400); s -= d * 86400;
-  const h = Math.floor(s / 3600); s -= h * 3600;
-  const m = Math.floor(s / 60); s -= m * 60;
-  [['d', d], ['h', h], ['m', m], ['s', s]].forEach(([id, v]) => document.getElementById(id).textContent = v);
+  let s = Math.max(0, Math.floor((Date.now() - (isNaN(desde) ? Date.now() : desde)) / 1000));
+  $('d').textContent = Math.floor(s / 86400).toLocaleString(); $('h').textContent = Math.floor(s % 86400 / 3600);
+  $('m').textContent = Math.floor(s % 3600 / 60); $('s').textContent = s % 60;
 }
 
 let t0 = null;
 function frame(now) {
   if (t0 === null) t0 = now;
-  const t = now - t0;
-  ctx.clearRect(0, 0, W, H);
-  // suelo
-  const g = ctx.createRadialGradient(W / 2, baseY + 6, 0, W / 2, baseY + 6, W * 0.4);
-  g.addColorStop(0, 'rgba(160,82,106,.25)'); g.addColorStop(1, 'rgba(160,82,106,0)');
-  ctx.fillStyle = g; ctx.fillRect(0, baseY - 20, W, 60);
-  // ramas
-  ctx.lineCap = 'round'; ctx.strokeStyle = '#6d3b2a';
+  t = now - t0;
+  const { bx, by, alto, W, H } = geo();
+  // cielo de amanecer rosado
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#ffd1dc'); g.addColorStop(.5, '#ffe9ef'); g.addColorStop(1, '#fff6f0');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const sg = ctx.createRadialGradient(W * .5, by - alto * .4, 0, W * .5, by - alto * .4, alto * 1.2);
+  sg.addColorStop(0, 'rgba(255,255,255,.75)'); sg.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = sg; ctx.fillRect(0, 0, W, H);
+  // colina
+  ctx.fillStyle = '#b9e4b0'; ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, by + 30); ctx.quadraticCurveTo(W / 2, by - 30, W, by + 30); ctx.lineTo(W, H); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(0, by + 40, W, H);
+
+  // sacudida (oscilación amortiguada)
+  sacudida *= .965;
+  const sway = Math.sin(t / 900) * .004 + sacudida * Math.sin((t - tSac) / 55) * .05;
+  const tr = Math.max(0, t - 300);
+  ctx.lineCap = 'round';
   for (const r of ramas) {
-    const p = easeOut(clamp((t - r.inicio) / r.dur));
-    if (p <= 0) continue;
-    ctx.lineWidth = r.grosor;
-    ctx.beginPath(); ctx.moveTo(r.x, r.y); ctx.lineTo(r.x + (r.x2 - r.x) * p, r.y + (r.y2 - r.y) * p); ctx.stroke();
+    const e = clamp((tr - r.t0) / 260); if (e <= 0) continue;
+    const a = aPantalla(r.x, r.y, sway), b = aPantalla(r.x + (r.x2 - r.x) * e, r.y + (r.y2 - r.y) * e, sway);
+    ctx.strokeStyle = r.prof < 3 ? '#6d3b2a' : '#8a4e36'; ctx.lineWidth = r.grosor * alto / 300;
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
   }
-  // corazones de la copa
-  for (const h of copa) {
-    const p = clamp((t - h.t) / 450);
-    if (p <= 0) continue;
-    const lat = 1 + 0.06 * Math.sin(t / 300 + h.x);
-    corazon(h.x, h.y, h.s * easeBack(p) * lat, h.r, h.c);
+  for (const h of hojas) {
+    if (h.cae) continue;
+    const e = easeOut(clamp((tr - h.t0) / 500)); if (e <= 0) continue;
+    const p = aPantalla(h.x, h.y, sway);
+    ctx.fillStyle = h.col; K.corazon(ctx, p.x, p.y, h.s * alto * e * (1 + (fase === 'final' ? .12 * Math.sin(t / 300 + h.x * 40) : 0)));
   }
-  // algunos caen
-  if (t > 5000 && Math.random() < 0.08) {
-    const h = copa[(Math.random() * copa.length) | 0];
-    caen.push({ x: h.x, y: h.y, s: h.s, c: h.c, n: t, f: Math.random() * 6 });
+  for (let i = caidas.length - 1; i >= 0; i--) {
+    const c = caidas[i]; c.vy = Math.min(c.vy + .05, 1.6); c.y += c.vy; c.x += c.vx + Math.sin(t / 400 + c.f) * .7;
+    if (c.y > H + 30) { caidas.splice(i, 1); continue; }
+    ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.rot + Math.sin(t / 500 + c.f) * .4); ctx.fillStyle = c.col; K.corazon(ctx, 0, 0, c.s); ctx.restore();
   }
-  for (let i = caen.length - 1; i >= 0; i--) {
-    const c = caen[i], e = t - c.n, y = c.y + e * 0.09;
-    if (y > H + 20) { caen.splice(i, 1); continue; }
-    ctx.globalAlpha = clamp(1 - (y - baseY) / (H * 0.4), 0.15, 1);
-    corazon(c.x + Math.sin(e / 400 + c.f) * 18 + e * 0.02, y, c.s, Math.sin(e / 500) * 0.6, c.c);
-    ctx.globalAlpha = 1;
+  if (fase === 'crece' && t > 2900) { fase = 'sacude'; K.pista($('pista'), TX.pista); }
+  if (fase === 'final') {
+    contar();
+    const tm = tFinal + 1600, tf = tm + CONFIG.mensaje.length * 42 + 400;
+    K.escribir($('msg'), CONFIG.mensaje, tm, t, 42);
+    if (K.escribir($('firma'), CONFIG.firma, tf, t, 45) && t > tf + CONFIG.firma.length * 45 + 700) K.repetir();
   }
-  escribir(document.getElementById('para'), tPara, T_PARA, t);
-  if (t > T_CONT) { document.getElementById('contador').classList.add('visible'); contar(); }
-  escribir(document.getElementById('msg'), CONFIG.mensaje, T_MSG, t);
-  escribir(document.getElementById('firma'), CONFIG.firma, T_FIRMA, t);
-  if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
+  guion(t);
   requestAnimationFrame(frame);
 }
 setTimeout(() => requestAnimationFrame(frame), 200);
-if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
+K.traducirRepetir();
 </script>
 </body>
 </html>

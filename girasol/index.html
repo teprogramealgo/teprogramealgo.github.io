@@ -4,56 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💌 Te programé algo</title>
-<!-- AI Romantic Code · Pieza #001 · Girasol -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+<!-- AI Romantic Code · Pieza #001 · Girasol: deshójalo (me quiere… no me quiere… ¡me quiere!) -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    background: radial-gradient(ellipse at 50% 30%, #1d2657 0%, #0b1026 60%, #05070f 100%);
-    color: #fff8e1;
-    font-family: 'Quicksand', sans-serif;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    overflow: hidden; min-height: 100vh; position: relative;
-  }
-  .star {
-    position: absolute; background: #fff; border-radius: 50%;
-    animation: twinkle var(--d) ease-in-out infinite; animation-delay: var(--delay);
-  }
-  @keyframes twinkle { 0%,100% { opacity: .15; } 50% { opacity: .9; } }
-
-  #scene { height: 60vh; max-width: 92vw; overflow: visible; z-index: 2; }
-
-  .mensaje { text-align: center; padding: 0 24px; max-width: 520px; z-index: 2; min-height: 30vh; }
-  #para {
-    font-family: 'Dancing Script', cursive; font-size: clamp(30px, 8vw, 46px);
-    color: #ffd54a; text-shadow: 0 0 18px rgba(255, 196, 0, .55); min-height: 1.2em;
-  }
-  #msg { font-size: clamp(16px, 4.3vw, 20px); line-height: 1.55; margin-top: 10px; min-height: 3em; }
-  #firma {
-    font-family: 'Dancing Script', cursive; font-size: clamp(20px, 5.5vw, 28px);
-    color: #ffe082; margin-top: 14px; min-height: 1.3em;
-  }
-  .typing::after { content: '|'; margin-left: 2px; animation: blink .8s steps(1) infinite; color: #ffd54a; }
-  @keyframes blink { 50% { opacity: 0; } }
-
-  .petalo-cae {
-    position: absolute; top: -30px; width: 12px; height: 26px; z-index: 1;
-    background: linear-gradient(#ffd54a, #f5a300); border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
-    opacity: .85; animation: caer var(--t) linear forwards;
-  }
-  @keyframes caer {
-    to { transform: translate(var(--x), 110vh) rotate(var(--r)); opacity: .2; }
-  }
-
-  #repetir {
-    position: fixed; bottom: 16px; right: 16px; z-index: 5;
-    background: rgba(255, 213, 74, .12); border: 1px solid rgba(255, 213, 74, .4);
-    color: #ffd54a; font-family: inherit; font-size: 14px; padding: 8px 14px;
-    border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s;
-  }
-  #repetir.visible { opacity: 1; }
+  html, body { height: 100%; overflow: hidden; background: #2b1a4a; touch-action: none; user-select: none; -webkit-user-select: none; }
+  body { font-family: 'Quicksand', sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; --acento: #ffd54a; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+  #grande { position: fixed; left: 0; right: 0; top: 13vh; text-align: center; font: 700 clamp(34px, 11vw, 52px) 'Quicksand', sans-serif; color: #fff;
+    letter-spacing: .02em; text-shadow: 0 4px 0 #e0901b, 0 0 30px rgba(255,200,60,.9); opacity: 0; transform: scale(.3); pointer-events: none; z-index: 3; }
+  #grande.ver { animation: pop 1.1s cubic-bezier(.2,1.6,.4,1) forwards; }
+  #grande.fuera { opacity: 1; transform: scale(1); animation: fuera .8s ease-in forwards; }
+  @keyframes pop { to { opacity: 1; transform: scale(1); } }
+  @keyframes fuera { to { opacity: 0; transform: translateY(-30px) scale(.9); } }
+  .texto { position: fixed; left: 0; right: 0; top: 63vh; text-align: center; padding: 0 26px; color: #fff; z-index: 2;
+    text-shadow: 0 2px 12px rgba(60,20,0,.75); padding-top: 14px; padding-bottom: 18px;
+    background: radial-gradient(ellipse 75% 60% at 50% 50%, rgba(70,20,40,.55), rgba(70,20,40,0)); }
+  #para { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(30px, 8.6vw, 42px); color: #ffe27a; min-height: 1.2em;
+    opacity: 0; transform: translateY(12px); transition: opacity 1s, transform 1s; overflow-wrap: anywhere; }
+  #para.ver { opacity: 1; transform: none; }
+  #msg { font-size: clamp(16px, 4.4vw, 20px); line-height: 1.5; margin-top: 6px; min-height: 3em; font-weight: 500; }
+  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(22px, 6vw, 29px); color: #ffd54a; margin-top: 8px; min-height: 1.3em; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -73,186 +47,190 @@
 <link rel="icon" href="../logo.svg">
 </head>
 <body>
-
-<svg id="scene" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg"></svg>
-
-<div class="mensaje">
-  <div id="para"></div>
-  <div id="msg"></div>
-  <div id="firma"></div>
-</div>
-
+<canvas id="c"></canvas>
+<div id="grande"></div>
+<div class="texto"><div id="para"></div><div id="msg"></div><div id="firma"></div></div>
+<div id="pista"></div>
 <button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
-
 <script>
-/* =========================================================
-   ✏️  PERSONALIZA AQUÍ  (solo cambia el texto entre comillas)
-   ========================================================= */
-// También se puede personalizar por el link: index.html?para=Ana&msg=Te%20quiero&de=Luis
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
 const q = new URLSearchParams(location.search);
 const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
   para:    q.get('para') || (EN ? "Emma" : "María"),
   mensaje: q.get('msg')  || (EN ? "Just like a sunflower looks for the sun every morning, I look for you in every single one of my days." : "Así como el girasol busca al sol cada mañana, yo te busco a ti en cada uno de mis días."),
-  firma:   q.get('de')   || (EN ? "With all my love 🌻" : "Con todo mi cariño 🌻"),
-  velocidadTexto: 45   // milisegundos por letra (menor = más rápido)
+  firma:   q.get('de')   || (EN ? "With all my love 🌻" : "Con todo mi cariño 🌻")
 };
-/* ========================================================= */
+const TX = EN ? { pista: 'Loves me, loves me not? 🌻 Pick the petals', si: 'loves me 💛', no: 'loves me not…', grande: 'LOVES ME! 💛', para: 'For you, ' }
+              : { pista: '¿Te quiere o no te quiere? 🌻 Deshójalo', si: 'me quiere 💛', no: 'no me quiere…', grande: '¡ME QUIERE! 💛', para: 'Para ti, ' };
+const { clamp, easeOut, rnd } = K;
+const L = K.lienzo('c'), ctx = L.ctx;
+const chis = K.chispas(ctx);
+const $ = id => document.getElementById(id);
 
-const NS = 'http://www.w3.org/2000/svg';
-const svg = document.getElementById('scene');
-const el = (tag, attrs, parent = svg) => {
-  const e = document.createElementNS(NS, tag);
-  for (const k in attrs) e.setAttribute(k, attrs[k]);
-  parent.appendChild(e);
-  return e;
-};
+/* ---------- la flor ---------- */
+const N = 9;                                   // pétalos que se deshojan (impar: el último siempre «me quiere»)
+const geo = () => { const W = L.W, H = L.H, R = Math.min(W * .15, H * .075, 64); return { cx: W / 2, cy: H * .33, R, W, H }; };
+const grandes = Array.from({ length: N }, (_, i) => ({ a: -Math.PI / 2 + i * Math.PI * 2 / N, fuera: false, t: 0, x: 0, y: 0, vx: 0, vy: 0, rot: 0, vr: 0, renace: 0 }));
+const pequenos = Array.from({ length: 22 }, (_, i) => ({ a: i * Math.PI * 2 / 22 + .14 }));
+const semillas = Array.from({ length: 150 }, (_, i) => { const a = i * 2.39996, r = Math.sqrt(i / 150); return { a, r }; });
+const hierba = Array.from({ length: 70 }, (_, i) => ({ x: i / 69 + rnd(-.01, .01), h: rnd(.05, .11), f: rnd(0, 6) }));
+const polen = Array.from({ length: 40 }, () => ({ x: Math.random(), y: Math.random(), r: rnd(.8, 2), v: rnd(.1, .3), f: rnd(0, 6) }));
+const etiquetas = [];
+let quitados = 0, tFinal = -1, t = 0;
 
-// ---- Easing ----
-const easeOut = t => 1 - Math.pow(1 - t, 3);
-const easeBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
-const linear = t => t;
-
-// ---- Mini motor de animación (línea de tiempo) ----
-const tasks = [];
-function at(start, dur, fn, ease = easeOut) {
-  tasks.push({ start, dur, fn, ease, done: false });
-  fn(0);
+function petalo(x, y, ang, largo, ancho, c1, c2) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  const g = ctx.createLinearGradient(0, 0, largo, 0); g.addColorStop(0, c2); g.addColorStop(1, c1);
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.moveTo(0, 0);
+  ctx.bezierCurveTo(largo * .3, -ancho, largo * .8, -ancho * .8, largo, 0);
+  ctx.bezierCurveTo(largo * .8, ancho * .8, largo * .3, ancho, 0, 0); ctx.fill();
+  ctx.strokeStyle = 'rgba(160,90,0,.25)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(largo * .1, 0); ctx.lineTo(largo * .85, 0); ctx.stroke();
+  ctx.restore();
 }
+function puntaPetalo(p) { const { cx, cy, R } = geo(); return { x: cx + Math.cos(p.a) * R * 1.75, y: cy + Math.sin(p.a) * R * 1.75 }; }
 
-// ---- Estrellas de fondo ----
-for (let i = 0; i < 90; i++) {
-  const s = document.createElement('div');
-  const size = Math.random() * 2 + 0.6;
-  s.className = 'star';
-  s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*3}s;--delay:${Math.random()*3}s`;
-  document.body.appendChild(s);
+function deshojar() {
+  if (quitados >= N || t < 2600) return;
+  const p = grandes[quitados], { cx, cy, R } = geo();
+  p.fuera = true; p.t = t; p.x = cx + Math.cos(p.a) * R * 1.05; p.y = cy + Math.sin(p.a) * R * 1.05;
+  p.vx = Math.cos(p.a) * 1.6 + rnd(-.5, .5); p.vy = Math.sin(p.a) * 1.2 - 1.2; p.rot = p.a; p.vr = rnd(-.06, .06);
+  const si = quitados % 2 === 0;
+  quitados++;
+  K.vibrar(15);
+  const pt = puntaPetalo(p);
+  etiquetas.push({ txt: quitados === N ? '' : (si ? TX.si : TX.no), x: pt.x, y: pt.y, t, si });
+  chis.soltar(pt.x, pt.y, 8, ['#ffe27a', '#fff3b0'], 2);
+  if (quitados === 1) K.pista($('pista'), '');
+  if (quitados === N) final();
 }
-
-// ---- Degradados ----
-const defs = el('defs', {});
-const grad = (id, type, stops, extra = {}) => {
-  const g = el(type, { id, ...extra }, defs);
-  stops.forEach(([o, c]) => el('stop', { offset: o, 'stop-color': c }, g));
-};
-grad('gPetalo', 'linearGradient', [['0%', '#ffe259'], ['100%', '#f7a400']], { x1: 0, y1: 1, x2: 0, y2: 0 });
-grad('gPetalo2', 'linearGradient', [['0%', '#f2a000'], ['100%', '#e07b00']], { x1: 0, y1: 1, x2: 0, y2: 0 });
-grad('gDisco', 'radialGradient', [['0%', '#6b3d14'], ['70%', '#3a1f08'], ['100%', '#24130a']]);
-grad('gHoja', 'linearGradient', [['0%', '#2f7d32'], ['100%', '#66bb6a']]);
-const glow = el('filter', { id: 'brillo', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs);
-el('feGaussianBlur', { stdDeviation: 6, result: 'b' }, glow);
-const merge = el('feMerge', {}, glow);
-el('feMergeNode', { in: 'b' }, merge);
-el('feMergeNode', { in: 'SourceGraphic' }, merge);
-
-// ---- Tallo ----
-const tallo = el('path', {
-  d: 'M200 520 C 188 430, 214 330, 200 200',
-  stroke: '#3f8f3a', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round'
-});
-const L = tallo.getTotalLength();
-tallo.setAttribute('stroke-dasharray', L);
-at(0, 1500, p => tallo.setAttribute('stroke-dashoffset', L * (1 - p)));
-
-// ---- Hojas ----
-function hoja(x, y, rot, espejo, start) {
-  const g = el('g', {});
-  el('path', { d: 'M0 0 C 20 -26, 60 -26, 82 0 C 60 16, 20 16, 0 0 Z', fill: 'url(#gHoja)' }, g);
-  el('path', { d: 'M2 0 Q 40 -6 78 0', stroke: '#a5d6a7', 'stroke-width': 1.4, fill: 'none', opacity: .7 }, g);
-  const sx = espejo ? -1 : 1;
-  at(start, 700, p => g.setAttribute('transform', `translate(${x},${y}) scale(${sx * p},${p}) rotate(${rot})`), easeBack);
+function final() {
+  tFinal = t;
+  const g = $('grande'); g.textContent = TX.grande; g.classList.add('ver');
+  K.vibrar([40, 60, 40, 60, 160]);
+  const { cx, cy } = geo();
+  for (let k = 0; k < 4; k++) setTimeout(() => chis.soltar(cx + rnd(-60, 60), cy + rnd(-40, 40), 30, ['#ffd54a', '#ffb703', '#fff', '#ff8fb8'], 6, { forma: k % 2 ? 'c' : 'o' }), k * 180);
+  setTimeout(() => { g.classList.remove('ver'); g.classList.add('fuera'); }, 2300);
+  $('para').textContent = TX.para + CONFIG.para;
+  setTimeout(() => $('para').classList.add('ver'), 2200);
 }
-hoja(197, 425, -28, false, 1100);
-hoja(204, 345, -28, true, 1400);
+K.entrada({ abajo: deshojar });
 
-// ---- Cabeza del girasol ----
-const CX = 200, CY = 175;
-const cabeza = el('g', { transform: `translate(${CX},${CY})` });
-const halo = el('circle', { r: 70, fill: '#ffc400', opacity: 0, filter: 'url(#brillo)' }, cabeza);
-at(3400, 1200, p => halo.setAttribute('opacity', .18 * p));
+/* ---------- video: el cursor deshoja la flor ---------- */
+const pasos = grandes.map((p, i) => ({ viaje: i ? 420 : 700, cuando: () => i === 0 ? 3400 : (quitados === i ? t + 180 : null), donde: () => puntaPetalo(p) }));
+const guion = K.guion(pasos, { abajo: deshojar });
 
-function capaPetalos(n, largo, ancho, offset, fill, start, paso) {
-  for (let i = 0; i < n; i++) {
-    const ang = (360 / n) * i + offset;
-    const g = el('g', {}, cabeza);
-    el('path', {
-      d: `M0 0 C ${ancho} -${largo * .25}, ${ancho} -${largo * .8}, 0 -${largo} C -${ancho} -${largo * .8}, -${ancho} -${largo * .25}, 0 0 Z`,
-      fill
-    }, g);
-    at(start + i * paso, 550, p => g.setAttribute('transform', `rotate(${ang}) scale(${Math.max(p, 0)})`), easeBack);
-  }
-}
-capaPetalos(24, 92, 15, 0, 'url(#gPetalo)', 1900, 55);
-capaPetalos(24, 76, 13, 7.5, 'url(#gPetalo2)', 2300, 55);
-
-// Disco central
-const disco = el('circle', { r: 50, fill: 'url(#gDisco)' }, cabeza);
-at(3500, 600, p => disco.setAttribute('r', 50 * p), easeBack);
-
-// Semillas en espiral de Fibonacci (ángulo áureo 137.5°)
-const N = 300, c = 2.6, semillas = [];
-for (let i = 0; i < N; i++) {
-  const a = i * 137.508 * Math.PI / 180, r = c * Math.sqrt(i);
-  semillas.push(el('circle', {
-    cx: (r * Math.cos(a)).toFixed(2), cy: (r * Math.sin(a)).toFixed(2), r: 1.75,
-    fill: i % 3 === 0 ? '#c98a2b' : '#8d5a1b', opacity: 0
-  }, cabeza));
-}
-at(3900, 2200, p => {
-  const k = Math.floor(p * N);
-  for (let i = 0; i < k; i++) semillas[i].setAttribute('opacity', 1);
-}, linear);
-
-// Balanceo suave al final
-let balanceo = false;
-at(6100, 1, p => { if (p === 1) balanceo = true; }, linear);
-
-// ---- Texto tipo máquina de escribir ----
-function escribir(id, texto, start) {
-  const nodo = document.getElementById(id);
-  const dur = texto.length * CONFIG.velocidadTexto;
-  at(start, dur, p => {
-    nodo.textContent = texto.slice(0, Math.round(p * texto.length));
-    nodo.classList.toggle('typing', p > 0 && p < 1);
-  }, linear);
-  return start + dur + 400;
-}
-let t = 5800;
-t = escribir('para', (EN ? 'For you, ' : 'Para ti, ') + CONFIG.para, t);
-t = escribir('msg', CONFIG.mensaje, t);
-t = escribir('firma', CONFIG.firma, t);
-
-// ---- Pétalos que caen + botón repetir ----
-at(t, 1, p => {
-  if (p < 1) return;
-  document.getElementById('repetir').classList.add('visible');
-  let count = 0;
-  const lluvia = setInterval(() => {
-    const d = document.createElement('div');
-    d.className = 'petalo-cae';
-    d.style.cssText = `left:${Math.random()*100}vw;--t:${5+Math.random()*4}s;--x:${(Math.random()-.5)*200}px;--r:${Math.random()*720}deg`;
-    document.body.appendChild(d);
-    setTimeout(() => d.remove(), 9500);
-    if (++count > 60) clearInterval(lluvia);
-  }, 350);
-}, linear);
-
-// ---- Bucle principal ----
+/* ---------- dibujo ---------- */
 let t0 = null;
 function frame(now) {
   if (t0 === null) t0 = now;
-  const e = now - t0;
-  for (const k of tasks) {
-    if (k.done || e < k.start) continue;
-    const p = Math.min((e - k.start) / k.dur, 1);
-    k.fn(k.ease(p));
-    if (p === 1) { k.fn(1); k.done = true; }
+  t = now - t0;
+  const { cx, cy, R, W, H } = geo();
+  const fin = tFinal < 0 ? 0 : clamp((t - tFinal - 1200) / 1600);
+
+  // cielo de atardecer
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#2b1a4a'); g.addColorStop(.38, '#a8436a'); g.addColorStop(.62, '#ff9a5a'); g.addColorStop(.8, '#ffd27a');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // sol bajo
+  const sx = W * .78, sy = H * .66, sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, H * .3);
+  sg.addColorStop(0, 'rgba(255,240,180,.95)'); sg.addColorStop(.12, 'rgba(255,220,140,.7)'); sg.addColorStop(1, 'rgba(255,190,110,0)');
+  ctx.fillStyle = sg; ctx.fillRect(0, 0, W, H);
+  // rayos de sol detrás de la flor al final
+  if (fin > 0) {
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(t / 6000); ctx.globalAlpha = .22 * fin;
+    for (let i = 0; i < 14; i++) { ctx.fillStyle = '#fff4c2'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, H, i * Math.PI / 7, i * Math.PI / 7 + .1); ctx.fill(); }
+    ctx.restore(); ctx.globalAlpha = 1;
   }
-  if (balanceo) cabeza.setAttribute('transform', `translate(${CX},${CY}) rotate(${Math.sin(e / 900) * 2.5})`);
+  // colinas
+  ctx.fillStyle = '#7a8d3c'; ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, H * .78);
+  for (let x = 0; x <= W; x += 10) ctx.lineTo(x, H * .76 + Math.sin(x / W * 4 + 1) * 12); ctx.lineTo(W, H); ctx.fill();
+  ctx.fillStyle = '#4f6a22'; ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, H * .86);
+  for (let x = 0; x <= W; x += 10) ctx.lineTo(x, H * .85 + Math.sin(x / W * 6 + 3) * 8); ctx.lineTo(W, H); ctx.fill();
+
+  // tallo que crece
+  const pt = easeOut(clamp(t / 1400)), base = H * 1.02, yTop = base - (base - cy) * pt;
+  ctx.strokeStyle = '#3f7d20'; ctx.lineWidth = 9; ctx.lineCap = 'round';
+  const sway = Math.sin(t / 1300) * 6;
+  ctx.beginPath(); ctx.moveTo(cx, base); ctx.quadraticCurveTo(cx - 18 + sway, (base + yTop) / 2, cx + sway * .4, yTop); ctx.stroke();
+  // hojas
+  if (pt > .5) {
+    const e = easeOut(clamp((t - 700) / 700));
+    [[-1, .72], [1, .58]].forEach(([s, f]) => {
+      const y = base - (base - cy) * f;
+      ctx.save(); ctx.translate(cx - 8 + sway * (1 - f), y); ctx.rotate(s * (.6 + Math.sin(t / 1500 + s) * .05)); ctx.scale(e, e);
+      const lg = ctx.createLinearGradient(0, 0, s * 70, 0); lg.addColorStop(0, '#2f6b17'); lg.addColorStop(1, '#69a83a');
+      ctx.fillStyle = lg; ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(s * 35, -26, s * 75, 0); ctx.quadraticCurveTo(s * 35, 18, 0, 0); ctx.fill();
+      ctx.restore();
+    });
+  }
+  // cabeza
+  const pc = easeOut(clamp((t - 1300) / 1300));
+  if (pc > 0) {
+    const hx = cx + sway * .4, hy = cy;
+    ctx.save(); ctx.translate(hx, hy); ctx.scale(pc, pc); ctx.translate(-hx, -hy);
+    // halo
+    const hg = ctx.createRadialGradient(hx, hy, R * .5, hx, hy, R * 3);
+    hg.addColorStop(0, `rgba(255,220,90,${.3 + .25 * fin})`); hg.addColorStop(1, 'rgba(255,220,90,0)');
+    ctx.fillStyle = hg; ctx.fillRect(hx - R * 3, hy - R * 3, R * 6, R * 6);
+    for (const p of pequenos) petalo(hx, hy, p.a + Math.sin(t / 1800) * .02, R * 1.55, R * .28, '#f0a400', '#c97a00');
+    for (const p of grandes) {
+      if (p.fuera && !(fin > 0)) continue;
+      let esc = 1;
+      if (p.fuera) esc = easeOut(clamp(fin * 1.4 - grandes.indexOf(p) * .04));  // vuelven a nacer, dorados
+      if (esc <= 0) continue;
+      const tiembla = !p.fuera && quitados < N && grandes.indexOf(p) === quitados && t > 2600 ? Math.sin(t / 70) * .03 : 0;
+      petalo(hx, hy, p.a + tiembla, R * 1.95 * esc, R * .42, p.fuera ? '#fff1a0' : '#ffd84a', p.fuera ? '#ffc21a' : '#f5a800');
+    }
+    // centro con semillas en espiral
+    const cg = ctx.createRadialGradient(hx - R * .2, hy - R * .2, 2, hx, hy, R);
+    cg.addColorStop(0, '#7a4a14'); cg.addColorStop(1, '#3a1f06');
+    ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(hx, hy, R, 0, 7); ctx.fill();
+    for (const s of semillas) { ctx.fillStyle = s.r > .75 ? '#a8701e' : '#5a3410'; ctx.beginPath(); ctx.arc(hx + Math.cos(s.a) * s.r * R * .94, hy + Math.sin(s.a) * s.r * R * .94, 1.6 + s.r * 1.3, 0, 7); ctx.fill(); }
+    // carita feliz al final 🙂
+    if (fin > 0) {
+      ctx.globalAlpha = fin; ctx.fillStyle = '#ffe27a';
+      ctx.beginPath(); ctx.arc(hx - R * .3, hy - R * .15, R * .08, 0, 7); ctx.arc(hx + R * .3, hy - R * .15, R * .08, 0, 7); ctx.fill();
+      ctx.strokeStyle = '#ffe27a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(hx, hy + R * .05, R * .32, .2 * Math.PI, .8 * Math.PI); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+  }
+  // pétalos que caen
+  for (const p of grandes) {
+    if (!p.fuera || tFinal > 0 && t - p.t > 4500) continue;
+    p.vy += .045; p.vx *= .985; p.vy *= .985; p.x += p.vx + Math.sin((t - p.t) / 300) * .8; p.y += p.vy; p.rot += p.vr;
+    if (p.y < H + 60) petalo(p.x, p.y, p.rot, R * 1.95, R * .42, '#ffd84a', '#f5a800');
+  }
+  // «me quiere / no me quiere»
+  for (let i = etiquetas.length - 1; i >= 0; i--) {
+    const e = etiquetas[i], d = (t - e.t) / 1500;
+    if (d > 1) { etiquetas.splice(i, 1); continue; }
+    if (!e.txt) continue;
+    ctx.globalAlpha = Math.min(1, (1 - d) * 2); ctx.font = `700 ${Math.round(R * .42)}px Quicksand, sans-serif`;
+    ctx.textAlign = 'center'; ctx.fillStyle = e.si ? '#fff' : '#ffe0ea'; ctx.shadowColor = 'rgba(120,40,0,.8)'; ctx.shadowBlur = 8;
+    ctx.fillText(e.txt, clamp(e.x, 70, W - 70), e.y - 20 - d * 40); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  }
+  // hierba en primer plano
+  ctx.strokeStyle = '#2f5414'; ctx.lineWidth = 3;
+  for (const h of hierba) { const x = h.x * W; ctx.beginPath(); ctx.moveTo(x, H); ctx.quadraticCurveTo(x + 4, H - h.h * H * .5, x + Math.sin(t / 900 + h.f) * 8, H - h.h * H); ctx.stroke(); }
+  // polen flotando
+  for (const p of polen) { const y = ((p.y - t * p.v * .00004) % 1 + 1) % 1; ctx.fillStyle = 'rgba(255,240,190,.6)'; ctx.beginPath(); ctx.arc(p.x * W + Math.sin(t / 1100 + p.f) * 14, y * H, p.r, 0, 7); ctx.fill(); }
+  chis.pintar();
+
+  // pista y textos
+  if (t > 2800 && quitados === 0) K.pista($('pista'), TX.pista);
+  if (tFinal > 0) {
+    const tm = tFinal + 3200, tf = tm + CONFIG.mensaje.length * 42 + 400;
+    K.escribir($('msg'), CONFIG.mensaje, tm, t, 42);
+    if (K.escribir($('firma'), CONFIG.firma, tf, t, 45) && t > tf + CONFIG.firma.length * 45 + 500) K.repetir();
+  }
+  guion(t);
   requestAnimationFrame(frame);
 }
-setTimeout(() => requestAnimationFrame(frame), 500);
-if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
+setTimeout(() => requestAnimationFrame(frame), 300);
+K.traducirRepetir();
 </script>
 </body>
 </html>

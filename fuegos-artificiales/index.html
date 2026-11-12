@@ -4,21 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💌 Te programé algo</title>
-<!-- AI Romantic Code · Pieza #007 · Fuegos artificiales que forman su nombre -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+<!-- AI Romantic Code · Pieza #007 · Fuegos: cuenta regresiva, ella lanza los fuegos y el último escribe su nombre -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; background: #03040d; overflow: hidden; }
+  html, body { height: 100%; background: #04030f; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+  body { font-family: 'Quicksand', sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; --acento: #ffd36b; }
   canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
-  .texto { position: fixed; left: 0; right: 0; bottom: 11vh; text-align: center; padding: 0 26px; color: #fff4e0; font-family: 'Quicksand', sans-serif; }
-  #msg { font-size: clamp(16px, 4.4vw, 21px); line-height: 1.55; min-height: 3.2em; text-shadow: 0 0 12px rgba(255,190,90,.55); }
-  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(22px, 6.0vw, 31px); color: #ffd36b; margin-top: 10px; min-height: 1.3em; }
-  .typing::after { content: '|'; margin-left: 2px; color: #ffd36b; animation: blink .8s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(255,211,107,.12); border: 1px solid rgba(255,211,107,.45);
-    color: #ffd36b; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
-  #repetir.visible { opacity: 1; }
+  #cuenta { position: fixed; left: 0; right: 0; top: 26vh; text-align: center; z-index: 2; font: 700 clamp(110px, 38vw, 170px) 'Quicksand', sans-serif; color: #fff;
+    text-shadow: 0 0 30px rgba(255,211,107,.8), 0 0 80px rgba(255,120,180,.5); pointer-events: none; }
+  #cuenta span { display: inline-block; animation: num .9s cubic-bezier(.2,1.4,.4,1) forwards; }
+  @keyframes num { 0% { transform: scale(2.2); opacity: 0; } 25% { transform: scale(1); opacity: 1; } 80% { opacity: 1; } 100% { transform: scale(.6); opacity: 0; } }
+  #saludo { position: fixed; left: 0; right: 0; top: 30vh; text-align: center; z-index: 2; padding: 0 20px; font: 700 clamp(34px, 10vw, 50px) 'Dancing Script', cursive; color: #ffd36b;
+    text-shadow: 0 0 20px rgba(255,200,90,.9); opacity: 0; transform: scale(.4); transition: opacity .8s, transform 1s cubic-bezier(.2,1.6,.4,1); pointer-events: none; }
+  #saludo.ver { opacity: 1; transform: none; }
+  #saludo.sube { opacity: 0; transform: translateY(-60px); transition: opacity 1.2s, transform 1.2s; }
+  #quedan { position: fixed; right: 16px; top: 16px; z-index: 2; font: 700 14px 'Quicksand', sans-serif; color: #ffe9b0; background: rgba(255,211,107,.12);
+    border: 1px solid rgba(255,211,107,.4); border-radius: 99px; padding: 6px 12px; opacity: 0; transition: opacity .5s; }
+  #quedan.ver { opacity: 1; }
+  .texto { position: fixed; left: 0; right: 0; top: 47vh; text-align: center; padding: 0 26px; color: #fff3dc; z-index: 2; }
+  #msg { font-size: clamp(15px, 4.3vw, 19px); line-height: 1.55; min-height: 3.1em; text-shadow: 0 0 12px rgba(255,180,90,.5); }
+  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(22px, 6vw, 29px); color: #ffd36b; margin-top: 8px; min-height: 1.3em; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -38,166 +47,151 @@
 <link rel="icon" href="../logo.svg">
 </head>
 <body>
-<canvas id="fondo"></canvas>
-<canvas id="fx"></canvas>
+<canvas id="c"></canvas>
+<div id="cuenta"></div>
+<div id="saludo"></div>
+<div id="quedan"></div>
 <div class="texto"><div id="msg"></div><div id="firma"></div></div>
+<div id="pista"></div>
 <button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
-/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&saludo=¡Feliz cumpleaños!&msg=...&de=... */
 const q = new URLSearchParams(location.search);
 const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
   para:    q.get('para') || (EN ? "Chloe" : "Daniela"),
+  saludo:  q.get('saludo') || (EN ? "Happy New Year!" : "¡Feliz Año Nuevo!"),
   mensaje: q.get('msg')  || (EN ? "May this new year hold as many moments with you as there are lights in this sky." : "Que este año nuevo tenga tantos momentos contigo como luces en este cielo."),
   firma:   q.get('de')   || (EN ? "Happy New Year, my love ✨" : "Feliz año, mi amor ✨")
 };
+const LANZAR = 5;
+const TX = EN ? { pista: 'Your turn: tap the sky to launch fireworks 🎆', quedan: n => `🎆 × ${n}`, ultimo: 'The last one is special… tap the sky ✨' }
+              : { pista: 'Ahora tú: toca el cielo para lanzar fuegos 🎆', quedan: n => `🎆 × ${n}`, ultimo: 'El último es especial… toca el cielo ✨' };
+const { clamp, easeOut, rnd } = K;
+const L = K.lienzo('c'), ctx = L.ctx;
+const $ = id => document.getElementById(id);
 
-const fondo = document.getElementById('fondo'), bg = fondo.getContext('2d');
-const cv = document.getElementById('fx'), ctx = cv.getContext('2d');
-let W, H, DPR;
-const COLORES = [[255, 92, 154], [255, 211, 107], [120, 200, 255], [190, 130, 255], [120, 255, 190], [255, 140, 90]];
-const azar = (a, b) => a + Math.random() * (b - a);
-const easeOut = t => 1 - Math.pow(1 - t, 3);
-const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-const clamp = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
-
-/* Cielo, estrellas y ciudad (se dibujan una vez) */
-const estrellas = Array.from({ length: 140 }, () => ({ x: Math.random(), y: Math.random() * .75, r: Math.random() * 1.2 + .2 }));
-const edificios = [];
-for (let x = 0; x < 1;) { const w = azar(.04, .09); edificios.push({ x, w, h: azar(.05, .16) }); x += w; }
-function medir() {
-  DPR = window.devicePixelRatio || 1; W = innerWidth; H = innerHeight;
-  for (const c of [fondo, cv]) { c.width = W * DPR; c.height = H * DPR; }
-  bg.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  const g = bg.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, '#03040d'); g.addColorStop(.7, '#0b1030'); g.addColorStop(1, '#1a1440');
-  bg.fillStyle = g; bg.fillRect(0, 0, W, H);
-  for (const s of estrellas) { bg.fillStyle = `rgba(255,255,255,${.3 + s.r * .4})`; bg.beginPath(); bg.arc(s.x * W, s.y * H, s.r, 0, 7); bg.fill(); }
-  bg.fillStyle = '#05060f';
-  for (const e of edificios) {
-    bg.fillRect(e.x * W, H - e.h * H, e.w * W + 1, e.h * H);
-    bg.fillStyle = 'rgba(255,211,107,.35)';
-    for (let wy = H - e.h * H + 8; wy < H - 6; wy += 11) for (let wx = e.x * W + 5; wx < (e.x + e.w) * W - 5; wx += 9)
-      if (Math.random() > .62) bg.fillRect(wx, wy, 3, 4);
-    bg.fillStyle = '#05060f';
+/* ---------- ciudad ---------- */
+const edificios = (() => { const l = []; let x = 0; while (x < 1) { const w = rnd(.05, .11); l.push({ x, w, h: rnd(.06, .2), ventanas: Array.from({ length: 30 }, () => Math.random() < .45), f: rnd(0, 6) }); x += w + rnd(0, .01); } return l; })();
+const estrellas = Array.from({ length: 90 }, () => ({ x: Math.random(), y: Math.random() * .6, r: rnd(.3, 1.2), f: rnd(0, 6) }));
+const PALETAS = [['#ff4d8d', '#ff9cc2', '#fff'], ['#ffd36b', '#fff3b0', '#ff9a2e'], ['#6ad1ff', '#b8ecff', '#fff'], ['#9dff8a', '#e2ffd9', '#fff'], ['#c69cff', '#ffd1f5', '#fff']];
+const TIPOS = ['peonia', 'corazon', 'anillo', 'sauce', 'peonia'];
+const cohetes = [], chispas = [];
+let nombrePts = [];
+function prepararNombre() {
+  const w = Math.min(L.W * .94, 520);
+  nombrePts = K.puntosTexto(CONFIG.para, `700 ${Math.round(Math.min(L.W * .24, 110))}px 'Dancing Script'`, w, 160, 4);
+}
+function lanzar(x, y, tipo, paleta) {
+  const sx = clamp(x + rnd(-40, 40), 20, L.W - 20);
+  cohetes.push({ x: sx, y: L.H * .86, tx: x, ty: clamp(y, L.H * .08, L.H * .62), t0: t, dur: rnd(700, 900), tipo, paleta: paleta || PALETAS[(Math.random() * PALETAS.length) | 0] });
+}
+function explotar(c) {
+  const { x, y, paleta } = c; K.vibrar(20);
+  const pc = (vx, vy, extra = {}) => chispas.push(Object.assign({ x, y, vx, vy, vida: 0, max: rnd(60, 90), col: paleta[(Math.random() * paleta.length) | 0], s: rnd(1.4, 2.6), g: .035, drag: .975 }, extra));
+  if (c.tipo === 'nombre') {
+    nombrePts.forEach(p => pc(rnd(-3, 3), rnd(-3, 3), { tx: x + p.x, ty: y + p.y, max: 340, col: Math.random() < .6 ? '#ffe9a8' : paleta[(Math.random() * paleta.length) | 0], s: 1.7, g: 0, nombre: true }));
+    for (let i = 0; i < 80; i++) { const a = rnd(0, 7), v = rnd(2, 7); pc(Math.cos(a) * v, Math.sin(a) * v); }
+    return;
   }
-}
-medir(); addEventListener('resize', medir);
-
-/* Puntos del nombre: se dibuja el texto en un lienzo oculto y se muestrean los píxeles */
-function puntosNombre() {
-  const off = document.createElement('canvas'), o = off.getContext('2d');
-  off.width = W; off.height = H;
-  let fs = Math.min(W * .2, 120);
-  o.font = `700 ${fs}px 'Dancing Script', cursive`;
-  const ancho = o.measureText(CONFIG.para).width;
-  if (ancho > W * .88) { fs *= W * .88 / ancho; o.font = `700 ${fs}px 'Dancing Script', cursive`; }
-  o.textAlign = 'center'; o.textBaseline = 'middle'; o.fillStyle = '#fff';
-  o.fillText(CONFIG.para, W / 2, H * .36);
-  const d = o.getImageData(0, 0, W, H).data, pts = [];
-  const paso = Math.max(2, Math.round(fs / 34));
-  for (let y = 0; y < H; y += paso) for (let x = 0; x < W; x += paso) if (d[(y * W + x) * 4 + 3] > 140) pts.push({ x, y });
-  // máximo ~1400 partículas
-  while (pts.length > 1400) pts.splice((Math.random() * pts.length) | 0, 1);
-  return pts;
-}
-
-const cohetes = [], chispas = [], letras = [];
-function lanzar(t, x, yObjetivo, grande = false) {
-  cohetes.push({ x, y: H + 10, x0: x, y0: H + 10, ty: yObjetivo, n: t, dur: grande ? 900 : azar(650, 900), grande, col: COLORES[(Math.random() * COLORES.length) | 0] });
-}
-function estallar(c, t) {
-  const n = c.grande ? 160 : 90;
+  const n = c.tipo === 'anillo' ? 70 : 110;
   for (let i = 0; i < n; i++) {
-    const a = Math.PI * 2 * i / n + azar(-.05, .05), v = azar(1.2, 3.4) * (c.grande ? 1.4 : 1);
-    chispas.push({ x: c.x, y: c.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, n: t, vida: azar(900, 1500), col: Math.random() > .25 ? c.col : [255, 255, 255] });
+    const a = i / n * Math.PI * 2;
+    if (c.tipo === 'corazon') { const v = .22; pc(16 * Math.pow(Math.sin(a), 3) * v, -(13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)) * v, { g: .02 }); }
+    else if (c.tipo === 'anillo') { pc(Math.cos(a) * 4.2, Math.sin(a) * 4.2, { g: .02 }); }
+    else if (c.tipo === 'sauce') { const v = rnd(1, 4); pc(Math.cos(a) * v, Math.sin(a) * v, { col: rnd(0, 1) < .7 ? '#ffd36b' : '#fff3b0', max: 140, g: .028, drag: .965, cola: true }); }
+    else { const v = rnd(1.5, 5.5); pc(Math.cos(a) * v, Math.sin(a) * v); }
   }
 }
 
-const T_GRANDE = 3900, T_ESTALLA = T_GRANDE + 900, T_FORMA = 1500;
-const T_MSG = T_ESTALLA + T_FORMA + 300, vel = 45;
-const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400;
-const T_FIN = T_FIRMA + CONFIG.firma.length * vel + 400;
-const PROGRAMA = [300, 1000, 1600, 2300, 2900, 3400];   // fuegos de apertura
-let siguiente = 0, ultimoFondo = 0, granLanzado = false, nombreListo = false;
-const elMsg = document.getElementById('msg'), elFirma = document.getElementById('firma');
-
-function escribir(el, txt, t0, now) {
-  const p = clamp((now - t0) / (txt.length * vel));
-  el.textContent = txt.slice(0, Math.round(p * txt.length));
-  el.classList.toggle('typing', p > 0 && p < 1);
+/* ---------- guion ---------- */
+let fase = 'cuenta', t = 0, lanzados = 0, tNombre = -1, num = 6;
+function tocar(x, y) {
+  if (fase !== 'lanza' || y > L.H * .8) return;
+  lanzados++;
+  if (lanzados < LANZAR) { lanzar(x, y, TIPOS[(lanzados - 1) % TIPOS.length]); $('quedan').textContent = TX.quedan(LANZAR - lanzados); K.pista($('pista'), lanzados === LANZAR - 1 ? TX.ultimo : ''); }
+  else { fase = 'nombre'; tNombre = t; lanzar(L.W / 2, L.H * .3, 'nombre', ['#ffd36b', '#ff9cc2', '#fff']); $('quedan').classList.remove('ver'); K.pista($('pista'), ''); }
+}
+K.entrada({ abajo: tocar });
+const puntos = [[.3, .25], [.72, .2], [.5, .35], [.25, .42], [.5, .3]];
+const guion = K.guion(puntos.map(([px, py], i) => ({ viaje: i ? 500 : 800, cuando: () => fase === 'lanza' && lanzados === i ? (i === 0 ? t + 600 : t + 550) : null, donde: () => ({ x: L.W * px, y: L.H * py }) })), { abajo: tocar });
+function cuenta() {
+  num--;
+  if (num > 0) { $('cuenta').innerHTML = ''; const s = document.createElement('span'); s.textContent = num; $('cuenta').appendChild(s); K.vibrar(15); setTimeout(cuenta, 900); return; }
+  $('cuenta').innerHTML = ''; $('saludo').textContent = CONFIG.saludo; $('saludo').classList.add('ver'); K.vibrar([40, 60, 120]);
+  [[.2, .3], [.8, .25], [.5, .18], [.35, .4], [.65, .42]].forEach(([px, py], i) => setTimeout(() => lanzar(L.W * px, L.H * py, TIPOS[i]), i * 220));
+  setTimeout(() => { $('saludo').classList.remove('ver'); $('saludo').classList.add('sube'); fase = 'lanza'; K.pista($('pista'), TX.pista); $('quedan').textContent = TX.quedan(LANZAR); $('quedan').classList.add('ver'); }, 2600);
 }
 
-let t0 = null, tPrev = 0;
+let t0 = null;
 function frame(now) {
   if (t0 === null) t0 = now;
-  const t = now - t0, dt = Math.min(50, t - tPrev) / 16.67; tPrev = t;
+  t = now - t0;
+  const W = L.W, H = L.H;
+  // cielo con estela (las chispas dejan rastro)
+  ctx.fillStyle = 'rgba(4,3,15,.26)'; ctx.fillRect(0, 0, W, H);
+  if (t < 100) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#04030f'); g.addColorStop(1, '#1a1035'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  for (const s of estrellas) { ctx.fillStyle = `rgba(255,255,255,${.15 + .3 * (.5 + .5 * Math.sin(t / 700 + s.f))})`; ctx.fillRect(s.x * W, s.y * H, s.r, s.r); }
 
-  // estela: borra suavemente lo anterior
-  ctx.globalCompositeOperation = 'destination-out';
-  ctx.fillStyle = 'rgba(0,0,0,.22)'; ctx.fillRect(0, 0, W, H);
-  ctx.globalCompositeOperation = 'lighter';
-
-  while (siguiente < PROGRAMA.length && t >= PROGRAMA[siguiente]) { lanzar(t, azar(W * .15, W * .85), azar(H * .15, H * .45)); siguiente++; }
-  if (!granLanzado && t >= T_GRANDE) { granLanzado = true; lanzar(t, W / 2, H * .36, true); }
-  if (t > T_ESTALLA + 900 && t - ultimoFondo > 1100) {            // fuegos suaves de fondo
-    ultimoFondo = t; lanzar(t, Math.random() > .5 ? azar(W * .05, W * .3) : azar(W * .7, W * .95), azar(H * .08, H * .22));
-  }
-
+  // cohetes
   for (let i = cohetes.length - 1; i >= 0; i--) {
-    const c = cohetes[i], p = clamp((t - c.n) / c.dur);
-    c.y = c.y0 + (c.ty - c.y0) * easeOut(p); c.x = c.x0 + Math.sin(p * 6) * 3;
-    ctx.fillStyle = `rgba(255,230,180,.9)`; ctx.beginPath(); ctx.arc(c.x, c.y, c.grande ? 3 : 2, 0, 7); ctx.fill();
-    if (p >= 1) {
-      cohetes.splice(i, 1);
-      if (c.grande) iniciarNombre(t, c); else estallar(c, t);
+    const c = cohetes[i], e = clamp((t - c.t0) / c.dur), ee = easeOut(e);
+    const x = c.x + (c.tx - c.x) * ee, y = c.y + (c.ty - c.y) * ee;
+    ctx.fillStyle = '#fff3c4'; ctx.beginPath(); ctx.arc(x, y, 2.2, 0, 7); ctx.fill();
+    chispas.push({ x, y, vx: rnd(-.3, .3), vy: rnd(.5, 1.2), vida: 0, max: 22, col: '#ffcf7a', s: 1.1, g: 0, drag: .95 });
+    if (e >= 1) { c.x = x; c.y = y; explotar(c); cohetes.splice(i, 1); }
+  }
+  // chispas
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = chispas.length - 1; i >= 0; i--) {
+    const p = chispas[i]; p.vida++;
+    if (p.nombre) {
+      const edad = t - tNombre;
+      if (edad < 4200) { p.vx = (p.vx + (p.tx - p.x) * .06) * .8; p.vy = (p.vy + (p.ty - p.y) * .06) * .8; }
+      else { p.vy += .03; p.vx *= .99; }
+      p.x += p.vx; p.y += p.vy;
+      const a = edad < 4200 ? .65 + .35 * Math.sin(t / 90 + i) : clamp(1 - (edad - 4200) / 1800);
+      if (a <= 0 || p.y > H) { chispas.splice(i, 1); continue; }
+      ctx.globalAlpha = a; ctx.fillStyle = p.col; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 7); ctx.fill();
+      continue;
+    }
+    p.vx *= p.drag; p.vy = p.vy * p.drag + p.g; p.x += p.vx; p.y += p.vy;
+    if (p.vida > p.max) { chispas.splice(i, 1); continue; }
+    ctx.globalAlpha = Math.pow(1 - p.vida / p.max, .7); ctx.fillStyle = p.col; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 7); ctx.fill();
+  }
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+
+  // ciudad (encima de todo lo que cae)
+  const base = H * .86;
+  ctx.fillStyle = '#070512';
+  for (const b of edificios) {
+    const x = b.x * W, w = b.w * W, h = b.h * H;
+    ctx.fillStyle = '#070512'; ctx.fillRect(x, base - h, w, h + 4);
+    let k = 0;
+    for (let yy = base - h + 8; yy < base - 6; yy += 12) for (let xx = x + 5; xx < x + w - 6; xx += 9) {
+      if (b.ventanas[k++ % 30]) { ctx.fillStyle = `rgba(255,214,140,${.5 + .2 * Math.sin(t / 900 + b.f + k)})`; ctx.fillRect(xx, yy, 4, 5); }
     }
   }
-
-  for (let i = chispas.length - 1; i >= 0; i--) {
-    const s = chispas[i], e = (t - s.n) / s.vida;
-    if (e >= 1) { chispas.splice(i, 1); continue; }
-    s.vx *= Math.pow(.975, dt); s.vy = s.vy * Math.pow(.975, dt) + .035 * dt;
-    s.x += s.vx * dt; s.y += s.vy * dt;
-    ctx.fillStyle = `rgba(${s.col[0]},${s.col[1]},${s.col[2]},${1 - e})`;
-    ctx.beginPath(); ctx.arc(s.x, s.y, 1.6 * (1 - e * .5), 0, 7); ctx.fill();
+  // reflejo en el agua
+  const rg = ctx.createLinearGradient(0, base, 0, H); rg.addColorStop(0, '#0c0a22'); rg.addColorStop(1, '#04030f');
+  ctx.fillStyle = rg; ctx.fillRect(0, base + 4, W, H - base);
+  for (let i = 0; i < 26; i++) {            // destellos de las luces sobre el agua
+    const yy = base + 10 + (i * 37 % (H - base - 14)), xx = (i * 131 + t * .02 * (i % 3 + 1)) % W;
+    ctx.fillStyle = `rgba(255,214,140,${.08 + .08 * Math.sin(t / 400 + i)})`; ctx.fillRect(xx, yy, 18 + (i % 4) * 8, 1.5);
   }
 
-  // el nombre: las chispas viajan del estallido a su letra y se quedan titilando
-  for (const l of letras) {
-    const p = clamp((t - l.n) / T_FORMA);
-    const a = easeInOut(p);
-    // primero salen disparadas, luego se acomodan
-    const sx = l.ox + l.vx * 60 * easeOut(clamp(p * 2.2)), sy = l.oy + l.vy * 60 * easeOut(clamp(p * 2.2));
-    const x = sx + (l.x - sx) * a, y = sy + (l.y - sy) * a;
-    const tit = p >= 1 ? .65 + .35 * Math.sin(t / 260 + l.f) : 1;
-    ctx.fillStyle = `rgba(${l.col[0]},${l.col[1]},${l.col[2]},${tit})`;
-    ctx.beginPath(); ctx.arc(x, y, p >= 1 ? 1.5 : 1.9, 0, 7); ctx.fill();
+  if (fase === 'nombre') {
+    const tm = tNombre + 2600, tf = tm + CONFIG.mensaje.length * 42 + 400;
+    K.escribir($('msg'), CONFIG.mensaje, tm, t, 42);
+    if (K.escribir($('firma'), CONFIG.firma, tf, t, 45) && t > tf + CONFIG.firma.length * 45 + 700) K.repetir();
+    if (t > tNombre + 5200 && Math.random() < .025) lanzar(rnd(L.W * .15, L.W * .85), rnd(L.H * .1, L.H * .3), TIPOS[(Math.random() * 4) | 0]);
   }
-
-  escribir(elMsg, CONFIG.mensaje, T_MSG, t);
-  escribir(elFirma, CONFIG.firma, T_FIRMA, t);
-  if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
+  guion(t);
   requestAnimationFrame(frame);
 }
-
-let PUNTOS = [];
-function iniciarNombre(t, c) {
-  for (const p of PUNTOS) {
-    const a = Math.random() * Math.PI * 2, v = azar(.5, 2.6);
-    const oro = Math.random() > .35;
-    letras.push({ x: p.x, y: p.y, ox: c.x, oy: c.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, n: t, f: Math.random() * 6,
-      col: oro ? [255, 214, 120] : [255, 120, 170] });
-  }
-  estallar({ ...c, grande: false, col: [255, 214, 120] }, t);
-}
-
-// Espera la fuente antes de muestrear el nombre (si no, sale con letra genérica)
-document.fonts.load(`700 80px 'Dancing Script'`).catch(() => {}).then(() => {
-  PUNTOS = puntosNombre();
-  setTimeout(() => requestAnimationFrame(frame), 200);
-});
-if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
+ctx.fillStyle = '#04030f'; ctx.fillRect(0, 0, L.W, L.H);
+document.fonts.load("700 80px 'Dancing Script'").catch(() => {}).then(() => { prepararNombre(); requestAnimationFrame(frame); setTimeout(cuenta, 700); });
+K.traducirRepetir();
 </script>
 </body>
 </html>

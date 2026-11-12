@@ -2,42 +2,46 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <title>💌 Te programé algo</title>
-<!-- AI Romantic Code · Pieza #006 · Terminal que descifra una declaración -->
+<!-- AI Romantic Code · Pieza #006 · Terminal: responde la pregunta secreta para descifrar el mensaje -->
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; background: #030806; overflow: hidden; }
-  body { color: #39ff88; font-family: 'JetBrains Mono', monospace; }
-  canvas { position: fixed; inset: 0; width: 100%; height: 100%; opacity: .22; }
-  .crt { position: fixed; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.22) 2px 3px),
-                radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,.75) 100%); }
-  #term { position: fixed; left: 0; right: 0; top: 7vh; padding: 0 22px; font-size: clamp(12px, 3.5vw, 16px); line-height: 1.75;
-    text-shadow: 0 0 8px rgba(57,255,136,.55); }
-  #term .dim { color: #1f9e57; }
-  #term .ok { color: #b6ffd3; }
-  #term .rosa { color: #ff5c9a; text-shadow: 0 0 8px rgba(255,92,154,.6); }
-  .cursor::after { content: '█'; margin-left: 1px; animation: blink .7s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  #panel { position: fixed; left: 50%; top: 52%; width: min(88vw, 460px); transform: translate(-50%, -50%) scale(.9);
-    border: 1px solid rgba(57,255,136,.55); border-radius: 10px; padding: 22px 20px 20px; text-align: center;
-    background: rgba(2,14,8,.86); box-shadow: 0 0 40px rgba(57,255,136,.18), inset 0 0 30px rgba(57,255,136,.06);
-    opacity: 0; transition: opacity .5s, transform .6s cubic-bezier(.2,1.4,.4,1); }
-  #panel.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  #acceso { font-weight: 800; letter-spacing: .18em; font-size: clamp(15px, 4.6vw, 20px); color: #39ff88; }
-  #corazon { color: #ff4d8d; font-size: clamp(9px, 2.6vw, 12px); line-height: 1.05; white-space: pre; margin: 14px 0 6px;
-    text-shadow: 0 0 10px rgba(255,77,141,.8); display: inline-block; }
+  html, body { height: 100%; background: #020805; overflow: hidden; }
+  body { font-family: 'JetBrains Mono', monospace; color: #7dffa8; -webkit-tap-highlight-color: transparent; --acento: #7dffa8; --pista: #b8ffd0; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+  #ventana { position: fixed; left: 50%; top: 4vh; width: min(92vw, 420px); transform: translateX(-50%); z-index: 2; border-radius: 12px; overflow: hidden;
+    background: rgba(2,14,8,.88); border: 1px solid rgba(125,255,168,.35); box-shadow: 0 0 40px rgba(60,255,140,.18), 0 20px 50px rgba(0,0,0,.6); transition: border-color 1s, box-shadow 1s; }
+  #ventana.ok { border-color: rgba(255,120,170,.6); box-shadow: 0 0 50px rgba(255,80,150,.35), 0 20px 50px rgba(0,0,0,.6); }
+  .barra { display: flex; gap: 6px; padding: 9px 12px; background: rgba(125,255,168,.08); border-bottom: 1px solid rgba(125,255,168,.15); font-size: 11px; color: #4fbf78; align-items: center; }
+  .barra i { width: 10px; height: 10px; border-radius: 50%; display: block; } .barra span { margin-left: 8px; }
+  #term { padding: 12px 14px 14px; font-size: clamp(12px, 3.4vw, 14px); line-height: 1.6; min-height: 120px; max-height: 46vh; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .dim { color: #3f9c62; } .ok { color: #b8ffd0; font-weight: 700; } .mal { color: #ff6b81; font-weight: 700; } .rosa { color: #ff8fb8; } .preg { color: #ffe27a; font-weight: 700; }
+  #fila { display: none; align-items: center; gap: 8px; padding: 0 14px 14px; }
+  #fila.ver { display: flex; }
+  #fila b { color: #ff8fb8; }
+  #resp { flex: 1; min-width: 0; background: rgba(125,255,168,.06); border: 1px solid rgba(125,255,168,.35); border-radius: 8px; color: #fff; font: 700 16px 'JetBrains Mono', monospace;
+    padding: 10px 12px; outline: none; caret-color: #7dffa8; }
+  #resp:focus { border-color: #7dffa8; box-shadow: 0 0 0 3px rgba(125,255,168,.15); }
+  #enviar { background: #7dffa8; color: #02140a; border: 0; border-radius: 8px; font: 800 15px 'JetBrains Mono', monospace; padding: 10px 14px; cursor: pointer; }
+  #ventana.tiembla { animation: tiembla .45s; }
+  @keyframes tiembla { 20%, 60% { transform: translateX(calc(-50% - 8px)); } 40%, 80% { transform: translateX(calc(-50% + 8px)); } }
+  #acceso { position: fixed; left: 0; right: 0; top: 40vh; text-align: center; z-index: 3; font: 800 clamp(26px, 8vw, 40px) 'JetBrains Mono', monospace; color: #b8ffd0;
+    text-shadow: 0 0 20px #3dff8a, 0 0 50px #3dff8a; opacity: 0; pointer-events: none; }
+  #acceso.ver { animation: flash 1.6s forwards; }
+  @keyframes flash { 0% { opacity: 0; transform: scale(1.4); } 12% { opacity: 1; transform: scale(1); } 20% { opacity: .2; } 28%, 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(-20px); } }
+  #revela { position: fixed; left: 50%; bottom: 7vh; width: min(92vw, 420px); transform: translateX(-50%); z-index: 2; text-align: center; opacity: 0; transition: opacity .8s; }
+  #revela.ver { opacity: 1; }
+  #corazon { font: 700 9px/9px 'JetBrains Mono', monospace; color: #ff4d8d; white-space: pre; text-shadow: 0 0 10px #ff4d8d; display: inline-block; }
   #corazon.late { animation: latir 1.1s ease-in-out infinite; }
-  @keyframes latir { 0%, 100% { transform: scale(1); } 12% { transform: scale(1.09); } 26% { transform: scale(1.02); } 38% { transform: scale(1.07); } }
-  #para { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(29px, 8.5vw, 41px); color: #fff; text-shadow: 0 0 16px rgba(255,92,154,.8); min-height: 1.2em; }
-  #msg { color: #d8ffe8; font-size: clamp(13px, 3.8vw, 16px); line-height: 1.6; margin-top: 10px; min-height: 3.2em; }
-  #firma { color: #ff8fb8; font-size: clamp(13px, 3.8vw, 16px); margin-top: 12px; min-height: 1.4em; font-weight: 700; }
-  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(57,255,136,.1); border: 1px solid rgba(57,255,136,.45);
-    color: #39ff88; font: 13px 'JetBrains Mono', monospace; padding: 8px 14px; border-radius: 6px; cursor: pointer; opacity: 0; transition: opacity 1s; }
-  #repetir.visible { opacity: 1; }
+  @keyframes latir { 0%,100% { transform: scale(1); } 15% { transform: scale(1.12); } 30% { transform: scale(1); } 45% { transform: scale(1.06); } }
+  #nombre { font: 700 clamp(30px, 9vw, 42px) 'Dancing Script', cursive; color: #fff; text-shadow: 0 0 16px rgba(255,120,180,.8); margin-top: 6px; overflow-wrap: anywhere; }
+  #msg { font-size: clamp(13px, 3.7vw, 15px); line-height: 1.6; color: #ffe4ef; margin-top: 8px; min-height: 3em; overflow-wrap: anywhere; }
+  #firma { font-size: 13px; color: #ff8fb8; margin-top: 8px; min-height: 1.3em; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -57,152 +61,158 @@
 <link rel="icon" href="../logo.svg">
 </head>
 <body>
-<canvas id="lluvia"></canvas>
-<div id="term"></div>
-<div id="panel">
-  <div id="acceso">ACCESO CONCEDIDO</div>
-  <div id="corazon"></div>
-  <div id="para"></div>
-  <div id="msg"></div>
-  <div id="firma"></div>
+<canvas id="c"></canvas>
+<div id="ventana">
+  <div class="barra"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span id="titulo">corazon.sh</span></div>
+  <div id="term"></div>
+  <div id="fila"><b>&gt;</b><input id="resp" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="60" enterkeyhint="send"><button id="enviar" type="button">↵</button></div>
 </div>
-<div class="crt"></div>
+<div id="acceso"></div>
+<div id="revela"><div id="corazon"></div><div id="nombre"></div><div id="msg"></div><div id="firma"></div></div>
+<div id="pista"></div>
 <button id="repetir" data-no-video onclick="location.reload()" data-en="↻ watch again">↻ ver de nuevo</button>
 <script>
-/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&pregunta=¿Dónde nos conocimos?&clave=en la playa&ayuda=empieza con p&msg=...&de=... */
 const q = new URLSearchParams(location.search);
 const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
 const CONFIG = {
-  para:    q.get('para') || (EN ? "Mia" : "Lucía"),
-  mensaje: q.get('msg')  || (EN ? "I tried to encrypt what I feel for you, but no algorithm can hide it. I'm crazy about you." : "Intenté cifrar lo que siento por ti, pero no existe algoritmo capaz de esconderlo. Me encantas."),
-  firma:   q.get('de')   || (EN ? "— root, who loves you" : "— root, que te quiere")
+  para:     q.get('para') || (EN ? "Mia" : "Lucía"),
+  mensaje:  q.get('msg')  || (EN ? "I tried to encrypt what I feel for you, but no algorithm can hide it. I'm crazy about you." : "Intenté cifrar lo que siento por ti, pero no existe algoritmo capaz de esconderlo. Me encantas."),
+  firma:    q.get('de')   || (EN ? "— root, who loves you" : "— root, que te quiere"),
+  pregunta: q.get('pregunta') || '',
+  clave:    q.get('clave') || '',
+  ayuda:    q.get('ayuda') || ''
 };
+if (!CONFIG.pregunta || !CONFIG.clave) { CONFIG.pregunta = EN ? 'Identity check: type your name' : 'Verificación de identidad: escribe tu nombre'; CONFIG.clave = CONFIG.para; }
+const TX = EN ? {
+  l1: ['$ ', './decrypt --for ', null], l2: '[ok] secure connection established', l3: n => `[..] locating ${n}'s heart`, l4: '[ok] found ♥ (beating fast)',
+  l5: '[!!] message locked 🔒', preg: '? ', mal: n => `ACCESS DENIED ✕  (attempt ${n}/3)`, ayuda: 'hint: ', rendir: "fine… I'll let you in anyway, because it's you 😌",
+  acceso: 'ACCESS GRANTED', dec: '[..] decrypting message', pista: 'Type your answer and press ↵ ⌨️', prompt: 'root@love:~'
+} : {
+  l1: ['$ ', './descifrar --para ', null], l2: '[ok] conexión segura establecida', l3: n => `[..] buscando el corazón de ${n}`, l4: '[ok] encontrado ♥ (estaba latiendo fuerte)',
+  l5: '[!!] mensaje bloqueado 🔒', preg: '? ', mal: n => `ACCESO DENEGADO ✕  (intento ${n}/3)`, ayuda: 'pista: ', rendir: 'bueno… te dejo pasar igual, porque eres tú 😌',
+  acceso: 'ACCESO CONCEDIDO', dec: '[..] descifrando mensaje', pista: 'Escribe tu respuesta y toca ↵ ⌨️', prompt: 'root@amor:~'
+};
+const { clamp, rnd } = K;
+const L = K.lienzo('c'), ctx = L.ctx;
+const $ = id => document.getElementById(id);
+const term = $('term'), inp = $('resp'), fila = $('fila');
+$('titulo').textContent = TX.prompt;
+const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9ñ ]/g, '').replace(/\s+/g, ' ').trim();
 
-/* Lluvia de código de fondo */
-const cv = document.getElementById('lluvia'), ctx = cv.getContext('2d');
-let W, H, cols, gotas;
-function medir() {
-  const dpr = window.devicePixelRatio || 1; W = innerWidth; H = innerHeight;
-  cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  cols = Math.ceil(W / 16); gotas = Array.from({ length: cols }, () => Math.random() * -H / 16);
+/* ---------- terminal: líneas que se escriben (siempre con textContent) ---------- */
+const cola = []; let escribiendo = false;
+function linea(partes, vel = 16) { return new Promise(r => { cola.push({ partes, vel, fin: r }); if (!escribiendo) siguiente(); }); }
+function siguiente() {
+  const l = cola.shift(); if (!l) { escribiendo = false; return; }
+  escribiendo = true;
+  const div = document.createElement('div'); term.appendChild(div);
+  const spans = l.partes.map(([cls, txt]) => { const s = document.createElement('span'); if (cls) s.className = cls; div.appendChild(s); return [s, txt]; });
+  let i = 0, j = 0;
+  (function paso() {
+    if (i >= spans.length) { while (term.scrollHeight > term.clientHeight && term.children.length > 1) term.removeChild(term.firstChild); l.fin && l.fin(); siguiente(); return; }
+    const [s, txt] = spans[i];
+    s.textContent = txt.slice(0, ++j);
+    if (j >= txt.length) { i++; j = 0; }
+    setTimeout(paso, l.vel);
+  })();
 }
-medir(); addEventListener('resize', medir);
-const GLIFOS = '01<>{}[]/*=+;:#$%&アイウエオカキクケコ♥';
-const azar = s => s[(Math.random() * s.length) | 0];
+const espera = ms => new Promise(r => setTimeout(r, ms));
 
-/* Guion de la terminal: [inicio ms, html de la línea, ms por letra (0 = de golpe), barra de progreso] */
-const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const nombre = esc(CONFIG.para);
-const LINEAS = [
-  { t: 300,  txt: (EN ? `<span class="dim">root@love:~$</span> ./decrypt --for "${nombre}"` : `<span class="dim">root@amor:~$</span> ./descifrar --para "${nombre}"`), vel: 28 },
-  { t: 1900, txt: (EN ? `<span class="ok">[ok]</span> secure connection established` : `<span class="ok">[ok]</span> conexión segura establecida`) },
-  { t: 2200, txt: (EN ? `<span class="dim">[..]</span> looking for ${nombre}'s heart` : `<span class="dim">[..]</span> buscando el corazón de ${nombre}`), barra: [2300, 3500] },
-  { t: 3650, txt: (EN ? `<span class="ok">[ok]</span> found <span class="rosa">♥</span> (it was beating fast)` : `<span class="ok">[ok]</span> encontrado <span class="rosa">♥</span> (estaba latiendo fuerte)`) },
-  { t: 3950, txt: (EN ? `<span class="dim">[..]</span> decrypting message` : `<span class="dim">[..]</span> descifrando mensaje`), barra: [4050, 5000] },
-];
-const T_PANEL = 5250, T_PARA = 5600, T_MSG = 6300, vel = 38;
-const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 350;
-const T_FIN = T_FIRMA + CONFIG.firma.length * 45 + 300;
+let intentos = 0, fase = 'arranque', tOk = -1, t = 0;
+async function arrancar() {
+  await espera(400);
+  await linea([['dim', TX.prompt + TX.l1[0]], ['', TX.l1[1] + '"' + CONFIG.para + '"']], 30);
+  await espera(300); await linea([['ok', TX.l2]]);
+  await linea([['dim', TX.l3(CONFIG.para)]]); await espera(400);
+  await linea([['ok', TX.l4.replace('♥', '')], ['rosa', '']]);
+  await linea([['mal', TX.l5]]); await espera(300);
+  await linea([['preg', TX.preg + CONFIG.pregunta]], 22);
+  fase = 'pregunta'; fila.classList.add('ver'); K.pista($('pista'), TX.pista);
+  if (!K.VIDEO) setTimeout(() => inp.focus(), 100);
+}
+async function responder() {
+  if (fase !== 'pregunta') return;
+  const v = inp.value.trim(); if (!v) { inp.focus(); return; }
+  inp.value = '';
+  await linea([['dim', '> '], ['', v]], 8);
+  if (norm(v) === norm(CONFIG.clave) || (norm(CONFIG.clave).length > 3 && norm(v).includes(norm(CONFIG.clave)))) return concedido();
+  intentos++; K.vibrar([60, 40, 60]);
+  $('ventana').classList.remove('tiembla'); void $('ventana').offsetWidth; $('ventana').classList.add('tiembla');
+  if (intentos >= 3) { fase = 'x'; await linea([['mal', TX.mal(intentos)]]); await linea([['rosa', TX.rendir]], 26); return concedido(); }
+  await linea([['mal', TX.mal(intentos)]]);
+  if (CONFIG.ayuda && intentos >= 1) await linea([['preg', TX.ayuda + CONFIG.ayuda]]);
+  if (!K.VIDEO) inp.focus();
+}
+async function concedido() {
+  fase = 'ok'; fila.classList.remove('ver'); inp.blur(); K.pista($('pista'), ''); K.vibrar([40, 60, 40, 60, 150]);
+  const a = $('acceso'); a.textContent = TX.acceso; a.classList.add('ver');
+  $('ventana').classList.add('ok');
+  await espera(1200); await linea([['dim', TX.dec]]);
+  tOk = t;
+  $('corazon').textContent = [' ███   ███ ', '█████ █████', '███████████', ' █████████ ', '  ███████  ', '   █████   ', '    ███    ', '     █     '].join('\n');
+  $('nombre').textContent = CONFIG.para;
+  $('revela').classList.add('ver'); setTimeout(() => $('corazon').classList.add('late'), 600);
+}
+$('enviar').addEventListener('click', responder);
+inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); responder(); } });
 
-const CORAZON = [
-  "  ♥♥♥♥     ♥♥♥♥  ",
-  " ♥♥♥♥♥♥   ♥♥♥♥♥♥ ",
-  "♥♥♥♥♥♥♥♥ ♥♥♥♥♥♥♥♥",
-  "♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥",
-  " ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥ ",
-  "   ♥♥♥♥♥♥♥♥♥♥♥   ",
-  "     ♥♥♥♥♥♥♥     ",
-  "       ♥♥♥       ",
-  "        ♥        "
-];
+// mensaje que se «descifra»: caracteres al azar que se van fijando
+const GLIFOS = '01#$%&*+<>/\\|{}[]=?!ABCDEFabcdef';
+function descifrar(el, txt, t0, dur) {
+  const p = clamp((t - t0) / dur); if (p <= 0) { el.textContent = ''; return false; }
+  const fijos = Math.floor(p * txt.length), visibles = Math.min(txt.length, fijos + 6);
+  let s = txt.slice(0, fijos);
+  for (let i = fijos; i < visibles; i++) s += txt[i] === ' ' ? ' ' : GLIFOS[(Math.random() * GLIFOS.length) | 0];
+  el.textContent = s; return p >= 1;
+}
 
-/* Corta HTML a n letras visibles (sin romper etiquetas) */
-function cortarHTML(html, n) {
-  let out = '', vis = 0, i = 0;
-  while (i < html.length && vis < n) {
-    if (html[i] === '<') { const j = html.indexOf('>', i); out += html.slice(i, j + 1); i = j + 1; continue; }
-    if (html[i] === '&') { const j = html.indexOf(';', i); out += html.slice(i, j + 1); i = j + 1; vis++; continue; }
-    out += html[i++]; vis++;
+// video: el cursor toca el campo, «escribe» la respuesta y envía
+const MAL = EN ? 'babe?' : '¿mi amor?';
+const escribirEn = txt => { let i = 0; (function tecla() { if (i > txt.length) return; inp.value = txt.slice(0, i++); setTimeout(tecla, 130); })(); };
+const enInput = () => { const r = inp.getBoundingClientRect(); return { x: r.left + 40, y: r.top + r.height / 2 }; };
+const enBoton = () => { const r = $('enviar').getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
+const guion = K.guion([
+  { cuando: () => fase === 'pregunta' ? t + 300 : null, donde: enInput },
+  { cuando: () => inp.value === MAL ? t + 350 : null, donde: enBoton },
+  { cuando: () => fase === 'pregunta' && intentos === 1 && !escribiendo ? t + 700 : null, donde: enInput },
+  { cuando: () => fase === 'pregunta' && inp.value === CONFIG.clave ? t + 400 : null, donde: enBoton }
+], {
+  abajo: (x, y) => {
+    if (document.elementFromPoint(x, y) === $('enviar')) return responder();
+    inp.style.borderColor = '#7dffa8'; escribirEn(intentos === 0 ? MAL : CONFIG.clave);
   }
-  // cierra spans abiertos
-  const abiertos = (out.match(/<span/g) || []).length - (out.match(/<\/span>/g) || []).length;
-  return out + '</span>'.repeat(Math.max(0, abiertos));
-}
-const visibles = html => html.replace(/<[^>]+>/g, '').replace(/&[^;]+;/g, 'x').length;
+});
 
-function barra(p) {
-  const n = 16, llenos = Math.round(p * n);
-  return ` <span class="ok">[${'█'.repeat(llenos)}${'░'.repeat(n - llenos)}]</span> ${String(Math.round(p * 100)).padStart(3)}%`;
-}
-
-/* Efecto descifrado: las letras ya "resueltas" son reales, las siguientes cambian al azar */
-function descifrar(txt, t0, now, v) {
-  const p = (now - t0) / v;
-  if (p <= 0) return '';
-  const fijas = Math.min(txt.length, Math.floor(p));
-  let s = txt.slice(0, fijas);
-  const ruido = Math.min(txt.length - fijas, 6);
-  for (let i = 0; i < ruido; i++) s += txt[fijas + i] === ' ' ? ' ' : azar('01#$%&*<>/\\{}');
-  return esc(s);
-}
-
-if (EN) document.getElementById('acceso').textContent = 'ACCESS GRANTED';
-const elTerm = document.getElementById('term'), panel = document.getElementById('panel');
-const elCor = document.getElementById('corazon'), elPara = document.getElementById('para');
-const elMsg = document.getElementById('msg'), elFirma = document.getElementById('firma');
-let t0 = null, ultimaLluvia = 0;
-
+/* ---------- lluvia de código ---------- */
+const COL = 16; let gotas = [];
+function prepararLluvia() { gotas = Array.from({ length: Math.ceil(L.W / COL) }, () => ({ y: rnd(-L.H, 0), v: rnd(2, 5) })); }
+prepararLluvia(); addEventListener('resize', prepararLluvia);
+let t0 = null, ultimo = 0;
 function frame(now) {
   if (t0 === null) t0 = now;
-  const t = now - t0;
-
-  // lluvia (cada ~50 ms)
-  if (now - ultimaLluvia > 50) {
-    ultimaLluvia = now;
-    ctx.fillStyle = 'rgba(3,8,6,.18)'; ctx.fillRect(0, 0, W, H);
-    ctx.font = '14px JetBrains Mono, monospace'; ctx.fillStyle = '#39ff88';
-    for (let i = 0; i < cols; i++) {
-      ctx.fillText(azar(GLIFOS), i * 16, gotas[i] * 16);
-      if (gotas[i] * 16 > H && Math.random() > 0.975) gotas[i] = 0;
-      gotas[i] += 1;
-    }
+  t = now - t0;
+  if (t - ultimo > 45) {
+    ultimo = t;
+    const ok = tOk > 0;
+    ctx.fillStyle = 'rgba(2,8,5,.16)'; ctx.fillRect(0, 0, L.W, L.H);
+    ctx.font = `700 ${COL - 2}px 'JetBrains Mono', monospace`;
+    gotas.forEach((g, i) => {
+      const c = ok && Math.random() < .25 ? '♥' : GLIFOS[(Math.random() * GLIFOS.length) | 0];
+      ctx.fillStyle = ok ? (Math.random() < .5 ? '#ff4d8d' : '#ff9cc2') : (Math.random() < .1 ? '#d8ffe6' : '#1f9e55');
+      ctx.globalAlpha = .55; ctx.fillText(c, i * COL, g.y); ctx.globalAlpha = 1;
+      g.y += COL; if (g.y > L.H + rnd(0, 400)) g.y = rnd(-100, 0);
+    });
   }
-
-  // terminal
-  let html = '';
-  for (let i = 0; i < LINEAS.length; i++) {
-    const L = LINEAS[i];
-    if (t < L.t) break;
-    const total = visibles(L.txt);
-    const n = L.vel ? Math.min(total, Math.floor((t - L.t) / L.vel)) : total;
-    let linea = cortarHTML(L.txt, n);
-    if (L.barra && t >= L.barra[0]) linea += barra(Math.min(1, (t - L.barra[0]) / (L.barra[1] - L.barra[0])));
-    const ultima = i === LINEAS.length - 1 || t < LINEAS[i + 1].t;
-    html += `<div class="${ultima && t < T_PANEL ? 'cursor' : ''}">${linea}</div>`;
+  if (tOk > 0) {
+    const tm = tOk + 900, dur = CONFIG.mensaje.length * 38;
+    if (descifrar($('msg'), CONFIG.mensaje, tm, dur) && K.escribir($('firma'), CONFIG.firma, tm + dur + 400, t, 45) && t > tm + dur + 400 + CONFIG.firma.length * 45 + 700) K.repetir();
   }
-  elTerm.innerHTML = html;
-  elTerm.style.opacity = t > T_PANEL ? Math.max(0.25, 1 - (t - T_PANEL) / 800) : 1;
-
-  // panel final
-  if (t > T_PANEL && !panel.classList.contains('visible')) {
-    panel.classList.add('visible');
-    elCor.textContent = CORAZON.join('\n');
-    elCor.classList.add('late');
-  }
-  if (t > T_PANEL) {
-    // el corazón aparece fila por fila
-    const filas = Math.min(CORAZON.length, Math.floor((t - T_PANEL) / 45));
-    elCor.textContent = CORAZON.map((f, i) => i < filas ? f : ' '.repeat(f.length)).join('\n');
-  }
-  elPara.innerHTML = t > T_PARA ? descifrar(CONFIG.para, T_PARA, t, 70) : '';
-  elMsg.innerHTML = descifrar(CONFIG.mensaje, T_MSG, t, vel);
-  elFirma.innerHTML = descifrar(CONFIG.firma, T_FIRMA, t, 45);
-  if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
+  guion(t);
   requestAnimationFrame(frame);
 }
-ctx.fillStyle = '#030806'; ctx.fillRect(0, 0, W, H);
-setTimeout(() => requestAnimationFrame(frame), 250);
-if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
+document.fonts.ready.then(() => { requestAnimationFrame(frame); arrancar(); });
+K.traducirRepetir();
 </script>
 </body>
 </html>

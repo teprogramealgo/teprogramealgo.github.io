@@ -4,21 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💌 Te programé algo</title>
-<!-- AI Romantic Code · Pieza #002 · Corazón de partículas -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+<!-- AI Romantic Code · Pieza #002 · Corazón: pon tu dedo, siente cómo late y explota en su nombre -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; background: #07020a; overflow: hidden; }
+  html, body { height: 100%; background: #07020a; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+  body { font-family: 'Quicksand', sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; --acento: #ff8fb1; }
   canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
-  .texto { position: fixed; left: 0; right: 0; bottom: 9vh; text-align: center; padding: 0 26px; color: #ffe4ec; font-family: 'Quicksand', sans-serif; }
-  #msg { font-size: clamp(16px, 4.4vw, 21px); line-height: 1.55; min-height: 3.2em; text-shadow: 0 0 12px rgba(255, 60, 120, .5); }
-  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(22px, 6.0vw, 31px); color: #ff8fb1; margin-top: 10px; min-height: 1.3em; }
-  .typing::after { content: '|'; margin-left: 2px; color: #ff4d8d; animation: blink .8s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(255,77,141,.12); border: 1px solid rgba(255,77,141,.45);
-    color: #ff8fb1; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
-  #repetir.visible { opacity: 1; }
+  .texto { position: fixed; left: 0; right: 0; bottom: 9vh; text-align: center; padding: 0 26px; color: #ffe4ec; z-index: 2; }
+  #msg { font-size: clamp(16px, 4.4vw, 21px); line-height: 1.55; min-height: 3.2em; text-shadow: 0 0 12px rgba(255,60,120,.5); }
+  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(22px, 6vw, 31px); color: #ff8fb1; margin-top: 10px; min-height: 1.3em; }
+  #lpm { position: fixed; left: 0; right: 0; top: 63vh; text-align: center; font: 700 15px 'Quicksand', sans-serif; color: #ffb3c9; letter-spacing: .08em;
+    opacity: 0; transition: opacity .4s; z-index: 2; text-shadow: 0 0 10px rgba(255,60,120,.6); }
+  #lpm b { font-size: 30px; color: #fff; display: block; letter-spacing: 0; }
+  #lpm.ver { opacity: 1; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
+<script src="../_comun/kit.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -39,7 +41,9 @@
 </head>
 <body>
 <canvas id="c"></canvas>
+<div id="lpm"></div>
 <div class="texto"><div id="msg"></div><div id="firma"></div></div>
+<div id="pista"></div>
 <button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
 /* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=... */
@@ -51,134 +55,121 @@ const CONFIG = {
   firma:   q.get('de')   || (EN ? "Forever yours ❤️" : "Tuyo siempre ❤️"),
   particulas: 900
 };
+const TX = EN ? { pista: 'Hold your finger on the heart ❤️', sigue: "Don't let go… 💓", lpm: 'BEATS PER MINUTE' }
+              : { pista: 'Pon tu dedo en el corazón y no lo sueltes ❤️', sigue: 'No lo sueltes… 💓', lpm: 'LATIDOS POR MINUTO' };
+const { clamp, rnd } = K;
+const L = K.lienzo('c'), ctx = L.ctx, chis = K.chispas(ctx);
+const $ = id => document.getElementById(id);
 
-const cv = document.getElementById('c'), ctx = cv.getContext('2d');
-let W, H, DPR;
-function medir() { DPR = window.devicePixelRatio || 1; W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
-medir(); addEventListener('resize', medir);
-
-const easeOut = t => 1 - Math.pow(1 - t, 3);
-const clamp = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
-
-// Puntos del corazón (curva clásica) — relleno con algo de profundidad
-function puntoCorazon(t, k) {
-  return { x: 16 * Math.pow(Math.sin(t), 3) * k, y: -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * k };
-}
-const P = [];
-for (let i = 0; i < CONFIG.particulas; i++) {
-  const t = Math.random() * Math.PI * 2;
-  const capa = i < CONFIG.particulas * 0.65 ? 1 : 0.35 + Math.random() * 0.6;   // borde + interior
-  const ang = Math.random() * Math.PI * 2, rad = Math.max(W, H) * (0.6 + Math.random() * 0.4);
-  P.push({
-    t, capa,
-    ox: Math.cos(ang) * rad, oy: Math.sin(ang) * rad,     // origen fuera de pantalla
-    j: (Math.random() - 0.5) * 0.9,                       // jitter
-    delay: 400 + Math.random() * 1800,
-    size: 0.8 + Math.random() * 1.8,
-    hue: 330 + Math.random() * 30
-  });
-}
-// corazoncitos que suben
-const flotantes = [];
-
-function corazonPath(x, y, s) {
-  ctx.beginPath();
-  ctx.moveTo(x, y + s * 0.3);
-  ctx.bezierCurveTo(x, y, x - s * 0.5, y, x - s * 0.5, y + s * 0.3);
-  ctx.bezierCurveTo(x - s * 0.5, y + s * 0.6, x, y + s * 0.8, x, y + s);
-  ctx.bezierCurveTo(x, y + s * 0.8, x + s * 0.5, y + s * 0.6, x + s * 0.5, y + s * 0.3);
-  ctx.bezierCurveTo(x + s * 0.5, y, x, y, x, y + s * 0.3);
-  ctx.fill();
+const geo = () => ({ cx: L.W / 2, cy: L.H * .36, k: Math.min(L.W, L.H) / 40 });
+const puntoCorazon = (a, k) => ({ x: 16 * Math.pow(Math.sin(a), 3) * k, y: -(13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)) * k });
+const P = Array.from({ length: CONFIG.particulas }, (_, i) => {
+  const ang = rnd(0, Math.PI * 2), rad = Math.max(L.W, L.H) * rnd(.6, 1);
+  return { a: rnd(0, Math.PI * 2), capa: i < CONFIG.particulas * .65 ? 1 : rnd(.35, .95), x: L.W / 2 + Math.cos(ang) * rad, y: L.H / 2 + Math.sin(ang) * rad,
+    vx: 0, vy: 0, delay: rnd(300, 1900), size: rnd(.8, 2.6), hue: rnd(330, 360), nx: 0, ny: 0 };
+});
+function prepararNombre() {
+  const w = Math.min(L.W * .95, 520), h = 170;
+  let pts = K.puntosTexto(CONFIG.para, `700 ${Math.round(Math.min(L.W * .26, 120))}px 'Dancing Script'`, w, h, 3);
+  if (!pts.length) pts = [{ x: 0, y: 0 }];
+  P.forEach((p, i) => { const n = pts[(i * 7) % pts.length]; p.nx = n.x + rnd(-1, 1); p.ny = n.y + rnd(-1, 1); });
 }
 
-const T_LATIDO = 3000, T_NOMBRE = 3300, T_MSG = 4600;
-const vel = 45;
-const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400;
-const T_FIN = T_FIRMA + CONFIG.firma.length * vel + 400;
-const elMsg = document.getElementById('msg'), elFirma = document.getElementById('firma');
+/* ---------- estado ---------- */
+let fase = 'forma', carga = 0, apretando = false, dedo = null, tExplota = -1, tFinal = -1, t = 0, faseLat = 0, ultT = 0;
+const abajo = (x, y) => { if (fase !== 'espera') return; apretando = true; dedo = { x, y }; };
+const mover = (x, y) => { if (apretando) dedo = { x, y }; };
+const arriba = () => { apretando = false; };
+K.entrada({ abajo, mover, arriba });
+const guion = K.guion([{ cuando: () => 3700, dur: 3700, donde: () => { const g = geo(); return { x: g.cx + 6, y: g.cy - g.k * 2 }; } }], { abajo, mover, arriba });
 
-function escribir(el, txt, t0, now) {
-  const p = clamp((now - t0) / (txt.length * vel));
-  el.textContent = txt.slice(0, Math.round(p * txt.length));
-  el.classList.toggle('typing', p > 0 && p < 1);
+function explotar() {
+  fase = 'explota'; tExplota = t; apretando = false; K.vibrar([80, 40, 200]);
+  const { cx, cy } = geo();
+  P.forEach(p => { const a = Math.atan2(p.y - cy, p.x - cx) + rnd(-.3, .3), v = rnd(6, 16); p.vx = Math.cos(a) * v; p.vy = Math.sin(a) * v; });
+  chis.soltar(cx, cy, 60, ['#fff', '#ff4d8d', '#ffd1e0'], 9, { forma: 'c', g: .05 });
+  $('lpm').classList.remove('ver'); K.pista($('pista'), '');
 }
 
-let t0 = null, ultimoFlot = 0;
+let t0 = null;
 function frame(now) {
   if (t0 === null) t0 = now;
-  const t = now - t0;
-  const cx = W / 2, cy = H * 0.36;
-  const k = Math.min(W, H) / 40;
+  t = now - t0;
+  const dt = Math.min(t - ultT, 50); ultT = t;
+  const { cx, cy, k } = geo(), W = L.W, H = L.H;
 
-  ctx.fillStyle = 'rgba(7,2,10,0.32)';           // estela
-  ctx.fillRect(0, 0, W, H);
-
-  // latido: doble pulso cada 1.1 s
-  let lat = 1;
-  if (t > T_LATIDO) {
-    const f = ((t - T_LATIDO) % 1100) / 1100;
-    lat = 1 + 0.07 * Math.exp(-Math.pow((f - 0.08) * 18, 2)) + 0.045 * Math.exp(-Math.pow((f - 0.28) * 18, 2));
+  if (fase === 'forma' && t > 2800) fase = 'espera';
+  // carga del dedo (≈3,2 s apretando) y latido cada vez más rápido
+  if (fase === 'espera') {
+    carga = clamp(carga + (apretando ? dt / 3200 : -dt / 6000));
+    if (carga >= 1) explotar();
   }
+  const lpm = 64 + (fase === 'espera' ? carga : 0) * 110;
+  faseLat += dt / (60000 / lpm);
+  if (faseLat >= 1) { faseLat -= 1; if (apretando) K.vibrar(25); }
+  let lat = 1;
+  if (t > 2600 && (fase === 'espera' || fase === 'final')) {
+    const f = faseLat, amp = 1 + carga * 1.4;
+    lat = 1 + (.07 * Math.exp(-Math.pow((f - .08) * 18, 2)) + .045 * Math.exp(-Math.pow((f - .28) * 18, 2))) * amp + (fase === 'espera' ? carga * .18 : 0);
+  }
+  if (fase === 'espera') {
+    $('lpm').classList.toggle('ver', carga > .02);
+    $('lpm').innerHTML = `<b>${Math.round(lpm)}</b>${TX.lpm}`;
+    K.pista($('pista'), apretando ? TX.sigue : TX.pista);
+  }
+  if (fase === 'explota' && t > tExplota + 900) fase = 'nombre';
+  if (fase === 'nombre' && t > tExplota + 4300) { fase = 'final'; tFinal = t; carga = 0; }
 
-  // halo
-  const brillo = clamp((t - 2200) / 1500) * (0.55 + (lat - 1) * 4);
+  ctx.fillStyle = fase === 'explota' ? 'rgba(7,2,10,0.18)' : 'rgba(7,2,10,0.32)'; ctx.fillRect(0, 0, W, H);
+  const brillo = clamp((t - 2200) / 1500) * (.55 + (lat - 1) * 4) * (fase === 'nombre' ? .4 : 1);
   if (brillo > 0) {
-    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, k * 22);
-    g.addColorStop(0, `rgba(255,40,110,${0.28 * brillo})`); g.addColorStop(1, 'rgba(255,40,110,0)');
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, k * (22 + carga * 10));
+    g.addColorStop(0, `rgba(255,40,110,${Math.min(.28 * brillo + carga * .2, .6)})`); g.addColorStop(1, 'rgba(255,40,110,0)');
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   }
+  if (fase === 'espera' && carga > 0 && dedo) {
+    ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(dedo.x, dedo.y, 34, 0, 7); ctx.stroke();
+    ctx.strokeStyle = '#fff'; ctx.beginPath(); ctx.arc(dedo.x, dedo.y, 34, -Math.PI / 2, -Math.PI / 2 + carga * Math.PI * 2); ctx.stroke();
+  }
 
+  // partículas: muelle hacia su destino (corazón o nombre)
   ctx.globalCompositeOperation = 'lighter';
+  const temblor = fase === 'espera' ? carga * 2.2 : 0;
   for (const p of P) {
-    const a = easeOut(clamp((t - p.delay) / 1400));
-    if (a <= 0) continue;
-    const h = puntoCorazon(p.t, k * p.capa * lat);
-    const wob = Math.sin(t / 380 + p.t * 7) * p.j * k * 0.25;
-    const x = cx + p.ox + (h.x + wob - p.ox) * a;
-    const y = cy + p.oy + (h.y + wob - p.oy) * a;
-    ctx.fillStyle = `hsla(${p.hue},100%,${60 + p.capa * 12}%,${0.35 + 0.65 * a})`;
-    ctx.beginPath(); ctx.arc(x, y, p.size * (0.6 + 0.4 * lat), 0, Math.PI * 2); ctx.fill();
+    if (t < p.delay) continue;
+    if (fase === 'explota') { p.vx *= .93; p.vy *= .93; }
+    else {
+      let tx, ty;
+      if (fase === 'nombre') { tx = cx + p.nx; ty = cy + p.ny; }
+      else { const h = puntoCorazon(p.a, k * p.capa * lat); tx = cx + h.x + rnd(-temblor, temblor); ty = cy + h.y + rnd(-temblor, temblor); }
+      const kk = fase === 'nombre' ? .05 : .09; p.vx = (p.vx + (tx - p.x) * kk) * .78; p.vy = (p.vy + (ty - p.y) * kk) * .78;
+    }
+    p.x += p.vx; p.y += p.vy;
+    const a = clamp((t - p.delay) / 1400);
+    ctx.fillStyle = `hsla(${p.hue},100%,${60 + p.capa * 12 + carga * 15}%,${.35 + .65 * a})`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (.6 + .4 * lat) * (fase === 'nombre' ? .8 : 1), 0, 7); ctx.fill();
   }
   ctx.globalCompositeOperation = 'source-over';
+  chis.pintar();
 
-  // nombre dentro del corazón
-  const an = clamp((t - T_NOMBRE) / 900);
-  if (an > 0) {
-    let fs = Math.min(W * 0.11, 56) * lat;
-    ctx.save();
-    ctx.globalAlpha = an;
-    ctx.font = `700 ${fs}px 'Dancing Script', cursive`;
-    const anchoNombre = ctx.measureText(CONFIG.para).width;      // nombres largos: que quepan dentro del corazón
-    if (anchoNombre > k * 22) { fs *= k * 22 / anchoNombre; ctx.font = `700 ${fs}px 'Dancing Script', cursive`; }
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.shadowColor = 'rgba(255,120,170,.9)'; ctx.shadowBlur = 18;
-    ctx.fillStyle = '#fff';
-    ctx.fillText(CONFIG.para, cx, cy - k * 1.5 + (1 - easeOut(an)) * 20);
-    ctx.restore();
+  if (fase === 'final') {
+    const an = clamp((t - tFinal) / 900);
+    let fs = Math.min(W * .11, 56) * lat;
+    ctx.save(); ctx.globalAlpha = an; ctx.font = `700 ${fs}px 'Dancing Script', cursive`;
+    const ancho = ctx.measureText(CONFIG.para).width; if (ancho > k * 22) { fs *= k * 22 / ancho; ctx.font = `700 ${fs}px 'Dancing Script', cursive`; }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.shadowColor = 'rgba(255,120,170,.9)'; ctx.shadowBlur = 18; ctx.fillStyle = '#fff';
+    ctx.fillText(CONFIG.para, cx, cy - k * 1.5); ctx.restore();
+    const tm = tFinal + 700, tf = tm + CONFIG.mensaje.length * 45 + 400;
+    K.escribir($('msg'), CONFIG.mensaje, tm, t, 45);
+    if (K.escribir($('firma'), CONFIG.firma, tf, t, 45) && t > tf + CONFIG.firma.length * 45 + 600) K.repetir();
+    if (Math.random() < .08) chis.soltar(rnd(0, W), H + 10, 1, ['rgba(255,140,180,.6)'], 1, { vy: -rnd(1, 2), vx: rnd(-.3, .3), g: 0, max: 300, forma: 'c', s: rnd(2, 4) });
   }
-
-  // corazoncitos flotantes
-  if (t > T_LATIDO && t - ultimoFlot > 260) {
-    ultimoFlot = t;
-    flotantes.push({ x: Math.random() * W, y: H + 20, s: 8 + Math.random() * 14, v: 0.6 + Math.random() * 0.9, n: t, f: Math.random() * 6 });
-  }
-  for (let i = flotantes.length - 1; i >= 0; i--) {
-    const f = flotantes[i];
-    const e = t - f.n;
-    const y = f.y - e * f.v * 0.09;
-    if (y < -40) { flotantes.splice(i, 1); continue; }
-    ctx.fillStyle = `rgba(255,${90 + (f.s * 4) | 0},150,${0.35})`;
-    corazonPath(f.x + Math.sin(e / 500 + f.f) * 14, y, f.s);
-  }
-
-  escribir(elMsg, CONFIG.mensaje, T_MSG, t);
-  escribir(elFirma, CONFIG.firma, T_FIRMA, t);
-  if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
+  guion(t);
   requestAnimationFrame(frame);
 }
-ctx.fillStyle = '#07020a'; ctx.fillRect(0, 0, W, H);
-setTimeout(() => requestAnimationFrame(frame), 300);
-if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
+ctx.fillStyle = '#07020a'; ctx.fillRect(0, 0, L.W, L.H);
+document.fonts.load("700 100px 'Dancing Script'").catch(() => {}).then(() => { prepararNombre(); setTimeout(() => requestAnimationFrame(frame), 300); });
+K.traducirRepetir();
 </script>
 </body>
 </html>

@@ -4,24 +4,60 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💌 Te programé algo</title>
-<!-- AI Romantic Code · Pieza #008 · Árbol de luces con nieve -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+<!-- AI Romantic Code · Pieza #008 · Navidad: enciende su árbol y abre sus 3 regalos -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; background: #050b1a; overflow: hidden; }
+  html, body { height: 100%; background: #040817; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+  body { font-family: 'Quicksand', sans-serif; color: #f4f7ff; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
-  .texto { position: fixed; left: 0; right: 0; top: 60vh; text-align: center; padding: 0 26px; color: #f4f7ff; font-family: 'Quicksand', sans-serif; }
-  #titulo { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(29px, 8.5vw, 42px); color: #ffd76a; text-shadow: 0 0 18px rgba(255,200,90,.6);
-    opacity: 0; transform: translateY(12px); transition: opacity 1.2s, transform 1.2s; min-height: 1.2em; }
-  #titulo.visible { opacity: 1; transform: none; }
-  #msg { font-size: clamp(15px, 4.2vw, 20px); line-height: 1.55; min-height: 3.2em; margin-top: 8px; text-shadow: 0 0 10px rgba(140,180,255,.5); }
-  #firma { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(22px, 6.0vw, 29px); color: #ff8f9a; margin-top: 8px; min-height: 1.3em; }
-  .typing::after { content: '|'; margin-left: 2px; color: #ffd76a; animation: blink .8s steps(1) infinite; }
+  #titulo { position: fixed; left: 0; right: 0; top: 66vh; text-align: center; padding: 0 20px; font-family: 'Dancing Script', cursive; font-weight: 700;
+    font-size: clamp(30px, 9vw, 44px); line-height: 1.15; color: #d81e45; text-shadow: 0 1px 0 #fff, 0 0 16px rgba(255,255,255,.9);
+    opacity: 0; transform: translateY(14px); transition: opacity 1.2s, transform 1.2s, text-shadow 2s; overflow-wrap: anywhere; }
+  #titulo.ver { opacity: 1; transform: none; }
+  #titulo.brilla { text-shadow: 0 1px 0 #fff, 0 0 18px rgba(255,255,255,.95), 0 0 40px rgba(255,215,106,.9); }
+  #pista { position: fixed; left: 0; right: 0; bottom: 11vh; text-align: center; padding: 0 24px; font-weight: 700; font-size: clamp(15px, 4.3vw, 18px);
+    color: #e8eeff; text-shadow: 0 2px 10px rgba(0,0,0,.6); opacity: 0; transition: opacity .6s; }
+  #pista.ver { opacity: 1; animation: respira 1.8s ease-in-out infinite; }
+  @keyframes respira { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+  /* tarjetas que salen de los regalos */
+  #tarjeta { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 22px; background: rgba(3,6,18,.55);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .45s; }
+  #tarjeta.ver { opacity: 1; pointer-events: auto; }
+  .carta { position: relative; width: min(86vw, 360px); border-radius: 18px; padding: 30px 24px 22px; text-align: center;
+    transform: scale(.55) rotate(-6deg) translateY(40px); transition: transform .65s cubic-bezier(.2,1.5,.4,1); box-shadow: 0 24px 70px rgba(0,0,0,.5); }
+  #tarjeta.ver .carta { transform: none; }
+  .cab { font: 700 13px 'Quicksand', sans-serif; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; }
+  .cuerpo { min-height: 3.4em; font-size: clamp(17px, 4.8vw, 20px); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .pie { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(24px, 7vw, 32px); margin-top: 14px; min-height: 1.3em; overflow-wrap: anywhere; }
+  .seguir { margin-top: 16px; font-size: 13px; opacity: 0; transition: opacity .5s; }
+  .seguir.ver { opacity: .7; }
+  .typing::after { content: '|'; margin-left: 2px; animation: blink .8s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
-  #repetir { position: fixed; bottom: 14px; right: 14px; background: rgba(255,215,106,.12); border: 1px solid rgba(255,215,106,.45);
+  /* 1 · mensaje: papel con cinta roja */
+  .v-msg { background: linear-gradient(170deg, #fffaf0, #fbefdc); color: #5a2027; }
+  .v-msg::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 9px; border-radius: 18px 18px 0 0;
+    background: repeating-linear-gradient(45deg, #c81d3a 0 10px, #fff 10px 20px); }
+  .v-msg .cab { color: #c81d3a; } .v-msg .pie { color: #c81d3a; }
+  /* 2 · vale: ticket dorado */
+  .v-vale { background: linear-gradient(160deg, #ffe7a0, #f5c24c); color: #4a2a00; border: 2px dashed rgba(90,50,0,.45); outline: 6px solid #f5c24c; }
+  .v-vale::before, .v-vale::after { content: ''; position: absolute; top: 50%; width: 26px; height: 26px; border-radius: 50%; background: #0a1026; transform: translateY(-50%); }
+  .v-vale::before { left: -20px; } .v-vale::after { right: -20px; }
+  .v-vale .cab { font-size: 15px; letter-spacing: .3em; }
+  .v-vale .cuerpo { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(25px, 7vw, 32px); line-height: 1.25; }
+  .v-vale .pie { font: 700 12px 'Quicksand', sans-serif; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+  /* 3 · deseo: noche estrellada */
+  .v-deseo { background: radial-gradient(ellipse at 50% 0%, #2b3f86, #101a45 70%); color: #eef2ff; border: 1px solid rgba(160,190,255,.35); }
+  .v-deseo .cab { color: #9fd8ff; } .v-deseo .pie { color: #ffd76a; text-shadow: 0 0 14px rgba(255,215,106,.5); }
+
+  #cursor { position: fixed; left: 0; top: 0; width: 34px; height: 34px; pointer-events: none; opacity: 0; z-index: 10; transition: opacity .3s;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+  #repetir { position: fixed; bottom: 14px; right: 14px; z-index: 6; background: rgba(255,215,106,.12); border: 1px solid rgba(255,215,106,.45);
     color: #ffd76a; font: 14px 'Quicksand', sans-serif; padding: 8px 14px; border-radius: 20px; cursor: pointer; opacity: 0; transition: opacity 1s; }
   #repetir.visible { opacity: 1; }
 </style>
+<script src="../_comun/sorpresa.js"></script>
 
 <!-- Seguridad: solo recursos propios + Google Fonts; nada puede enviar datos a otros sitios -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -42,139 +78,357 @@
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="texto"><div id="titulo"></div><div id="msg"></div><div id="firma"></div></div>
-<button id="repetir" data-no-video onclick="location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
+<div id="titulo"></div>
+<div id="pista"></div>
+<div id="tarjeta"><div class="carta"><div class="cab"></div><div class="cuerpo"></div><div class="pie"></div><div class="seguir"></div></div></div>
+<svg id="cursor" viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M5 2 L5 20 L9.5 15.5 L12.5 22 L15.5 20.7 L12.6 14.3 L19 14.3 Z"/></svg>
+<button id="repetir" data-no-video onclick="event.stopPropagation(); location.reload()" data-en="↻ Watch again">↻ Ver de nuevo</button>
 <script>
-/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&de=...&saludo=... */
+/* ✏️ PERSONALIZA AQUÍ — o por el link: ?para=Ana&msg=...&vale=...&deseo=...&de=...&saludo=... */
 const q = new URLSearchParams(location.search);
 const EN = q.get('lang') === 'en';   // ?lang=en → textos en inglés (cuenta de TikTok en inglés)
+const VIDEO = q.has('video');         // en el video, un cursor hace de la persona
 const CONFIG = {
   para:    q.get('para')   || (EN ? "Lily" : "Valentina"),
   saludo:  q.get('saludo') || (EN ? "Merry Christmas" : "Feliz Navidad"),
   mensaje: q.get('msg')    || (EN ? "My favorite gift doesn't fit under the tree: it's you. Thank you for filling this year with light." : "Mi regalo favorito no cabe debajo del árbol: eres tú. Gracias por llenar de luz este año."),
+  vale:    q.get('vale')   || (EN ? "One long hug, the kind that fixes everything 🤗" : "Un abrazo largo, de esos que lo arreglan todo 🤗"),
+  deseo:   q.get('deseo')  || (EN ? "That every Christmas we have left, we spend together." : "Que todas las navidades que nos quedan las pasemos juntos."),
   firma:   q.get('de')     || (EN ? "Love, Matthew 🎄" : "Con amor, Mateo 🎄")
 };
+const TX = EN ? {
+  arbol: 'Tap the tree to light it up ✨', regalos: 'There are 3 gifts for you 🎁 Tap one', quedan: n => n === 1 ? 'One more 🎁' : `${n} more to go 🎁`,
+  cerrar: 'tap to continue', c1: 'For you', c2: 'This voucher is good for', c3: 'My Christmas wish', valido: 'Valid forever · no expiry date'
+} : {
+  arbol: 'Toca el árbol para encenderlo ✨', regalos: 'Hay 3 regalos para ti 🎁 Toca uno', quedan: n => n === 1 ? 'Falta uno 🎁' : `Te quedan ${n} 🎁`,
+  cerrar: 'toca para seguir', c1: 'Para ti', c2: 'Vale por', c3: 'Mi deseo de Navidad', valido: 'Válido para siempre · no caduca'
+};
 
-const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const $ = id => document.getElementById(id);
+const cv = $('c'), ctx = cv.getContext('2d');
 let W, H;
 function medir() { const d = window.devicePixelRatio || 1; W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
 medir(); addEventListener('resize', medir);
 const clamp = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
 const easeOut = t => 1 - Math.pow(1 - t, 3);
+const rebote = t => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + .75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + .9375; return n * (t -= 2.625 / d) * t + .984375; };
+const rnd = (a, b) => a + Math.random() * (b - a);
 
-const nieve = Array.from({ length: 170 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 2.2 + .6, v: Math.random() * .4 + .25, f: Math.random() * 6 }));
+/* ---------- escena ---------- */
+const geo = () => { const top = H * .2, base = H * .58; return { cx: W / 2, top, base, ancho: Math.min(W * .4, (base - top) * .6) }; };
+const estrellas = Array.from({ length: 130 }, () => ({ x: Math.random(), y: Math.random() * .55, r: rnd(.4, 1.4), f: rnd(0, 6) }));
+const capas = [[90, .5, 1.1, .35], [70, 1, 1.9, .6], [26, 1.7, 3, .9]];   // nieve: cantidad, velocidad, tamaño, opacidad
+const nieve = capas.flatMap(([n, v, r, a], k) => Array.from({ length: n }, () => ({ x: Math.random(), y: Math.random(), v: v * rnd(.7, 1.2), r: r * rnd(.6, 1.1), a, k, f: rnd(0, 6) })));
+const casas = (() => {
+  const l = []; let x = -10;
+  while (x < 1.05) { x += rnd(.07, .14); if (Math.abs(x - .5) > .26) l.push({ x, w: rnd(20, 32), h: rnd(14, 24), v: Math.random() < .8, f: rnd(0, 6) }); }
+  return l;
+})().filter(c => c.x > 0 && c.x < 1);
 const COLORES = ['#ff4d6d', '#ffd76a', '#6ad1ff', '#9dff8a', '#ff9de2', '#ffffff'];
-// Luces de la guirnalda: espiral alrededor de un cono
 const N = 220, VUELTAS = 6.5;
-const luces = Array.from({ length: N }, (_, i) => ({ u: i / (N - 1), col: COLORES[i % COLORES.length], f: Math.random() * 6 }));
-const adornos = Array.from({ length: 14 }, () => ({ u: .15 + Math.random() * .8, a: Math.random() * Math.PI * 2, col: COLORES[(Math.random() * 5) | 0] }));
+const luces = Array.from({ length: N }, (_, i) => ({ u: i / (N - 1), col: COLORES[i % COLORES.length], f: rnd(0, 6) }));
+const esferas = Array.from({ length: 16 }, () => ({ u: rnd(.15, .95), a: rnd(0, Math.PI * 2), col: COLORES[(Math.random() * 5) | 0] }));
+const REGALOS = [
+  { dx: -.86, dy: 0, w: 56, h: 42, c1: '#ff5470', c2: '#b8193a', cinta: '#ffd76a' },
+  { dx: .86, dy: 0, w: 50, h: 48, c1: '#ffd76a', c2: '#d99a1c', cinta: '#d81e45' },
+  { dx: 0, dy: 26, w: 64, h: 40, c1: '#5f9bff', c2: '#2848a8', cinta: '#ffffff' }
+].map((r, i) => ({ ...r, i, abierto: false, tAbre: 0 }));
+const chispas = [];
+const hillY = x => geo().base - 22 - 16 * Math.sin(x / W * Math.PI * 2 + .6);
 
-const T_ARBOL = 300, D_ARBOL = 2600, T_ESTRELLA = T_ARBOL + D_ARBOL, T_TITULO = T_ESTRELLA + 500, T_MSG = T_TITULO + 1100, vel = 45;
-const T_FIRMA = T_MSG + CONFIG.mensaje.length * vel + 400;
-const T_FIN = T_FIRMA + CONFIG.firma.length * vel + 400;
-const elT = document.getElementById('titulo'), elMsg = document.getElementById('msg'), elFirma = document.getElementById('firma');
+/* ---------- estado ---------- */
+let fase = 'oscuro', tEnc = -1, tRegalos = -1, tFinal = -1, abiertos = 0;
+let carta = null;        // { i, t0, fin, cerrable }
+let viento = 0, ultX = null, t = 0;
+const elT = $('titulo'), elP = $('pista'), elTar = $('tarjeta');
+const elCab = elTar.querySelector('.cab'), elCue = elTar.querySelector('.cuerpo'), elPie = elTar.querySelector('.pie'), elSeg = elTar.querySelector('.seguir'), elCarta = elTar.querySelector('.carta');
 elT.textContent = `${CONFIG.saludo}, ${CONFIG.para}`;
+elSeg.textContent = TX.cerrar;
+const pista = txt => { elP.classList.remove('ver'); if (txt) setTimeout(() => { elP.textContent = txt; elP.classList.add('ver'); }, 250); };
+const vibrar = p => { if (!VIDEO) try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
 
-function escribir(el, txt, t0, now) {
-  const p = clamp((now - t0) / (txt.length * vel));
-  el.textContent = txt.slice(0, Math.round(p * txt.length));
-  el.classList.toggle('typing', p > 0 && p < 1);
+function regaloPos(r) {
+  const g = geo(), x = g.cx + r.dx * g.ancho, yb = g.base + 18 + r.dy;
+  const p = tRegalos < 0 ? 0 : clamp((t - tRegalos - r.i * 220) / 900);
+  return { x, yb: yb - (1 - rebote(p)) * (H * .5), p };
 }
-function estrella(x, y, r, rot) {
+function estallar(x, y, n, cols, f = 4) {
+  for (let i = 0; i < n; i++) { const a = rnd(0, Math.PI * 2), v = rnd(.5, 1) * f; chispas.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - f * .5, vida: 0, max: rnd(40, 80), col: cols[(Math.random() * cols.length) | 0], s: rnd(1.5, 3.2) }); }
+}
+
+/* ---------- interacción ---------- */
+const VEL = 38;
+const VARIANTES = [
+  () => ({ clase: 'v-msg', cab: `${TX.c1}, ${CONFIG.para}`, cuerpo: CONFIG.mensaje, pie: '' }),
+  () => ({ clase: 'v-vale', cab: TX.c2, cuerpo: CONFIG.vale, pie: TX.valido }),
+  () => ({ clase: 'v-deseo', cab: TX.c3, cuerpo: CONFIG.deseo, pie: CONFIG.firma })
+];
+function abrirCarta(i) {
+  const v = VARIANTES[i]();
+  elCarta.className = 'carta ' + v.clase;
+  elCab.textContent = v.cab; elCue.textContent = ''; elPie.textContent = ''; elSeg.classList.remove('ver');
+  const t0 = t + 500, tPie = t0 + v.cuerpo.length * VEL + 300;
+  carta = { i, v, t0, tPie, fin: tPie + (i === 1 ? 300 : v.pie.length * VEL) + 200 };
+  elTar.classList.add('ver');
+  pista('');
+}
+function cerrarCarta() {
+  elTar.classList.remove('ver'); carta = null;
+  const quedan = REGALOS.length - abiertos;
+  if (quedan) { fase = 'regalos'; pista(TX.quedan(quedan)); }
+  else { fase = 'final'; tFinal = t; elT.classList.add('brilla'); vibrar([30, 60, 30, 60, 120]);
+    setTimeout(() => $('repetir').classList.add('visible'), 2800); }
+}
+function tocar(x, y) {
+  if (fase === 'oscuro') {
+    const g = geo();
+    {   // cualquier toque lo enciende: que nadie se quede atascado por no atinarle al árbol
+      fase = 'encendiendo'; tEnc = t; pista(''); vibrar(40);
+      estallar(g.cx, g.top, 40, ['#ffd76a', '#fff'], 5);
+      setTimeout(() => { elT.classList.add('ver'); }, 2500);
+      setTimeout(() => { fase = 'regalos'; tRegalos = t; setTimeout(() => pista(TX.regalos), 1100); }, 2700);
+    }
+    return;
+  }
+  if (fase === 'tarjeta' && carta) {
+    if (t < carta.fin) { carta.t0 = carta.tPie = -1e9; carta.fin = t; return; }   // primer toque: termina de escribir
+    cerrarCarta(); return;
+  }
+  if (fase === 'regalos') {
+    let mejor = null, dist = 1e9;
+    for (const r of REGALOS) {
+      if (r.abierto) continue;
+      const p = regaloPos(r); if (p.p < 1) continue;
+      const d = Math.hypot(x - p.x, y - (p.yb - r.h / 2));
+      if (d < dist) { dist = d; mejor = r; }
+    }
+    if (mejor && dist < 90) {
+      mejor.abierto = true; mejor.tAbre = t; abiertos++; fase = 'tarjeta'; vibrar(25);
+      const p = regaloPos(mejor); estallar(p.x, p.yb - mejor.h, 50, [mejor.c1, mejor.cinta, '#fff', '#ffd76a'], 5);
+      setTimeout(() => abrirCarta(mejor.i), 450);
+    }
+  }
+}
+if (!VIDEO) {
+  document.body.addEventListener('pointerdown', e => tocar(e.clientX, e.clientY));
+  addEventListener('pointermove', e => { if (ultX !== null) viento = clamp(viento + (e.clientX - ultX) * .04, -6, 6); ultX = e.clientX; });
+  addEventListener('pointerup', () => { ultX = null; });
+}
+
+/* ---------- guion del video: un cursor hace lo que haría la persona ---------- */
+const cursor = $('cursor');
+let cur = { x: 0, y: 0 }, desde = null, paso = 0;
+const centroCarta = () => { const r = elCarta.getBoundingClientRect(); return { x: r.left + r.width * .62, y: r.top + r.height * .7 }; };
+const GUION = [
+  { cuando: () => 1300, donde: () => { const g = geo(); return { x: g.cx + 8, y: (g.top + g.base) / 2 }; } },
+  { cuando: () => tRegalos > 0 ? tRegalos + 1500 : null, donde: () => { const p = regaloPos(REGALOS[0]); return { x: p.x, y: p.yb - 20 }; } },
+  { cuando: () => carta ? carta.fin + 900 : null, donde: centroCarta },
+  { cuando: () => fase === 'regalos' ? t + 650 : null, donde: () => { const p = regaloPos(REGALOS[1]); return { x: p.x, y: p.yb - 22 }; } },
+  { cuando: () => carta ? carta.fin + 900 : null, donde: centroCarta },
+  { cuando: () => fase === 'regalos' ? t + 650 : null, donde: () => { const p = regaloPos(REGALOS[2]); return { x: p.x + 6, y: p.yb - 18 }; } },
+  { cuando: () => carta ? carta.fin + 1100 : null, donde: centroCarta }
+];
+let objetivo = null;
+function moverCursor() {
+  if (paso >= GUION.length) { if (tFinal > 0 && t > tFinal + 600) cursor.style.opacity = 0; return; }
+  const s = GUION[paso];
+  if (!objetivo) { const c = s.cuando(); if (c == null) return; objetivo = { en: Math.max(c, t + 700), de: { ...cur } }; if (paso === 0) cur = { x: W * .8, y: H * .9 }, objetivo.de = { ...cur }; cursor.style.opacity = 1; }
+  const dest = s.donde(), p = easeOut(clamp(1 - (objetivo.en - t) / 700));
+  cur = { x: objetivo.de.x + (dest.x - objetivo.de.x) * p, y: objetivo.de.y + (dest.y - objetivo.de.y) * p };
+  if (t >= objetivo.en) {
+    cursor.animate([{ transform: `translate(${cur.x - 6}px, ${cur.y - 3}px) scale(1)` }, { transform: `translate(${cur.x - 6}px, ${cur.y - 3}px) scale(.8)` }, { transform: `translate(${cur.x - 6}px, ${cur.y - 3}px) scale(1)` }], { duration: 220 });
+    tocar(cur.x, cur.y); paso++; objetivo = null;
+  }
+}
+
+/* ---------- dibujo ---------- */
+function arbol(g, luz) {
+  const { cx, top, base, ancho } = g;
+  ctx.fillStyle = '#3b2414'; ctx.fillRect(cx - 9, base - 4, 18, 24);
+  const niveles = 4;
+  for (let k = 0; k < niveles; k++) {
+    const y0 = top + (base - top) * (k / niveles) * .78, y1 = top + (base - top) * ((k + 1) / niveles) + 4;
+    const w = ancho * (.38 + .62 * (k + 1) / niveles);
+    const gr = ctx.createLinearGradient(0, y0, 0, y1);
+    const a = .25 + .75 * luz;
+    gr.addColorStop(0, `rgba(${30 + 20 * a | 0},${70 + 60 * a | 0},${50 + 25 * a | 0},1)`); gr.addColorStop(1, `rgba(${10 + 8 * a | 0},${36 + 30 * a | 0},${26 + 14 * a | 0},1)`);
+    ctx.fillStyle = gr;
+    ctx.beginPath(); ctx.moveTo(cx, y0);
+    ctx.lineTo(cx + w, y1);
+    for (let i = 6; i >= 0; i--) { const xx = cx - w + (2 * w) * (i / 6); ctx.quadraticCurveTo(xx + w / 6, y1 + 7, xx, y1); }
+    ctx.closePath(); ctx.fill();
+    // nieve en las puntas
+    ctx.fillStyle = `rgba(235,242,255,${.55 + .25 * luz})`;
+    ctx.beginPath(); ctx.ellipse(cx + w * .55, y1 - 2, w * .16, 2.4, -.25, 0, 7); ctx.ellipse(cx - w * .6, y1 - 1, w * .13, 2.2, .3, 0, 7); ctx.fill();
+  }
+}
+function regalo(r) {
+  const { x, yb, p } = regaloPos(r);
+  if (p <= 0) return;
+  const { w, h } = r;
+  let rot = 0;
+  if (!r.abierto && fase === 'regalos' && p >= 1) { const c = ((t / 2400) + r.i * .33) % 1; if (c < .16) rot = Math.sin(c / .16 * Math.PI * 4) * .07; }
+  ctx.save(); ctx.translate(x, yb); ctx.rotate(rot);
+  // sombra
+  ctx.fillStyle = 'rgba(0,0,20,.25)'; ctx.beginPath(); ctx.ellipse(0, 2, w * .6, 5, 0, 0, 7); ctx.fill();
+  // brillo que sale del regalo abierto
+  if (r.abierto) {
+    const e = clamp((t - r.tAbre) / 600), gl = ctx.createRadialGradient(0, -h, 0, 0, -h, 90);
+    gl.addColorStop(0, `rgba(255,225,140,${.55 * e})`); gl.addColorStop(1, 'rgba(255,225,140,0)');
+    ctx.fillStyle = gl; ctx.fillRect(-100, -h - 100, 200, 200);
+  }
+  const gb = ctx.createLinearGradient(-w / 2, 0, w / 2, 0); gb.addColorStop(0, r.c1); gb.addColorStop(1, r.c2);
+  ctx.fillStyle = gb; ctx.fillRect(-w / 2, -h, w, h);
+  ctx.fillStyle = r.cinta; ctx.fillRect(-4, -h, 8, h);
+  // tapa (sale volando al abrir)
+  const e = r.abierto ? easeOut(clamp((t - r.tAbre) / 900)) : 0;
+  ctx.save(); ctx.globalAlpha = 1 - e;
+  ctx.translate((r.i === 0 ? -1 : 1) * e * 40, -e * 110); ctx.rotate((r.i === 0 ? -1 : 1) * e * .9);
+  ctx.fillStyle = r.c2; ctx.fillRect(-w / 2 - 4, -h - 11, w + 8, 12);
+  ctx.fillStyle = r.cinta; ctx.fillRect(-4, -h - 11, 8, 12);
+  ctx.beginPath(); ctx.ellipse(-9, -h - 15, 9, 6, -.5, 0, 7); ctx.ellipse(9, -h - 15, 9, 6, .5, 0, 7); ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.arc(0, -h - 13, 3.5, 0, 7); ctx.fill();
+  ctx.restore();
+  ctx.restore();
+}
+function aurora(a) {
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const bandas = [['93,255,176', .08], ['178,140,255', .16], ['110,220,255', .24]];
+  bandas.forEach(([c, y0], k) => {
+    for (let x = 0; x < W; x += 4) {
+      const y = H * y0 + Math.sin(x / W * 3.2 + t / 1700 + k * 1.7) * 26 + Math.sin(x / W * 7 + t / 900 + k) * 8;
+      const al = a * (.10 + .06 * Math.sin(x / 40 + t / 600 + k));
+      ctx.fillStyle = `rgba(${c},${al})`; ctx.fillRect(x, y, 4, 22);
+      ctx.fillStyle = `rgba(${c},${al * .55})`; ctx.fillRect(x, y + 22, 4, 34);
+      ctx.fillStyle = `rgba(${c},${al * .25})`; ctx.fillRect(x, y + 56, 4, 50);
+    }
+  });
+  ctx.restore();
+}
+function estrellaPunta(x, y, r) {
   ctx.beginPath();
-  for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * .45 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+  for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * .45 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
   ctx.closePath(); ctx.fill();
 }
 
 let t0 = null;
 function frame(now) {
   if (t0 === null) t0 = now;
-  const t = now - t0;
-  const cx = W / 2, top = H * .1, base = H * .5, ancho = Math.min(W * .42, (base - top) * .62);
+  t = now - t0;
+  const g = geo(), { cx, top, base, ancho } = g;
+  const luz = tEnc < 0 ? 0 : easeOut(clamp((t - tEnc) / 2400));
+  const fin = tFinal < 0 ? 0 : clamp((t - tFinal) / 2000);
 
-  const g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, '#050b1a'); g.addColorStop(.6, '#0d1a3a'); g.addColorStop(1, '#16264d');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // cielo
+  const cg = ctx.createLinearGradient(0, 0, 0, H);
+  cg.addColorStop(0, '#040817'); cg.addColorStop(.55, '#0b1a3d'); cg.addColorStop(1, '#1a2b55');
+  ctx.fillStyle = cg; ctx.fillRect(0, 0, W, H);
+  for (const s of estrellas) { ctx.fillStyle = `rgba(255,255,255,${.25 + .55 * (.5 + .5 * Math.sin(t / 700 + s.f))})`; ctx.fillRect(s.x * W, s.y * H, s.r, s.r); }
+  if (fin > 0) aurora(fin);
+  // luna
+  const lx = W * .82, ly = H * .13, lg = ctx.createRadialGradient(lx, ly, 0, lx, ly, 70);
+  lg.addColorStop(0, 'rgba(255,250,225,.35)'); lg.addColorStop(1, 'rgba(255,250,225,0)');
+  ctx.fillStyle = lg; ctx.fillRect(lx - 70, ly - 70, 140, 140);
+  ctx.fillStyle = '#fff8dc'; ctx.beginPath(); ctx.arc(lx, ly, 17, 0, 7); ctx.fill();
+  ctx.fillStyle = '#0b1638'; ctx.beginPath(); ctx.arc(lx + 7, ly - 4, 15, 0, 7); ctx.fill();
 
+  // colina lejana con casitas
+  ctx.fillStyle = '#0d1b40'; ctx.beginPath(); ctx.moveTo(0, H);
+  for (let x = 0; x <= W; x += 8) ctx.lineTo(x, hillY(x));
+  ctx.lineTo(W, H); ctx.fill();
+  for (const c of casas) {
+    const x = c.x * W, y = hillY(x) + 4;
+    ctx.fillStyle = '#081230'; ctx.fillRect(x - c.w / 2, y - c.h, c.w, c.h);
+    ctx.beginPath(); ctx.moveTo(x - c.w / 2 - 4, y - c.h); ctx.lineTo(x, y - c.h - c.w * .5); ctx.lineTo(x + c.w / 2 + 4, y - c.h); ctx.fill();
+    ctx.strokeStyle = 'rgba(230,240,255,.8)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - c.w / 2 - 3, y - c.h); ctx.lineTo(x, y - c.h - c.w * .5); ctx.lineTo(x + c.w / 2 + 3, y - c.h); ctx.stroke();
+    if (c.v) { ctx.fillStyle = `rgba(255,200,100,${.7 + .25 * Math.sin(t / 500 + c.f)})`; ctx.fillRect(x - 4, y - c.h * .65, 8, 7); }
+  }
   // suelo nevado
-  const gs = ctx.createLinearGradient(0, base - 4, 0, base + 70);
-  gs.addColorStop(0, 'rgba(225,234,255,.95)'); gs.addColorStop(.35, 'rgba(150,175,230,.45)'); gs.addColorStop(1, 'rgba(22,38,77,0)');
-  ctx.fillStyle = gs;
-  ctx.beginPath(); ctx.moveTo(0, base + 22); ctx.quadraticCurveTo(cx, base - 4, W, base + 22); ctx.lineTo(W, base + 70); ctx.lineTo(0, base + 70); ctx.fill();
+  const gs = ctx.createLinearGradient(0, base - 4, 0, H);
+  gs.addColorStop(0, '#e6eeff'); gs.addColorStop(.18, '#b6c6ee'); gs.addColorStop(1, '#2a3d73');
+  ctx.fillStyle = gs; ctx.beginPath(); ctx.moveTo(0, base + 24); ctx.quadraticCurveTo(cx, base - 6, W, base + 24); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
 
-  // tronco y silueta suave del árbol
-  const pa = easeOut(clamp((t - T_ARBOL) / D_ARBOL));
-  ctx.fillStyle = '#3b2414'; ctx.fillRect(cx - 9, base - 2, 18, 22);
-  ctx.globalAlpha = .35 * clamp((t - T_ARBOL) / 600);
-  const gv = ctx.createLinearGradient(0, top, 0, base);
-  gv.addColorStop(0, '#1f6b45'); gv.addColorStop(1, '#0b3a25');
-  ctx.fillStyle = gv;
-  ctx.beginPath(); ctx.moveTo(cx, top); ctx.lineTo(cx + ancho, base); ctx.lineTo(cx - ancho, base); ctx.fill();
-  ctx.globalAlpha = 1;
+  // invitación a tocar el árbol (antes de encenderlo)
+  if (fase === 'oscuro') {
+    const pu = .5 + .5 * Math.sin(t / 420), hg = ctx.createRadialGradient(cx, (top + base) / 2, 0, cx, (top + base) / 2, ancho * 1.6);
+    hg.addColorStop(0, `rgba(255,215,106,${.05 + .08 * pu})`); hg.addColorStop(1, 'rgba(255,215,106,0)');
+    ctx.fillStyle = hg; ctx.fillRect(0, 0, W, H);
+  }
+  // halo cálido del árbol encendido
+  if (luz > 0) {
+    const hg = ctx.createRadialGradient(cx, (top + base) / 2, 0, cx, (top + base) / 2, ancho * 2.2);
+    hg.addColorStop(0, `rgba(255,190,110,${.16 * luz})`); hg.addColorStop(1, 'rgba(255,190,110,0)');
+    ctx.fillStyle = hg; ctx.fillRect(0, 0, W, H);
+  }
+  arbol(g, luz);
 
   // guirnalda que se enrolla de arriba hacia abajo
-  const visibles = Math.floor(pa * N);
-  const pos = l => {
-    const a = l.u * VUELTAS * Math.PI * 2 + t / 2400;
-    const r = ancho * l.u;
-    return { x: cx + Math.cos(a) * r, y: top + (base - top) * l.u + Math.sin(a) * r * .12, frente: Math.sin(a) };
-  };
-  // cable
-  ctx.strokeStyle = 'rgba(160,220,170,.25)'; ctx.lineWidth = 1; ctx.beginPath();
-  for (let i = 0; i < visibles; i++) { const p = pos(luces[i]); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }
-  ctx.stroke();
+  const visibles = Math.floor(luz * N);
+  const pos = l => { const a = l.u * VUELTAS * Math.PI * 2 + t / 2400, r = ancho * l.u * .95; return { x: cx + Math.cos(a) * r, y: top + (base - top) * l.u + Math.sin(a) * r * .12, frente: Math.sin(a) }; };
   ctx.globalCompositeOperation = 'lighter';
   for (let i = 0; i < visibles; i++) {
-    const l = luces[i], p = pos(l);
-    const brillo = (.55 + .45 * Math.sin(t / 300 + l.f)) * (p.frente > 0 ? 1 : .35);
-    ctx.globalAlpha = brillo;
-    ctx.fillStyle = l.col;
+    const l = luces[i], p = pos(l), b = (.55 + .45 * Math.sin(t / 300 + l.f)) * (p.frente > 0 ? 1 : .35) * (1 + fin * .3);
+    ctx.globalAlpha = Math.min(b, 1); ctx.fillStyle = l.col;
     ctx.beginPath(); ctx.arc(p.x, p.y, p.frente > 0 ? 2.6 : 1.6, 0, 7); ctx.fill();
-    ctx.globalAlpha = brillo * .25;
-    ctx.beginPath(); ctx.arc(p.x, p.y, 7, 0, 7); ctx.fill();
+    ctx.globalAlpha = b * .25; ctx.beginPath(); ctx.arc(p.x, p.y, 7, 0, 7); ctx.fill();
   }
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-
-  // esferas
-  for (const b of adornos) {
-    if (b.u > pa) continue;
-    const a = b.a + t / 2400, r = ancho * b.u;
+  for (const b of esferas) {
+    if (b.u > luz) continue;
+    const a = b.a + t / 2400, r = ancho * b.u * .85;
     if (Math.sin(a) < 0) continue;
-    const x = cx + Math.cos(a) * r * .85, y = top + (base - top) * b.u + 6;
-    const gb = ctx.createRadialGradient(x - 2, y - 2, 1, x, y, 6);
+    const x = cx + Math.cos(a) * r, y = top + (base - top) * b.u + 6, gb = ctx.createRadialGradient(x - 2, y - 2, 1, x, y, 6);
     gb.addColorStop(0, '#fff'); gb.addColorStop(.3, b.col); gb.addColorStop(1, 'rgba(0,0,0,.4)');
     ctx.fillStyle = gb; ctx.beginPath(); ctx.arc(x, y, 5.5, 0, 7); ctx.fill();
   }
-
-  // estrella
-  const pe = easeOut(clamp((t - T_ESTRELLA) / 700));
+  // estrella de la punta
+  const pe = tEnc < 0 ? 0 : easeOut(clamp((t - tEnc - 2000) / 700));
+  ctx.fillStyle = tEnc < 0 ? 'rgba(255,215,106,.25)' : '#ffd76a';
   if (pe > 0) {
-    const halo = ctx.createRadialGradient(cx, top - 4, 0, cx, top - 4, 70 * pe);
-    halo.addColorStop(0, 'rgba(255,215,106,.55)'); halo.addColorStop(1, 'rgba(255,215,106,0)');
-    ctx.fillStyle = halo; ctx.fillRect(cx - 80, top - 84, 160, 160);
-    ctx.save(); ctx.translate(cx, top - 4); ctx.rotate(t / 2500);
+    const halo = ctx.createRadialGradient(cx, top - 6, 0, cx, top - 6, 80 * pe);
+    halo.addColorStop(0, 'rgba(255,215,106,.6)'); halo.addColorStop(1, 'rgba(255,215,106,0)');
+    ctx.fillStyle = halo; ctx.fillRect(cx - 90, top - 96, 180, 180);
+    ctx.save(); ctx.translate(cx, top - 6); ctx.rotate(t / 2500);
     ctx.strokeStyle = `rgba(255,230,150,${.35 * pe})`; ctx.lineWidth = 1.2;
-    for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -46 * pe); ctx.stroke(); ctx.rotate(Math.PI / 4); }
-    ctx.restore();
-    ctx.fillStyle = '#ffd76a'; estrella(cx, top - 4, 15 * pe, 0);
+    for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -50 * pe); ctx.stroke(); ctx.rotate(Math.PI / 4); }
+    ctx.restore(); ctx.fillStyle = '#ffd76a';
   }
+  estrellaPunta(cx, top - 6, 15 * Math.max(pe, tEnc < 0 ? 1 : 0));
 
-  // nieve
+  REGALOS.forEach(regalo);
+
+  // chispas
+  for (let i = chispas.length - 1; i >= 0; i--) {
+    const c = chispas[i]; c.vida++; c.x += c.vx; c.y += c.vy; c.vy += .09; c.vx *= .98;
+    if (c.vida > c.max) { chispas.splice(i, 1); continue; }
+    ctx.globalAlpha = 1 - c.vida / c.max; ctx.fillStyle = c.col; ctx.beginPath(); ctx.arc(c.x, c.y, c.s, 0, 7); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  // final: chispitas doradas que suben de los regalos
+  if (fin > 0 && Math.random() < .35) { const r = REGALOS[(Math.random() * 3) | 0], p = regaloPos(r); chispas.push({ x: p.x + rnd(-12, 12), y: p.yb - r.h, vx: rnd(-.3, .3), vy: rnd(-2.2, -1.2), vida: 0, max: 90, col: Math.random() < .5 ? '#ffd76a' : '#fff', s: rnd(1, 2.2) }); }
+
+  // nieve con viento (se mueve si arrastra el dedo)
+  viento *= .97;
   for (const s of nieve) {
-    const y = ((s.y * H + t * s.v * .06) % (H + 10)) - 5;
-    const x = (s.x * W + Math.sin(t / 1400 + s.f) * 18 + W) % W;
-    ctx.fillStyle = `rgba(255,255,255,${.45 + s.r * .18})`;
-    ctx.beginPath(); ctx.arc(x, y, s.r, 0, 7); ctx.fill();
+    s.y += s.v * .0011; s.x += (Math.sin(t / 1400 + s.f) * .00025 + viento * .0006 * (s.k + 1));
+    if (s.y > 1.02) { s.y = -.02; s.x = Math.random(); }
+    s.x = (s.x + 1) % 1;
+    ctx.fillStyle = `rgba(255,255,255,${s.a})`; ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r, 0, 7); ctx.fill();
   }
 
-  if (t > T_TITULO) elT.classList.add('visible');
-  escribir(elMsg, CONFIG.mensaje, T_MSG, t);
-  escribir(elFirma, CONFIG.firma, T_FIRMA, t);
-  if (t > T_FIN) document.getElementById('repetir').classList.add('visible');
+  // texto de las tarjetas
+  if (carta) {
+    if (fase !== 'tarjeta') fase = 'tarjeta';
+    const v = carta.v, ec = (el, txt, t0) => { const p = clamp((t - t0) / Math.max(txt.length * VEL, 1)); el.textContent = txt.slice(0, Math.round(p * txt.length)); el.classList.toggle('typing', p > 0 && p < 1); };
+    ec(elCue, v.cuerpo, carta.t0);
+    if (carta.i === 1) { elPie.textContent = t > carta.tPie ? v.pie : ''; } else ec(elPie, v.pie, carta.tPie);
+    elSeg.classList.toggle('ver', t > carta.fin + 400);
+  }
+  if (VIDEO) { moverCursor(); cursor.style.transform = `translate(${cur.x - 6}px, ${cur.y - 3}px)`; }
   requestAnimationFrame(frame);
 }
-setTimeout(() => requestAnimationFrame(frame), 250);
-if (EN) { const r = document.getElementById('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
+setTimeout(() => { requestAnimationFrame(frame); setTimeout(() => pista(TX.arbol), VIDEO ? 300 : 900); }, 250);
+if (EN) { const r = $('repetir'); if (r && r.dataset.en) r.textContent = r.dataset.en; document.documentElement.lang = 'en'; }
 </script>
 </body>
 </html>
