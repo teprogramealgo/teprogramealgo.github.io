@@ -1,0 +1,74 @@
+# Vigía de la web (GitHub Actions). Lo copia render/web.py a web/.github/workflows/vigia.yml al construir.
+# Revisa la web cada 15 min y avisa por Telegram SOLO cuando se cae y cuando vuelve (recuerda cada 6 h si sigue caída).
+# Necesita dos secretos en el repo (Settings → Secrets and variables → Actions): TELEGRAM_TOKEN y TELEGRAM_CHAT.
+name: Vigia de la web
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: vigia
+  cancel-in-progress: false
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Estado anterior
+        uses: actions/cache/restore@v4
+        with:
+          path: vigia-estado
+          key: vigia-${{ github.run_id }}
+          restore-keys: vigia-
+      - name: Revisar la web y avisar por Telegram
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT: ${{ secrets.TELEGRAM_CHAT }}
+          BASE: https://teprogramealgo.github.io
+        run: |
+          set -u
+          if [ -z "$TOKEN" ] || [ -z "$CHAT" ]; then echo "::error::Faltan los secretos TELEGRAM_TOKEN y/o TELEGRAM_CHAT"; exit 1; fi
+          mkdir -p vigia-estado
+          revisar() {   # $1 = url, $2 = texto que debe aparecer
+            local r codigo
+            r=$(curl -sS -L --max-time 20 -A "Mozilla/5.0 (compatible; vigia-web/1.0)" -w $'\n%{http_code}' "$1?v=$(date +%s)" 2>/dev/null) || { echo "$1 → no responde"; return; }
+            codigo=${r##*$'\n'}
+            [ "$codigo" = 200 ] || { echo "$1 → respondió $codigo"; return; }
+            grep -qF "$2" <<<"$r" || echo "$1 → carga, pero el contenido está roto"
+          }
+          todo() { revisar "$BASE/" "Te programé algo"; revisar "$BASE/girasol/" "_comun/sorpresa.js"; revisar "$BASE/_comun/kit.js" "K.guion"; }
+          P=""
+          for i in 1 2 3; do P=$(todo); [ -z "$P" ] && break; [ "$i" -lt 3 ] && sleep 30; done
+          avisar() {
+            curl -sS --max-time 20 -o /dev/null -w "Telegram: %{http_code}\n" "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${CHAT}" --data-urlencode "text=$1" -d disable_web_page_preview=true
+          }
+          dur() { local m=$(( ($(date +%s) - $1) / 60 )); if [ "$m" -lt 90 ]; then echo "$m min"; else echo "$((m / 60)) h $((m % 60)) min"; fi; }
+          ANT=$(cat vigia-estado/estado 2>/dev/null || echo arriba)
+          DESDE=$(cat vigia-estado/desde 2>/dev/null || date +%s)
+          ULT=$(cat vigia-estado/ultimo 2>/dev/null || echo 0)
+          AHORA=$(date +%s); HORA=$(TZ=America/Guayaquil date +'%d/%m %H:%M')
+          LISTA=$(sed 's/^/• /' <<<"$P")
+          if [ -n "$P" ]; then
+            echo "Web caída:"; echo "$P"
+            if [ "$ANT" != caida ]; then
+              avisar "$(printf '🔴 Tu web está caída\n\n%s\n\n🕒 %s (hora de Ecuador)\nSi es GitHub: https://www.githubstatus.com' "$LISTA" "$HORA")"
+              echo "$AHORA" > vigia-estado/desde; echo "$AHORA" > vigia-estado/ultimo
+            elif [ $((AHORA - ULT)) -gt 21600 ]; then
+              avisar "$(printf '🔴 La web sigue caída (hace %s)\n\n%s' "$(dur "$DESDE")" "$LISTA")"
+              echo "$AHORA" > vigia-estado/ultimo
+            fi
+            echo caida > vigia-estado/estado
+          else
+            echo "Web bien ✔"
+            if [ "$ANT" = caida ]; then avisar "$(printf '🟢 Tu web volvió a funcionar\nEstuvo caída %s.\n%s/' "$(dur "$DESDE")" "$BASE")"; fi
+            echo arriba > vigia-estado/estado
+          fi
+      - name: Guardar estado
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: vigia-estado
+          key: vigia-${{ github.run_id }}
